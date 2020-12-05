@@ -17,7 +17,7 @@ using std::placeholders::_1;
 
 namespace pr_sensors_actuators
 {
-    /**** ENCODER COMPONENT ****/
+    /**** ENCODERS COMPONENT ****/
     
     Encoders::Encoders(const rclcpp::NodeOptions & options)
     : Node("position_sensors", options)

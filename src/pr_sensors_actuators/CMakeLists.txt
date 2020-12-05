@@ -60,9 +60,33 @@ ament_target_dependencies(encoders
 rclcpp_components_register_nodes(encoders "pr_sensors_actuators::Encoders")
 set(node_plugins "${node_plugins}pr_sensors_actuators::Encoders;$<TARGET_FILE:encoders>\n")
 
+### Motor node ###
+
+add_library(motor SHARED
+  src/motor.cpp)
+
+target_compile_definitions(motor
+  PRIVATE "COMPOSITION_BUILDING_DLL")
+
+target_link_libraries(motor biodaq)
+
+ament_target_dependencies(motor
+  "rclcpp"
+  "rclcpp_components"
+  "std_msgs"
+  "pr_msgs")
+
+rclcpp_components_register_nodes(motor "pr_sensors_actuators::Motor")
+set(node_plugins "${node_plugins}pr_sensors_actuators::Motor;$<TARGET_FILE:motor>\n")
+
+
+
+
+### Installation ###
 
 install(TARGETS
   encoders
+  motor
   ARCHIVE DESTINATION lib
   LIBRARY DESTINATION lib
   RUNTIME DESTINATION bin)
