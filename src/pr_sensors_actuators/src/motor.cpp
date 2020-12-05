@@ -18,7 +18,7 @@ namespace pr_sensors_actuators
     : Node("motor_3", options)
     {
         //Parameter declaration
-        this->declare_parameter<std::vector<double>>("conversion_vp",{1.0, 1.0, 1.0, 1.0});
+        this->declare_parameter<std::vector<double>>("vp_conversion",{1.0, 1.0, 1.0, 1.0});
         this->get_parameter("vp_conversion", vp_conversion);
         
         //Get motor number from node name
@@ -26,6 +26,12 @@ namespace pr_sensors_actuators
         pn = this->get_name();
         pn = pn + strlen(this->get_name())-1;
         n_motor = atoi(pn);
+
+        if(n_motor>4 || n_motor<0){
+            RCLCPP_ERROR(this->get_logger(), "Wrong motor number");
+            //Find a better way to exit
+            exit(1);
+        }
 
         RCLCPP_INFO(this->get_logger(), "This is actuator number %d", n_motor);
 
