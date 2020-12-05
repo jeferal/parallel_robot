@@ -23,21 +23,22 @@ namespace pr_sensors_actuators
     : Node("position_sensors", options)
     {
         //Parameter declaration
-        this->declare_parameter<float>("ts", 10.0);
+        this->declare_parameter<float>("ts_ms", 10.0);
         this->declare_parameter<std::vector<double>>("initial_position", {0.665559, 0.654974, 0.691026, 0.631511});
 
         //Read parameters
-        this->get_parameter("ts", ts);
+        this->get_parameter("ts_ms", ts);
         this->get_parameter("initial_position", initial_position);
 
         //Position publisher
-        publisher_ = this->create_publisher<pr_msgs::msg::PRArrayH>("joint_position", 1);
+        publisher_ = this->create_publisher<pr_msgs::msg::PRArrayH>(
+			"joint_position", 
+			1);
         //End signal subscription
         subscription_end_ = this->create_subscription<std_msgs::msg::Bool>(
             "end_flag",
             1,
-            std::bind(&Encoders::end_callback, this, _1)
-        );
+            std::bind(&Encoders::end_callback, this, _1));
 
         //Create timer
         timer_ = this->create_wall_timer(
@@ -137,7 +138,7 @@ namespace pr_sensors_actuators
 			publisher_->publish(position_msg);
             
             
-			RCLCPP_INFO(this->get_logger(), "Publicando: %f %f %f %f", 
+			RCLCPP_INFO(this->get_logger(), "Pulishing: %f %f %f %f", 
             position_msg.data[0], 
             position_msg.data[1], 
             position_msg.data[2], 
@@ -149,7 +150,7 @@ namespace pr_sensors_actuators
             //End flag activted
 			DOut[0]=0;
 	    	ret = instantDoCtrl->Write(0,1,DOut);
-			RCLCPP_INFO(this->get_logger(), "Freno activado");
+			RCLCPP_INFO(this->get_logger(), "Brake disabled");
 		}
 	}
 

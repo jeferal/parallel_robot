@@ -59,4 +59,4 @@ namespace pr_sensors_actuators
 }   // Namespace pr_sensors_actuators
 
 
-#endif // PR_SENSORS_ACTUATORS__ENCODERS_COMPONENT_HPP_
+#endif // PR_SENSORS_ACTUATORS__ENCODERS_HPP_
