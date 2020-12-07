@@ -33,16 +33,30 @@ if(BUILD_TESTING)
   ament_lint_auto_find_test_dependencies()
 endif()
 
+
+### MODEL LIBRARY ###
+
 add_library(pr_model SHARED
   src/pr_model.cpp)
 
 ament_target_dependencies(pr_model
   "Eigen3")
 
+
+### UTILS LIBRARY ###
+
+add_library(pr_utils SHARED
+  src/pr_utils.cpp)
+
+ament_target_dependencies(pr_utils
+  "Eigen3")
+
+
 ### Installation ###
 
 install(TARGETS
   pr_model
+  pr_utils
   ARCHIVE DESTINATION lib
   LIBRARY DESTINATION lib
   RUNTIME DESTINATION bin)
