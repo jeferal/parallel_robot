@@ -62,10 +62,30 @@ rclcpp_components_register_nodes(for_kin "pr_modelling::ForwardKinematics")
 set(node_plugins "${node_plugins}pr_modelling::ForwardKinematics;$<TARGET_FILE:for_kin>\n")
 
 
+### Inverse Kinematics node ###
+
+add_library(inv_kin SHARED
+  src/inv_kin.cpp)
+
+target_compile_definitions(inv_kin
+  PRIVATE "COMPOSITION_BUILDING_DLL")
+
+ament_target_dependencies(inv_kin
+  "rclcpp"
+  "rclcpp_components"
+  "pr_msgs"
+  "pr_lib"
+  "Eigen3")
+
+rclcpp_components_register_nodes(inv_kin "pr_modelling::InverseKinematics")
+set(node_plugins "${node_plugins}pr_modelling::InverseKinematics;$<TARGET_FILE:inv_kin>\n")
+
+
 ### Installation ###
 
 install(TARGETS
   for_kin
+  inv_kin
   ARCHIVE DESTINATION lib
   LIBRARY DESTINATION lib
   RUNTIME DESTINATION bin)
