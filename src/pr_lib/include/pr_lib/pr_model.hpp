@@ -35,8 +35,8 @@ namespace PRModel
                                 std::array<double, 4UL> &QA, 
                                 std::vector<double> &X_ant, 
                                 const std::vector<double> &RParam, 
-                                const double tol=0.0000007, 
-                                const int iter_max=30);
+                                const double tol, 
+                                const int iter_max);
 
 
     //*** Dependent Jacobian ***//
