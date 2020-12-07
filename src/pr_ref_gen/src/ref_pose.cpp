@@ -28,7 +28,7 @@ namespace pr_ref_gen
         this->declare_parameter<std::string>("ref_path", 
             "/home/paralelo4dofnew/parallel_robot_ws/references/ref_cart_TRR0_CF1_IdV1.txt");
         
-        this->declare_parameter<bool>("is_cart", false);
+        this->declare_parameter<bool>("is_cart", true);
         this->declare_parameter<std::vector<double>>("robot_config_params", 
             {0.4, 0.4, 0.4, 0.15, 90*(M_PI/180), 45*(M_PI/180), 0.3, 0.3, 0.3, 50*(M_PI/180), 90*(M_PI/180)});
 
@@ -83,7 +83,7 @@ namespace pr_ref_gen
             auto ref_msg = pr_msgs::msg::PRArrayH();
             //CONVERTIR A FUNCIÓN
             for(int i=0; i<4; i++)
-                ref_msg.data[i] = ref_matrix(i);
+                ref_msg.data[i] = ref_matrix(idx, i);
 
             ref_msg.header.stamp = this->get_clock()->now();
             publisher_->publish(ref_msg); 
@@ -91,6 +91,7 @@ namespace pr_ref_gen
         else
         {
             auto end_msg = std_msgs::msg::Bool();
+            end_msg.data = true;
             publisher_end_->publish(end_msg);
         }
 
