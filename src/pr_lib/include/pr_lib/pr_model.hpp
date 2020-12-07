@@ -1,5 +1,6 @@
 #include <vector>
 #include <array>
+#include <cmath>
 
 #include "eigen3/Eigen/Dense"
 
@@ -36,5 +37,15 @@ namespace PRModel
                                 const std::vector<double> &RParam, 
                                 const double tol=0.0000007, 
                                 const int iter_max=30);
+
+
+    //*** Dependent Jacobian ***//
+    void DepJacobian(
+                                Eigen::Matrix<double, 11, 11> &DepJ, 
+                                const Eigen::Matrix<double, 4, 3> &Q, 
+                                const double &theta, 
+                                const double &psi, 
+                                const std::vector<double> &RParam);
+
 
 }

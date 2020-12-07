@@ -99,3 +99,62 @@ std::array<double, 4UL>  PRModel::ForwardKinematics(
             
     return {X[0], X[1], X[2], X[3]};
 }
+
+void PRModel::DepJacobian(
+        Eigen::Matrix<double, 11, 11> &DepJ, 
+        const Eigen::Matrix<double, 4, 3> &Q, 
+        const double &theta, 
+        const double &psi, 
+        const std::vector<double> &RParam)
+{
+    DepJ(0,0)=-sin(Q(0,0))*sin(Q(0,1))*Q(0,2);
+    DepJ(0,1)=cos(Q(0,1))*cos(Q(0,0))*Q(0,2);
+    DepJ(0,7)=-1;
+    DepJ(0,9)=-sin(theta)*cos(psi)*RParam[6];
+    DepJ(0,10)=-cos(theta)*sin(psi)*RParam[6];
+            
+    DepJ(1,1)=sin(Q(0,1))*Q(0,2);
+    DepJ(1,10)=cos(psi)*RParam[6];
+            
+    DepJ(2,0)=cos(Q(0,0))*sin(Q(0,1))*Q(0,2);
+    DepJ(2,1)=sin(Q(0,0))*cos(Q(0,1))*Q(0,2);
+    DepJ(2,8)=-1;
+    DepJ(2,9)=-cos(theta)*cos(psi)*RParam[6];
+    DepJ(2,10)=sin(theta)*sin(psi)*RParam[6];
+            
+    DepJ(3,2)=-sin(Q(1,0))*sin(Q(1,1))*Q(1,2);
+    DepJ(3,3)=cos(Q(1,0))*cos(Q(1,1))*Q(1,2);
+    DepJ(3,7)=-1;
+    DepJ(3,9)=sin(theta)*cos(psi)*RParam[7]*cos(RParam[9])-sin(theta)*sin(psi)*RParam[7]*sin(RParam[9]);
+    DepJ(3,10)=cos(theta)*sin(psi)*RParam[7]*cos(RParam[9])+cos(theta)*cos(psi)*RParam[7]*sin(RParam[9]);
+            
+    DepJ(4,3)=sin(Q(1,1))*Q(1,2);
+    DepJ(4,10)=-cos(psi)*RParam[7]*cos(RParam[9])+sin(psi)*RParam[7]*sin(RParam[9]);
+            
+    DepJ(5,2)=cos(Q(1,0))*sin(Q(1,1))*Q(1,2);
+    DepJ(5,3)=sin(Q(1,0))*cos(Q(1,1))*Q(1,2);
+    DepJ(5,8)=-1;
+    DepJ(5,9)=cos(theta)*cos(psi)*RParam[7]*cos(RParam[9])-cos(theta)*sin(psi)*RParam[7]*sin(RParam[9]);
+    DepJ(5,10)=-sin(theta)*sin(psi)*RParam[7]*cos(RParam[9])-sin(theta)*cos(psi)*RParam[7]*sin(RParam[9]);
+            
+    DepJ(6,4)=-sin(Q(2,0))*sin(Q(2,1))*Q(2,2);
+    DepJ(6,5)=cos(Q(2,0))*cos(Q(2,1))*Q(2,2);
+    DepJ(6,7)=-1;
+    DepJ(6,9)=sin(theta)*cos(psi)*RParam[7]*cos(RParam[10])+sin(theta)*sin(psi)*RParam[7]*sin(RParam[10]);
+    DepJ(6,10)=cos(theta)*sin(psi)*RParam[7]*cos(RParam[10])-cos(theta)*cos(psi)*RParam[7]*sin(RParam[10]);
+            
+    DepJ(7,5)=sin(Q(2,1))*Q(2,2);
+    DepJ(7,10)=-cos(psi)*RParam[7]*cos(RParam[10])-sin(psi)*RParam[7]*sin(RParam[10]);
+            
+    DepJ(8,4)=cos(Q(2,0))*sin(Q(2,1))*Q(2,2);
+    DepJ(8,5)=sin(Q(2,0))*cos(Q(2,1))*Q(2,2);
+    DepJ(8,8)=-1;
+    DepJ(8,9)=cos(theta)*cos(psi)*RParam[7]*cos(RParam[10])+cos(theta)*sin(psi)*RParam[7]*sin(RParam[10]);
+    DepJ(8,10)=-sin(theta)*sin(psi)*RParam[7]*cos(RParam[10])+sin(theta)*cos(psi)*RParam[7]*sin(RParam[10]);
+            
+    DepJ(9,6)=-cos(Q(3,0))*Q(3,1);
+    DepJ(9,7)=-1;
+            
+    DepJ(10,6)=-sin(Q(3,0))*Q(3,1);
+    DepJ(10,8)=-1;
+}
