@@ -1,3 +1,6 @@
+#ifndef PR_LIB__MODEL_HPP_
+#define PR_LIB__MODEL_HPP_
+
 #include <vector>
 #include <array>
 #include <cmath>
@@ -93,3 +96,5 @@ namespace PRModel
     }
 
 }
+
+#endif

@@ -1,3 +1,6 @@
+#ifndef PR_LIB__UTILS_HPP_
+#define PR_LIB__UTILS_HPP_
+
 #include <vector>
 #include <array>
 #include <cmath>
@@ -17,3 +20,5 @@ namespace PRUtils
         const std::vector<std::vector<double> > &vec);
 
 }
+
+#endif

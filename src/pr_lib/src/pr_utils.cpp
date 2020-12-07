@@ -1,5 +1,13 @@
 #include "pr_lib/pr_utils.hpp"
 
+#include <vector>
+#include <array>
+#include <cmath>
+#include <string>
+#include <iostream>
+#include <fstream>
+
+#include "eigen3/Eigen/Dense"
 
 int PRUtils::read_file(Eigen::MatrixXd &ref_matrix, const std::string &file_path)
 {
