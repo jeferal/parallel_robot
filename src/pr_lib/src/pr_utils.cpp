@@ -3,7 +3,7 @@
 
 int PRUtils::read_file(Eigen::MatrixXd &ref_matrix, const std::string &file_path)
 {
-    std::vector<std::vector<double>> data;
+    std::vector<std::vector<double> > data;
 	std::ifstream fileRead;
 	std::string linea, tok;
 	std::vector<double> line_data;
@@ -30,7 +30,7 @@ int PRUtils::read_file(Eigen::MatrixXd &ref_matrix, const std::string &file_path
 
 void PRUtils::vector2matrix(
         Eigen::MatrixXd &matrix, 
-        const std::vector<std::vector<double>> &vec)
+        const std::vector<std::vector<double> > &vec)
 {
     matrix.resize(vec.size(), vec[0].size());
 	for (size_t i=0; i<vec.size(); i++){

@@ -14,6 +14,6 @@ namespace PRUtils
 
     void vector2matrix(
         Eigen::MatrixXd &matrix, 
-        const std::vector<std::vector<double>> &vec);
+        const std::vector<std::vector<double> > &vec);
 
 }
