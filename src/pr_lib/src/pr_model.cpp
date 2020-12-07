@@ -223,3 +223,58 @@ void PRModel::QGravFunction(
 
     Qgrav = (RastT) * VQgrav; 
 }
+
+
+void PRModel::OptiTrack::PosOriPM(
+        Eigen::Matrix<double, 3, 2> &Coordinates,
+        const Eigen::Vector3d &mf1,
+        const Eigen::Vector3d &mf2,
+        const Eigen::Vector3d &mf3,
+        const Eigen::Vector3d &mm1,
+        const Eigen::Vector3d &mm2,
+        const Eigen::Vector3d &mm3)
+{
+        //Sistema de referencia fijo
+        
+        //Matriz de rotación del sistema fijo al sistema local
+        Eigen::Matrix<double, 3, 3> Rlf;
+        //eje xf
+        Eigen::Vector3d rmf1mf2 = mf2-mf1;
+        Rlf.col(0) = rmf1mf2/sqrt(rmf1mf2.transpose()*rmf1mf2);
+        //eje yf
+        Eigen::Vector3d rmf1mf3 = mf3-mf1;
+        Rlf.col(1) = rmf1mf3/sqrt(rmf1mf3.transpose()*rmf1mf3);
+        //eje zf
+        Eigen::Vector3d rzf_l = rmf1mf2.cross(rmf1mf3);
+        Rlf.col(2) = rzf_l/sqrt(rzf_l.transpose()*rzf_l);
+        
+        //Matriz de rotación del sistema local al sistema fijo
+        Eigen::Matrix<double, 3, 3> Rfl = Rlf.transpose();
+
+        //Sistema de referencia móvil
+        
+        //Matriz de rotación del sistema movil al sistema local
+        Eigen::Matrix<double, 3, 3> Rlm;
+        //eje xf
+        Eigen::Vector3d rmm1mm2_l = mm2 - mm1;
+        Rlm.col(0) = rmm1mm2_l/sqrt(rmm1mm2_l.transpose()*rmm1mm2_l);
+        //eje yf
+        Eigen::Vector3d rmm1mm3_l = mm3 - mm1;
+        Rlm.col(1) = rmm1mm3_l/sqrt(rmm1mm3_l.transpose()*rmm1mm3_l);
+        //eje zf
+        Eigen::Vector3d rzm_l = rmm1mm2_l.cross(rmm1mm3_l);
+        Rlm.col(2) = rzm_l/sqrt(rzm_l.transpose()*rzm_l);
+        
+        //Matriz de rotación entre el sistema móvil y el sistema fijo
+        Eigen::Matrix<double, 3, 3> Rfm = Rfl*Rlm;
+
+        //Orientación de la plataforma móvil
+        //Orientación de la plataforma móvil
+        Coordinates(1,1) = atan2(Rfm(0,2), Rfm(2,2));
+        Coordinates(2,1) = atan2(Rfm(1,0), Rfm(1,1));
+
+        //Posición de la plataforma móvil
+        Eigen::Vector3d rdf_f(-0.276, 0.064, 0.018);
+        Eigen::Vector3d rdm_m(0,0,-0.1605);
+        Coordinates.col(0) = Rfl*(mm1 + Rlm*rdm_m - (mf1 + Rlf*rdf_f));
+    }

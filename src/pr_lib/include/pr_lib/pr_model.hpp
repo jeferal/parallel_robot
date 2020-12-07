@@ -74,6 +74,17 @@ namespace PRModel
                                 const std::vector<double> &P42, 
                                 const std::vector<double> &Pm);
 
-
+    //*** Pose from optitrack markers ***//
+    namespace OptiTrack
+    {
+        void PosOriPM(
+                                Eigen::Matrix<double, 3, 2> &Coordinates,
+                                const Eigen::Vector3d &mf1,
+                                const Eigen::Vector3d &mf2,
+                                const Eigen::Vector3d &mf3,
+                                const Eigen::Vector3d &mm1,
+                                const Eigen::Vector3d &mm2,
+                                const Eigen::Vector3d &mm3);
+    }
 
 }
