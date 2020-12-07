@@ -52,5 +52,28 @@ namespace PRModel
                                 Eigen::Matrix<double, 11, 4> &IndJ, 
                                 const Eigen::Matrix<double, 4, 3> &Q);
 
+    //*** RastT matrix ***//
+    void RastT(
+                                Eigen::Matrix<double, 15, 4> &RastT , 
+                                const Eigen::Matrix<double, 11,11> &DepJ, 
+                                const Eigen::Matrix<double, 11, 4> &IndJ);
+
+    //*** Gravitational terms ***//
+    void QGravFunction(
+                                Eigen::Matrix<double, 4, 1> &Qgrav, 
+                                const Eigen::Matrix<double, 4, 15> &RastT, 
+                                const double &theta, double &psi, 
+                                const Eigen::Matrix<double, 4, 3> &Q, 
+                                const std::vector<double> &P11, 
+                                const std::vector<double> &P12, 
+                                const std::vector<double> &P21, 
+                                const std::vector<double> &P22, 
+                                const std::vector<double> &P31, 
+                                const std::vector<double> &P32, 
+                                const std::vector<double> &P41, 
+                                const std::vector<double> &P42, 
+                                const std::vector<double> &Pm);
+
+
 
 }

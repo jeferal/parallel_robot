@@ -176,3 +176,50 @@ void PRModel::IndJacobian(
     IndJ(9,3)=-sin(Q(3,0));
     IndJ(10,3)=cos(Q(3,0));    
 }
+
+void PRModel::RastT(
+        Eigen::Matrix<double, 15, 4> &RastT , 
+        const Eigen::Matrix<double, 11,11> &DepJ, 
+        const Eigen::Matrix<double, 11, 4> &IndJ)
+{
+    RastT.setZero();
+    RastT.block(0, 0, 11, 4) =  -DepJ.inverse() * IndJ;
+}
+
+
+void PRModel::QGravFunction(
+                                Eigen::Matrix<double, 4, 1> &Qgrav, 
+                                const Eigen::Matrix<double, 4, 15> &RastT, 
+                                const double &theta, double &psi, 
+                                const Eigen::Matrix<double, 4, 3> &Q, 
+                                const std::vector<double> &P11, 
+                                const std::vector<double> &P12, 
+                                const std::vector<double> &P21, 
+                                const std::vector<double> &P22, 
+                                const std::vector<double> &P31, 
+                                const std::vector<double> &P32, 
+                                const std::vector<double> &P41, 
+                                const std::vector<double> &P42, 
+                                const std::vector<double> &Pm)
+{
+    Eigen::Matrix<double, 15, 1> VQgrav;
+    double g=9.81;
+
+    VQgrav(0)= g * (cos(Q(0,1)) * cos(Q(0,0)) * P11[0] * P11[1] + cos(Q(0,1)) * cos(Q(0,0)) * P12[0] * P12[1] + cos(Q(0,0)) * sin(Q(0,1)) * P11[0] * P11[3] + cos(Q(0,0)) * sin(Q(0,1)) * P12[0] * Q(0,2) + cos(Q(0,0)) * sin(Q(0,1)) * P12[0] * P12[3] - sin(Q(0,0)) * P11[0] * P11[2] - sin(Q(0,0)) * P12[0] * P12[2]);
+    VQgrav(1)= g * sin(Q(0,0)) * (cos(Q(0,1)) * P11[0] * P11[3] + cos(Q(0,1)) * P12[0] * Q(0,2) + cos(Q(0,1)) * P12[0] * P12[3] - sin(Q(0,1)) * P11[0] * P11[1] - sin(Q(0,1)) * P12[0] * P12[1]);
+    VQgrav(2)= g * (cos(Q(1,1)) * cos(Q(1,0)) * P21[0] * P21[1] + cos(Q(1,1)) * cos(Q(1,0)) * P22[0] * P22[1] + cos(Q(1,0)) * sin(Q(1,1)) * P21[0] * P21[3] + cos(Q(1,0)) * sin(Q(1,1)) * P22[0] * Q(1,2) + cos(Q(1,0)) * sin(Q(1,1)) * P22[0] * P22[3] - sin(Q(1,0)) * P21[0] * P21[2] - sin(Q(1,0)) * P22[0] * P22[2]);
+    VQgrav(3)= g * sin(Q(1,0)) * (cos(Q(1,1)) * P21[0] * P21[3] + cos(Q(1,1)) * P22[0] * Q(1,2) + cos(Q(1,1)) * P22[0] * P22[3] - sin(Q(1,1)) * P21[0] * P21[1] - sin(Q(1,1)) * P22[0] * P22[1]);
+    VQgrav(4)= g * (cos(Q(2,1)) * cos(Q(2,0)) * P31[0] * P31[1] + cos(Q(2,1)) * cos(Q(2,0)) * P32[0] * P32[1] + cos(Q(2,0)) * sin(Q(2,1)) * P31[0] * P31[3] + cos(Q(2,0)) * sin(Q(2,1)) * P32[0] * Q(2,2) + cos(Q(2,0)) * sin(Q(2,1)) * P32[0] * P32[3] - sin(Q(2,0)) * P31[0] * P31[2] - sin(Q(2,0)) * P32[0] * P32[2]);
+    VQgrav(5)= g * sin(Q(2,0)) * (cos(Q(2,1)) * P31[0] * P31[3] + cos(Q(2,1)) * P32[0] * Q(2,2) + cos(Q(2,1)) * P32[0] * P32[3] - sin(Q(2,1)) * P31[0] * P31[1] - sin(Q(2,1)) * P32[0] * P32[1]);
+    VQgrav(6)= -g * (sin(Q(3,0)) * P41[0] * P41[3] + sin(Q(3,0)) * P42[0] * Q(3,1) - sin(Q(3,0)) * P42[0] * P42[2] + Pm[0] * sin(Q(3,0)) * Q(3,1) - cos(Q(3,0)) * P41[0] * P41[1] + cos(Q(3,0)) * P42[0] * P42[1]);
+    VQgrav(7)=0;
+    VQgrav(8)=0;
+    VQgrav(9)= Pm[0] * g * (cos(theta) * sin(psi) * Pm[2] - cos(theta) * cos(psi) * Pm[1] - sin(theta) * Pm[3]);
+    VQgrav(10)= Pm[0] * g * sin(theta) * (sin(psi) * Pm[1] + cos(psi) * Pm[2]);
+    VQgrav(11)= P12[0] * g * sin(Q(0,0)) * sin(Q(0,1));
+    VQgrav(12)= P22[0] * g * sin(Q(1,0)) * sin(Q(1,1));
+    VQgrav(13)= P32[0] * g * sin(Q(2,0)) * sin(Q(2,1));
+    VQgrav(14)= cos(Q(3,0)) * g * (P42[0] + Pm[0]);
+
+    Qgrav = (RastT) * VQgrav; 
+}
