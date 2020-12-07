@@ -28,7 +28,6 @@ find_package(eigen3_cmake_module REQUIRED)
 find_package(Eigen3 REQUIRED)
 
 include_directories(include)
-include_directories(/home/paralelo4dofnew/parallel_robot_ws/src/pr_lib/include)
 
 set(node_plugins "")
 
