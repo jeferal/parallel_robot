@@ -11,6 +11,11 @@ namespace PRModel
                             Eigen::Matrix<double, 4, 3> &Q, 
                             const std::array<double, 4> &X, 
                             const std::vector<double> &RParam);
+    
+    void InverseKinematicsPrism(
+                            Eigen::RowVector4d &Q, 
+                            Eigen::RowVector4d &X, 
+                            const std::vector<double> &RParam);
 
 
     //*** Forward Kinematics ***//

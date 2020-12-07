@@ -40,6 +40,21 @@ void PRModel::InverseKinematics(
     Q(3,0) = atan2((RParam[3] - X[0]) / Q(3,1), X[1] / Q(3,1));
 }
 
+void PRModel::InverseKinematicsPrism(
+                            Eigen::RowVector4d &Q, 
+                            Eigen::RowVector4d &X, 
+                            const std::vector<double> &RParam)
+{
+    //JOINT 1
+    Q(0) = sqrt(-2*  cos(X(2)) *  cos(X(3)) * RParam[0] * RParam[6] - 2* cos(X(2)) * cos(X(3)) * RParam[6] * X(0) + 2* cos(X(3)) * RParam[6] * sin(X(2)) * X(1) + pow(RParam[0],2) + 2* RParam[0] * X(0) + pow(RParam[6], 2) + pow(X(0), 2) + pow(X(1), 2));
+    //JOINT 2
+    Q(1) = sqrt(2 *  sin(RParam[9]) *  cos(RParam[4]) *  cos(X(2)) *  sin(X(3)) * RParam[1] * RParam[7] - 2 *  cos(RParam[9]) *  cos(X(3)) *  cos(RParam[4]) *  cos(X(2)) * RParam[1] * RParam[7] - 2 *  sin(RParam[9]) *  cos(X(3)) *  sin(RParam[4]) * RParam[1] * RParam[7] - 2 *  sin(RParam[9]) *  cos(X(2)) *  sin(X(3)) * RParam[7] * X(0) + 2 * RParam[7] *  sin(X(2)) *  sin(X(3)) *  sin(RParam[9]) * X(1) + 2 *  cos(RParam[9]) *  cos(X(3)) *  cos(X(2)) * RParam[7] * X(0) - 2 *  cos(RParam[9]) *  cos(X(3)) * RParam[7] *  sin(X(2)) * X(1) - 2 *  cos(RParam[9]) *  sin(RParam[4]) *  sin(X(3)) * RParam[1] * RParam[7] - 2 * RParam[1] * X(0) *  cos(RParam[4]) + pow(RParam[1], 2) + pow(RParam[7], 2) + pow(X(0), 2) + pow(X(1), 2));
+    //JOINT 3
+    Q(2) = sqrt(-2 *  cos(RParam[10]) *  cos(RParam[5]) *  cos(X(3)) *  cos(X(2)) * RParam[2] * RParam[8] - 2 *  sin(RParam[10]) *  cos(RParam[5]) *  cos(X(2)) *  sin(X(3)) * RParam[2] * RParam[8] + 2 *  sin(RParam[5]) *  cos(RParam[10]) *  sin(X(3)) * RParam[2] * RParam[8] - 2 *  sin(RParam[5]) *  sin(RParam[10]) *  cos(X(3)) * RParam[2] * RParam[8] + 2 *  cos(RParam[10]) *  cos(X(3)) *  cos(X(2)) * RParam[8] * X(0) - 2 *  cos(RParam[10]) *  cos(X(3)) * RParam[8] *  sin(X(2)) * X(1) + 2 *  sin(RParam[10]) *  cos(X(2)) *  sin(X(3)) * RParam[8] * X(0) - 2 * RParam[8] *  sin(X(2)) *  sin(X(3)) *  sin(RParam[10]) * X(1) - 2 * RParam[2] * X(0) *  cos(RParam[5]) + pow(RParam[2], 2) + pow(RParam[8], 2) + pow(X(0), 2) + pow(X(1), 2));
+    //JOINT 4
+    Q(3) = sqrt(pow(RParam[3], 2) - 2 * RParam[3] * X(0) + pow(X(0), 2) + pow(X(1), 2));
+}
+
 
 void PRModel::FK::EqPosition(
         Eigen::Vector4d &f, 
