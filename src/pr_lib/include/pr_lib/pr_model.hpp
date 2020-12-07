@@ -47,5 +47,10 @@ namespace PRModel
                                 const double &psi, 
                                 const std::vector<double> &RParam);
 
+    //*** Independent Jacobian ***//
+    void IndJacobian(
+                                Eigen::Matrix<double, 11, 4> &IndJ, 
+                                const Eigen::Matrix<double, 4, 3> &Q);
+
 
 }

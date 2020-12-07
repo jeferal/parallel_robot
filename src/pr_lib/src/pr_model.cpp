@@ -158,3 +158,21 @@ void PRModel::DepJacobian(
     DepJ(10,6)=-sin(Q(3,0))*Q(3,1);
     DepJ(10,8)=-1;
 }
+
+void PRModel::IndJacobian(
+        Eigen::Matrix<double, 11, 4> &IndJ, 
+        const Eigen::Matrix<double, 4, 3> &Q)
+{
+    //Ecuaciones para la matriz del jacobiano independiente
+    IndJ(0,0)=cos(Q(0,0))*sin(Q(0,1));
+    IndJ(1,0)=-cos(Q(0,1));
+    IndJ(2,0)=sin(Q(0,0))*sin(Q(0,1));
+    IndJ(3,1)=cos(Q(1,0))*sin(Q(1,1));
+    IndJ(4,1)=-cos(Q(1,1));
+    IndJ(5,1)=sin(Q(1,0))*sin(Q(1,1));
+    IndJ(6,2)=cos(Q(2,0))*sin(Q(2,1));
+    IndJ(7,2)=-cos(Q(2,1));
+    IndJ(8,2)=sin(Q(2,0))*sin(Q(2,1));
+    IndJ(9,3)=-sin(Q(3,0));
+    IndJ(10,3)=cos(Q(3,0));    
+}
