@@ -81,11 +81,31 @@ rclcpp_components_register_nodes(inv_kin "pr_modelling::InverseKinematics")
 set(node_plugins "${node_plugins}pr_modelling::InverseKinematics;$<TARGET_FILE:inv_kin>\n")
 
 
+### Independent Jacobian node ###
+
+add_library(ind_jac SHARED
+  src/ind_jac.cpp)
+
+target_compile_definitions(ind_jac
+  PRIVATE "COMPOSITION_BUILDING_DLL")
+
+ament_target_dependencies(ind_jac
+  "rclcpp"
+  "rclcpp_components"
+  "pr_msgs"
+  "pr_lib"
+  "Eigen3")
+
+rclcpp_components_register_nodes(ind_jac "pr_modelling::IndependentJacobian")
+set(node_plugins "${node_plugins}pr_modelling::IndependentJacobian;$<TARGET_FILE:ind_jac>\n")
+
+
 ### Installation ###
 
 install(TARGETS
   for_kin
   inv_kin
+  ind_jac
   ARCHIVE DESTINATION lib
   LIBRARY DESTINATION lib
   RUNTIME DESTINATION bin)
