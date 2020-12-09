@@ -43,7 +43,7 @@ namespace pr_modelling
             q_msg->data[5], 
             q_msg->data[6]);
         
-        PRUtils::Mat2Eigen__11_4(q_msg, IndJ);
+        PRUtils::Mat2Eigen__4_3(q_msg, Q);
 
         PRModel::IndJacobian(IndJ, Q);        
 

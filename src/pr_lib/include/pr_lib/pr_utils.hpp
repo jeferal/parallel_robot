@@ -31,9 +31,9 @@ namespace PRUtils
         const Eigen::MatrixXd &matrix, 
         pr_msgs::msg::PRMatH &vec);
 
-    void Mat2Eigen__11_4(
+    void Mat2Eigen__4_3(
 	    const pr_msgs::msg::PRMatH::SharedPtr vec,
-	    Eigen::Matrix<double, 11, 4> &matrix);
+	    Eigen::Matrix<double, 4, 3> &matrix);
 
 }
 
