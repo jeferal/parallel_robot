@@ -28,7 +28,7 @@ namespace pr_modelling
         
         this->declare_parameter<std::vector<double>>(
             "initial_position", 
-            {0.157160, 0.705200, 0.461814, 0.223577});
+            {0.069190, 0.632000, 0.078714, -0.135787});
 
         this->declare_parameter<double>("tol", 0.0000007);
         this->declare_parameter<int>("iter", 30);
@@ -43,7 +43,7 @@ namespace pr_modelling
             10);
 
         subscription_ = this->create_subscription<pr_msgs::msg::PRArrayH>(
-            "joint_position", 
+            "ref_pose", 
             10, 
             std::bind(&ForwardKinematics::topic_callback, this, _1));
     }

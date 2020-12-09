@@ -178,6 +178,7 @@ void PRModel::IndJacobian(
         Eigen::Matrix<double, 11, 4> &IndJ, 
         const Eigen::Matrix<double, 4, 3> &Q)
 {
+    IndJ = Eigen::Matrix<double, 11, 4>::Zero();
     //Ecuaciones para la matriz del jacobiano independiente
     IndJ(0,0)=cos(Q(0,0))*sin(Q(0,1));
     IndJ(1,0)=-cos(Q(0,1));

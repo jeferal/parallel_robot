@@ -27,17 +27,23 @@ namespace pr_modelling
             "ind_jac", 
             10);
 
-        subscription_ = this->create_subscription<pr_msgs::msg::PRArrayH>(
+        subscription_ = this->create_subscription<pr_msgs::msg::PRMatH>(
             "q_sol", 
             10, 
             std::bind(&IndependentJacobian::topic_callback, this, _1));
     }
 
-    void IndependentJacobian::topic_callback(const pr_msgs::msg::PRArrayH::SharedPtr q_msg)
+    void IndependentJacobian::topic_callback(const pr_msgs::msg::PRMatH::SharedPtr q_msg)
     {
         auto ind_j_msg = pr_msgs::msg::PRMatH();
+
+        RCLCPP_INFO(this->get_logger(), "Receiving: %f %f %f %f", 
+            q_msg->data[3], 
+            q_msg->data[4], 
+            q_msg->data[5], 
+            q_msg->data[6]);
         
-        PRUtils::Vec2Eigen__11_4(q_msg, IndJ);
+        PRUtils::Mat2Eigen__11_4(q_msg, IndJ);
 
         PRModel::IndJacobian(IndJ, Q);        
 

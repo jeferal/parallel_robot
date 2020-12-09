@@ -35,7 +35,7 @@ namespace pr_modelling
             10);
 
         subscription_ = this->create_subscription<pr_msgs::msg::PRArrayH>(
-            "x_coor", 
+            "x_coord", 
             10, 
             std::bind(&InverseKinematics::topic_callback, this, _1));
     }

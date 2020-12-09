@@ -138,11 +138,11 @@ namespace pr_sensors_actuators
 			publisher_->publish(position_msg);
             
             
-			RCLCPP_INFO(this->get_logger(), "Pulishing: %f %f %f %f", 
+			/*RCLCPP_INFO(this->get_logger(), "Pulishing: %f %f %f %f", 
             position_msg.data[0], 
             position_msg.data[1], 
             position_msg.data[2], 
-            position_msg.data[3]);
+            position_msg.data[3]);*/
             
 		} 
         else 

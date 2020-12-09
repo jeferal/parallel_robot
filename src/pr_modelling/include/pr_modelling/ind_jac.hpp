@@ -16,10 +16,10 @@ namespace pr_modelling
             explicit IndependentJacobian(const rclcpp::NodeOptions & options);
 
         protected:
-            void topic_callback(const pr_msgs::msg::PRArrayH::SharedPtr x_msg);
+            void topic_callback(const pr_msgs::msg::PRMatH::SharedPtr x_msg);
 
         private:
-            rclcpp::Subscription<pr_msgs::msg::PRArrayH>::SharedPtr subscription_;
+            rclcpp::Subscription<pr_msgs::msg::PRMatH>::SharedPtr subscription_;
             rclcpp::Publisher<pr_msgs::msg::PRMatH>::SharedPtr publisher_;
             Eigen::Matrix<double, 11, 4> IndJ = Eigen::Matrix<double, 11, 4>::Zero();
             Eigen::Matrix<double, 4, 3> Q = Eigen::Matrix<double, 4, 3>::Zero();

@@ -67,10 +67,10 @@ void PRUtils::Eigen2Mat(
 	}
 }
 
-void PRUtils::Vec2Eigen__11_4(
-	    const pr_msgs::msg::PRArrayH::SharedPtr vec,
+void PRUtils::Mat2Eigen__11_4(
+	    const pr_msgs::msg::PRMatH::SharedPtr vec,
 	    Eigen::Matrix<double, 11, 4> &matrix)
 {
 	for(int i=0; i<vec->data.size(); i++)
-		matrix(i%matrix.rows(), i%matrix.cols());
+		matrix(i%matrix.rows(), i%matrix.cols()) = vec->data[i];
 }
