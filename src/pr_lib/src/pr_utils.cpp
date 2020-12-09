@@ -47,3 +47,9 @@ void PRUtils::vector2matrix(
 		}
 	}
 }
+
+void PRUtils::array2vector(const std::array<double, 4> &ar, std::vector<double> &vec)
+{
+	for(int i=0; i<ar.size(); i++)
+		vec[i] = ar[i];
+}

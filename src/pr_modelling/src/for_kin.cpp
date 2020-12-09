@@ -11,6 +11,7 @@
 
 #include "pr_msgs/msg/pr_array_h.hpp"
 #include "pr_lib/pr_model.hpp"
+#include "pr_lib/pr_utils.hpp"
 
 using std::placeholders::_1;
 
@@ -53,9 +54,7 @@ namespace pr_modelling
 
         x_sol_msg.data = PRModel::ForwardKinematics(q_msg->data, x_prev, robot_params, tol, iter);
 
-        //Conversión std::array to std::vector, dejar mejor como función o encontrar otra manera (Map/Assign)
-        for(int i=0; i<4; i++)
-            x_prev[i] = x_sol_msg.data[i];
+        PRUtils::array2vector(x_sol_msg.data, x_prev);
 
         x_sol_msg.header.stamp = this->get_clock()->now();
             
