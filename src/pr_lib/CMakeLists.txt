@@ -21,6 +21,7 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 find_package(ament_cmake REQUIRED)
 find_package(eigen3_cmake_module REQUIRED)
 find_package(Eigen3 REQUIRED)
+find_package(pr_msgs REQUIRED)
 
 include_directories(include)
 
@@ -43,7 +44,8 @@ add_library(pr_lib SHARED
   src/pr_utils.cpp)
 
 ament_target_dependencies(pr_lib
-  "Eigen3")
+  "Eigen3"
+  "pr_msgs")
 
 target_include_directories(pr_lib
   PUBLIC

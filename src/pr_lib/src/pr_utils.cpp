@@ -8,6 +8,8 @@
 #include <fstream>
 
 #include "eigen3/Eigen/Dense"
+#include "pr_msgs/msg/pr_mat_h.hpp"
+#include "pr_msgs/msg/pr_array_h.hpp"
 
 int PRUtils::read_file(Eigen::MatrixXd &ref_matrix, const std::string &file_path)
 {
@@ -52,4 +54,23 @@ void PRUtils::array2vector(const std::array<double, 4> &ar, std::vector<double> 
 {
 	for(int i=0; i<ar.size(); i++)
 		vec[i] = ar[i];
+}
+
+void PRUtils::Eigen2Mat(
+	const Eigen::MatrixXd &matrix, 
+	pr_msgs::msg::PRMatH &vec)
+{
+	for(int i=0; i<matrix.rows(); i++)
+	{
+		for(int j=0; j<matrix.cols(); j++)
+			vec.data.push_back(matrix(i,j));
+	}
+}
+
+void PRUtils::Vec2Eigen__11_4(
+	    const pr_msgs::msg::PRArrayH::SharedPtr vec,
+	    Eigen::Matrix<double, 11, 4> &matrix)
+{
+	for(int i=0; i<vec->data.size(); i++)
+		matrix(i%matrix.rows(), i%matrix.cols());
 }

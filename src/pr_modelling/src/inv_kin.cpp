@@ -13,6 +13,7 @@
 #include "pr_msgs/msg/pr_mat_h.hpp"
 
 #include "pr_lib/pr_model.hpp"
+#include "pr_lib/pr_utils.hpp"
 
 using std::placeholders::_1;
 
@@ -46,13 +47,7 @@ namespace pr_modelling
         PRModel::InverseKinematics(q_sol, x_msg->data, robot_params);
 
         //Cambiar por función (to msg)
-        int k=0;
-        for(int i=0; i<q_sol.rows(); i++){
-            for(int j=0; j<q_sol.cols(); j++){
-                q_sol_msg.data[k] = q_sol(i,j);
-                k++;
-            }
-        }
+        PRUtils::Eigen2Mat(q_sol, q_sol_msg);
 
         q_sol_msg.header.stamp = this->get_clock()->now();
         publisher_->publish(q_sol_msg);

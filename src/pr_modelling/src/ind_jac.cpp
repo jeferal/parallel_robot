@@ -12,6 +12,7 @@
 #include "pr_msgs/msg/pr_mat_h.hpp"
 
 #include "pr_lib/pr_model.hpp"
+#include "pr_lib/pr_utils.hpp"
 
 using std::placeholders::_1;
 
@@ -23,32 +24,24 @@ namespace pr_modelling
     {
 
         publisher_ = this->create_publisher<pr_msgs::msg::PRMatH>(
-            "q_sol", 
+            "ind_jac", 
             10);
 
         subscription_ = this->create_subscription<pr_msgs::msg::PRArrayH>(
-            "x_coor", 
+            "q_sol", 
             10, 
             std::bind(&IndependentJacobian::topic_callback, this, _1));
     }
 
-    void IndependentJacobian::topic_callback(const pr_msgs::msg::PRArrayH::SharedPtr x_msg)
+    void IndependentJacobian::topic_callback(const pr_msgs::msg::PRArrayH::SharedPtr q_msg)
     {
         auto ind_j_msg = pr_msgs::msg::PRMatH();
-
-        //Conversión data to eigen (hacer con función e incluir en el mensaje rows y cols)
-        for(int i=0; i<4; i++){
-            for(int j=0; j<3; j++)
-                Q(i,j) = x_msg->data[i*j];
-        }
+        
+        PRUtils::Vec2Eigen__11_4(q_msg, IndJ);
 
         PRModel::IndJacobian(IndJ, Q);        
 
-        //Conversión eigen to data (hacer con función e incluir en el mensaje rows y cols)
-        for(int i=0; i<11; i++){
-            for(int j=0; j<4; j++)
-                IndJ(i,j) = ind_j_msg.data[i*j];
-        }
+        PRUtils::Eigen2Mat(IndJ, ind_j_msg);
 
         ind_j_msg.header.stamp = this->get_clock()->now();
         publisher_->publish(ind_j_msg);

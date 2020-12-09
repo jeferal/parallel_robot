@@ -9,17 +9,31 @@
 #include <fstream>
 
 #include "eigen3/Eigen/Dense"
+#include "pr_msgs/msg/pr_mat_h.hpp"
+#include "pr_msgs/msg/pr_array_h.hpp"
 
 
 namespace PRUtils
 {
-    int read_file(Eigen::MatrixXd &ref_matrix, const std::string &file_path);
+    int read_file(
+        Eigen::MatrixXd &ref_matrix, 
+        const std::string &file_path);
 
     void vector2matrix(
         Eigen::MatrixXd &matrix, 
         const std::vector<std::vector<double> > &vec);
 
+
+    //Usar template functions!!
     void array2vector(const std::array<double, 4> &ar, std::vector<double> &vec);
+
+    void Eigen2Mat(
+        const Eigen::MatrixXd &matrix, 
+        pr_msgs::msg::PRMatH &vec);
+
+    void Vec2Eigen__11_4(
+	    const pr_msgs::msg::PRArrayH::SharedPtr vec,
+	    Eigen::Matrix<double, 11, 4> &matrix);
 
 }
 
