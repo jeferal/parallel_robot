@@ -36,12 +36,6 @@ namespace pr_modelling
     void IndependentJacobian::topic_callback(const pr_msgs::msg::PRMatH::SharedPtr q_msg)
     {
         auto ind_j_msg = pr_msgs::msg::PRMatH();
-
-        RCLCPP_INFO(this->get_logger(), "Receiving: %f %f %f %f", 
-            q_msg->data[3], 
-            q_msg->data[4], 
-            q_msg->data[5], 
-            q_msg->data[6]);
         
         PRUtils::Mat2Eigen__4_3(q_msg, Q);
 

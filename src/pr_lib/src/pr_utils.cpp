@@ -43,8 +43,8 @@ void PRUtils::vector2matrix(
         const std::vector<std::vector<double> > &vec)
 {
     matrix.resize(vec.size(), vec[0].size());
-	for (size_t i=0; i<vec.size(); i++){
-		for (size_t j=0; j<vec[0].size(); j++){
+	for (int i=0; i<(int)vec.size(); i++){
+		for (int j=0; j<(int)vec[0].size(); j++){
 			matrix(i,j) = vec[i][j];
 		}
 	}
@@ -52,25 +52,35 @@ void PRUtils::vector2matrix(
 
 void PRUtils::array2vector(const std::array<double, 4> &ar, std::vector<double> &vec)
 {
-	for(int i=0; i<ar.size(); i++)
+	for(int i=0; i<(int)ar.size(); i++)
 		vec[i] = ar[i];
 }
 
+
+//Generalizar función (Eigen2Matmsg)
 void PRUtils::Eigen2Mat(
 	const Eigen::MatrixXd &matrix, 
-	pr_msgs::msg::PRMatH &vec)
+	pr_msgs::msg::PRMatH &mat_msg)
 {
 	for(int i=0; i<matrix.rows(); i++)
 	{
 		for(int j=0; j<matrix.cols(); j++)
-			vec.data.push_back(matrix(i,j));
+			mat_msg.data.push_back(matrix(i,j));
 	}
+
+	mat_msg.rows = matrix.rows();
+	mat_msg.cols = matrix.cols();
 }
 
+
+//Ver cómo generalizar más esta función (Matmsg2Eigen)
 void PRUtils::Mat2Eigen__4_3(
-	    const pr_msgs::msg::PRMatH::SharedPtr vec,
+	    const pr_msgs::msg::PRMatH::SharedPtr mat_msg,
 	    Eigen::Matrix<double, 4, 3> &matrix)
 {
-	for(int i=0; i<vec->data.size(); i++)
-		matrix(i%matrix.rows(), i%matrix.cols()) = vec->data[i];
+	for(int i=0; i<(int)mat_msg->data.size(); i++)
+		matrix(i%matrix.rows(), i%matrix.cols()) = mat_msg->data[i];
+
+	mat_msg->rows = matrix.rows();
+	mat_msg->cols = matrix.cols();
 }
