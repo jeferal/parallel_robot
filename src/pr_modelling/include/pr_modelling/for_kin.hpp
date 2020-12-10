@@ -11,7 +11,7 @@ namespace pr_modelling
     class ForwardKinematics : public rclcpp::Node
     {
         public:
-            //PR_AUX_PUBLIC
+            //PR_MODELLING_PUBLIC
             explicit ForwardKinematics(const rclcpp::NodeOptions & options);
 
         protected:

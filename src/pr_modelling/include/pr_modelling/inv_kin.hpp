@@ -12,7 +12,7 @@ namespace pr_modelling
     class InverseKinematics : public rclcpp::Node
     {
         public:
-            //PR_AUX_PUBLIC
+            //PR_MODELLING_PUBLIC
             explicit InverseKinematics(const rclcpp::NodeOptions & options);
 
         protected:

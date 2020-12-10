@@ -30,10 +30,10 @@ namespace pr_aux
             var_ant[i] = init_val[i];
         
         publisher_ = this->create_publisher<pr_msgs::msg::PRArrayH>(
-			"pub", 
+			"joint_velocity", 
 			1);
         subscription_ = this->create_subscription<pr_msgs::msg::PRArrayH>(
-            "sub",
+            "joint_position",
             1,
             std::bind(&Derivator::topic_callback, this, _1));
     }

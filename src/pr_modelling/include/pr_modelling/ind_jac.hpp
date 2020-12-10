@@ -12,7 +12,7 @@ namespace pr_modelling
     class IndependentJacobian : public rclcpp::Node
     {
         public:
-            //PR_AUX_PUBLIC
+            //PR_MODELLING_PUBLIC
             explicit IndependentJacobian(const rclcpp::NodeOptions & options);
 
         protected:

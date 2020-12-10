@@ -22,7 +22,7 @@ namespace pr_ref_gen
 {
     /**** REFERENCE POSE GENERATOR COMPONENT ****/
     RefPose::RefPose(const rclcpp::NodeOptions & options)
-    : Node("ref_pose", options)
+    : Node("ref_gen", options)
     {
         //Parameter declaration
         this->declare_parameter<std::string>("ref_path", 
