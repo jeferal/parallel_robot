@@ -73,6 +73,7 @@ namespace pr_controllers
             vel(i) = vel_msg->data[i];
         }
         
+        //Calculate control action
         Eigen::RowVector4d up_1 = 1/ts*(ref - k1*(ref_ant - q_ant)-q_ant);
         Eigen::RowVector4d up_2 = up_1 - k2*(up_1_ant - vel) - vel;
 
