@@ -63,9 +63,6 @@ namespace pr_controllers
     {
         auto control_action_msg = pr_msgs::msg::PRArrayH();
         //Conversión, crear función para esto:
-        Eigen::RowVector4d ref;
-        Eigen::RowVector4d pos;
-        Eigen::RowVector4d vel;
 
         for(int i=0; i<4; i++){
             ref(i) = ref_msg->data[i];
@@ -74,8 +71,8 @@ namespace pr_controllers
         }
         
         //Calculate control action
-        Eigen::RowVector4d up_1 = 1/ts*(ref - k1*(ref_ant - q_ant)-q_ant);
-        Eigen::RowVector4d up_2 = up_1 - k2*(up_1_ant - vel) - vel;
+        up_1 = 1/ts*(ref - k1*(ref_ant - q_ant)-q_ant);
+        up_2 = up_1 - k2*(up_1_ant - vel) - vel;
 
         for(int i=0; i<4; i++){
             control_action_msg.data[i] = up_2(i)/ts;

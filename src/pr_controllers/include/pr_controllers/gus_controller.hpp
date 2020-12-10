@@ -41,6 +41,8 @@ namespace pr_controllers
 
             double ts, k1, k2;
             Eigen::RowVector4d ref_ant, q_ant, up_1_ant;
+            Eigen::RowVector4d ref, pos, vel;
+            Eigen::RowVector4d up_1, up_2;
 
     };
 }
