@@ -24,7 +24,7 @@ namespace pr_sensors_actuators
             void topic_callback(const pr_msgs::msg::PRArrayH::SharedPtr control_action_msg);
             void end_callback(const std_msgs::msg::Bool::SharedPtr end_msg);
             void init_ao_pci(void);
-            void sat_ca(double &control_action, const double sat=7.0);
+            void sat_ca(double &control_action, const double &sat);
         
         private:
             rclcpp::Subscription<pr_msgs::msg::PRArrayH>::SharedPtr subscription_;
@@ -34,6 +34,7 @@ namespace pr_sensors_actuators
             InstantAoCtrl * pci1720;
             ErrorCode ret;
             double volts = 0.0;
+            double max_v;
             bool is_finished = false;
     };
 

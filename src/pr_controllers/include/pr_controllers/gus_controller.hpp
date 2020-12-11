@@ -40,7 +40,7 @@ namespace pr_controllers
             rclcpp::Publisher<pr_msgs::msg::PRArrayH>::SharedPtr publisher_;
 
             double ts, k1, k2;
-            Eigen::RowVector4d ref_ant, q_ant, up_1_ant;
+            Eigen::RowVector4d ref_ant, q_ant, up_1_ant=Eigen::RowVector4d::Zero();
             Eigen::RowVector4d ref, pos, vel;
             Eigen::RowVector4d up_1, up_2;
 

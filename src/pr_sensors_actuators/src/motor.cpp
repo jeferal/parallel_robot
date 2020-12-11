@@ -18,8 +18,10 @@ namespace pr_sensors_actuators
     : Node("motor_3", options)
     {
         //Parameter declaration
+        this->declare_parameter<double>("max_v", 3.0);
         this->declare_parameter<std::vector<double>>("vp_conversion",{1.0, 1.0, 1.0, 1.0});
         this->get_parameter("vp_conversion", vp_conversion);
+        this->get_parameter("max_v", max_v);
         
         //Get motor number from node name
         const char *pn;
@@ -63,12 +65,13 @@ namespace pr_sensors_actuators
 
     void Motor::topic_callback(const pr_msgs::msg::PRArrayH::SharedPtr control_action_msg){
         if(is_finished == false){
-            RCLCPP_INFO(this->get_logger(), "I heard: '%f'", control_action_msg->data[n_motor]);
                
             volts = control_action_msg->data[n_motor]/vp_conversion[n_motor];
 
+            RCLCPP_INFO(this->get_logger(), "I heard these and sat: '%f' %f", volts, max_v);
+
             //Control action saturation
-            sat_ca(volts, 4.0);
+            sat_ca(volts, max_v);
                
             RCLCPP_INFO(this->get_logger(), "Control action %f", volts);
                
@@ -97,7 +100,7 @@ namespace pr_sensors_actuators
           ret = pci1720->Write(n_motor, 1, &volts);
     }
 
-    void saturar_accion_control(double &control_action, const double sat = 7.0){
+    void Motor::sat_ca(double &control_action, const double &sat){
 	     if(control_action > sat) control_action = sat;
 	     if(control_action < -sat) control_action = -sat;
     }
