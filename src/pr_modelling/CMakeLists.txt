@@ -103,13 +103,13 @@ set(node_plugins "${node_plugins}pr_modelling::IndependentJacobian;$<TARGET_FILE
 
 ### Dependent Jacobian node ###
 
-add_library(jac_dep SHARED
-  src/jac_dep.cpp)
+add_library(dep_jac SHARED
+  src/dep_jac.cpp)
 
-target_compile_definitions(jac_dep
+target_compile_definitions(dep_jac
   PRIVATE "COMPOSITION_BUILDING_DLL")
 
-ament_target_dependencies(jac_dep
+ament_target_dependencies(dep_jac
   "rclcpp"
   "rclcpp_components"
   "message_filters"
@@ -117,11 +117,11 @@ ament_target_dependencies(jac_dep
   "pr_lib"
   "Eigen3")
 
-rclcpp_components_register_nodes(jac_dep "pr_modelling::DependentJacobian")
-set(node_plugins "${node_plugins}pr_modelling::DependentJacobian;$<TARGET_FILE:jac_dep>\n")
+rclcpp_components_register_nodes(dep_jac "pr_modelling::DependentJacobian")
+set(node_plugins "${node_plugins}pr_modelling::DependentJacobian;$<TARGET_FILE:dep_jac>\n")
 
 
-### RastT Jacobian node ###
+### RastT node ###
 
 add_library(rast_t SHARED
   src/rast_t.cpp)
@@ -141,6 +141,25 @@ rclcpp_components_register_nodes(rast_t "pr_modelling::RastT")
 set(node_plugins "${node_plugins}pr_modelling::RastT;$<TARGET_FILE:rast_t>\n")
 
 
+### QGrav terms node ###
+
+add_library(q_grav SHARED
+  src/q_grav.cpp)
+
+target_compile_definitions(q_grav
+  PRIVATE "COMPOSITION_BUILDING_DLL")
+
+ament_target_dependencies(q_grav
+  "rclcpp"
+  "rclcpp_components"
+  "message_filters"
+  "pr_msgs"
+  "pr_lib"
+  "Eigen3")
+
+rclcpp_components_register_nodes(q_grav "pr_modelling::QGrav")
+set(node_plugins "${node_plugins}pr_modelling::QGrav;$<TARGET_FILE:q_grav>\n")
+
 
 
 ### Installation ###
@@ -149,8 +168,9 @@ install(TARGETS
   for_kin
   inv_kin
   ind_jac
-  jac_dep
+  dep_jac
   rast_t
+  q_grav
   ARCHIVE DESTINATION lib
   LIBRARY DESTINATION lib
   RUNTIME DESTINATION bin)

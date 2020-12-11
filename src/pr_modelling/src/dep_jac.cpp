@@ -19,7 +19,7 @@ using std::placeholders::_1;
 
 namespace pr_modelling
 {
-    /**** INVERSE KINEMATICS COMPONENT ****/
+    /**** DEPENDENT JACOBIAN COMPONENT ****/
     DependentJacobian::DependentJacobian(const rclcpp::NodeOptions & options)
     : Node("dep_jac", options)
     {
