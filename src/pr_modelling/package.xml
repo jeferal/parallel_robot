@@ -11,6 +11,7 @@
 
   <build_depend>rclcpp</build_depend>
   <build_depend>rclcpp_components</build_depend>
+  <build_depend>message_filters</build_depend>
   <build_depend>rcutils</build_depend>
   <build_depend>pr_msgs</build_depend>
   <build_depend>pr_lib</build_depend>
@@ -18,6 +19,7 @@
 
   <exec_depend>rclcpp</exec_depend>
   <exec_depend>rclcpp_components</exec_depend>
+  <exec_depend>message_filters</exec_depend>
   <exec_depend>rcutils</exec_depend>
   <exec_depend>pr_msgs</exec_depend>
   <build_depend>pr_lib</build_depend>

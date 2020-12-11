@@ -20,6 +20,7 @@ find_package(ament_cmake REQUIRED)
 find_package(rclcpp REQUIRED)
 find_package(rclcpp_components REQUIRED)
 find_package(rcutils REQUIRED)
+find_package(message_filters REQUIRED)
 
 find_package(pr_msgs REQUIRED)
 find_package(pr_lib REQUIRED)
@@ -99,12 +100,34 @@ rclcpp_components_register_nodes(ind_jac "pr_modelling::IndependentJacobian")
 set(node_plugins "${node_plugins}pr_modelling::IndependentJacobian;$<TARGET_FILE:ind_jac>\n")
 
 
+
+### Dependent Jacobian node ###
+
+add_library(jac_dep SHARED
+  src/jac_dep.cpp)
+
+target_compile_definitions(jac_dep
+  PRIVATE "COMPOSITION_BUILDING_DLL")
+
+ament_target_dependencies(jac_dep
+  "rclcpp"
+  "rclcpp_components"
+  "pr_msgs"
+  "pr_lib"
+  "Eigen3")
+
+rclcpp_components_register_nodes(jac_dep "pr_modelling::DependentJacobian")
+set(node_plugins "${node_plugins}pr_modelling::DependentJacobian;$<TARGET_FILE:jac_dep>\n")
+
+
+
 ### Installation ###
 
 install(TARGETS
   for_kin
   inv_kin
   ind_jac
+  jac_dep
   ARCHIVE DESTINATION lib
   LIBRARY DESTINATION lib
   RUNTIME DESTINATION bin)
