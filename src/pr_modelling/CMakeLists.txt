@@ -112,12 +112,34 @@ target_compile_definitions(jac_dep
 ament_target_dependencies(jac_dep
   "rclcpp"
   "rclcpp_components"
+  "message_filters"
   "pr_msgs"
   "pr_lib"
   "Eigen3")
 
 rclcpp_components_register_nodes(jac_dep "pr_modelling::DependentJacobian")
 set(node_plugins "${node_plugins}pr_modelling::DependentJacobian;$<TARGET_FILE:jac_dep>\n")
+
+
+### RastT Jacobian node ###
+
+add_library(rast_t SHARED
+  src/rast_t.cpp)
+
+target_compile_definitions(rast_t
+  PRIVATE "COMPOSITION_BUILDING_DLL")
+
+ament_target_dependencies(rast_t
+  "rclcpp"
+  "rclcpp_components"
+  "message_filters"
+  "pr_msgs"
+  "pr_lib"
+  "Eigen3")
+
+rclcpp_components_register_nodes(rast_t "pr_modelling::RastT")
+set(node_plugins "${node_plugins}pr_modelling::RastT;$<TARGET_FILE:rast_t>\n")
+
 
 
 
@@ -128,6 +150,7 @@ install(TARGETS
   inv_kin
   ind_jac
   jac_dep
+  rast_t
   ARCHIVE DESTINATION lib
   LIBRARY DESTINATION lib
   RUNTIME DESTINATION bin)

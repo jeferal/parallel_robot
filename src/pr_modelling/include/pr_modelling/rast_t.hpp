@@ -1,5 +1,5 @@
-#ifndef PR_MODELLING__JAC_DEP_HPP_
-#define PR_MODELLING__JAC_DEP_HPP_
+#ifndef PR_MODELLING_RAST_T_HPP_
+#define PR_MODELLING_RAST_T_HPP_
 
 #include "rclcpp/rclcpp.hpp"
 
@@ -16,22 +16,22 @@
 
 namespace pr_modelling
 {
-    class DependentJacobian : public rclcpp::Node
+    class RastT : public rclcpp::Node
     {
         public:
             //PR_MODELLING_PUBLIC
-            explicit DependentJacobian(const rclcpp::NodeOptions & options);
+            explicit RastT(const rclcpp::NodeOptions & options);
 
         protected:
-            void topic_callback(const pr_msgs::msg::PRArrayH::ConstPtr& x_coord_msg,
-                                const pr_msgs::msg::PRMatH::ConstPtr& q_msg);
+            void topic_callback(const pr_msgs::msg::PRMatH::ConstPtr& dep_jac_msg,
+                                const pr_msgs::msg::PRMatH::ConstPtr& ind_jac_msg);
 
         private:
-            message_filters::Subscriber<pr_msgs::msg::PRArrayH> sub_x;
-            message_filters::Subscriber<pr_msgs::msg::PRMatH> sub_q;
+            message_filters::Subscriber<pr_msgs::msg::PRMatH> sub_dep;
+            message_filters::Subscriber<pr_msgs::msg::PRMatH> sub_ind;
 
             typedef message_filters::sync_policies::ApproximateTime
-                    <pr_msgs::msg::PRArrayH, pr_msgs::msg::PRMatH> SyncPolicy;
+                    <pr_msgs::msg::PRMatH, pr_msgs::msg::PRMatH> SyncPolicy;
 
             typedef message_filters::Synchronizer<SyncPolicy> Synchronizer;
             std::shared_ptr<Synchronizer> sync_;
@@ -40,8 +40,9 @@ namespace pr_modelling
 
             std::vector<double> robot_params;
             Eigen::Matrix<double, 11, 11> DepJ;
-            Eigen::Matrix<double, 4, 3> Q;
+            Eigen::Matrix<double, 11, 4> IndJ;
+            Eigen::Matrix<double, 15, 4> Rast;
     };
 }
 
-#endif // PR_MODELLING__JAC_DEP_HPP_
+#endif // PR_MODELLING_RAST_T_HPP_

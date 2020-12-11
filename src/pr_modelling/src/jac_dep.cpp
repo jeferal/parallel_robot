@@ -21,7 +21,7 @@ namespace pr_modelling
 {
     /**** INVERSE KINEMATICS COMPONENT ****/
     DependentJacobian::DependentJacobian(const rclcpp::NodeOptions & options)
-    : Node("jac_dep", options)
+    : Node("dep_jac", options)
     {
         //Parameter declaration
         this->declare_parameter<std::vector<double>>(
@@ -40,7 +40,7 @@ namespace pr_modelling
     }
 
     void DependentJacobian::topic_callback(const pr_msgs::msg::PRArrayH::ConstPtr& x_coord_msg,
-                                           const pr_msgs::msg::PRArrayH::ConstPtr& q_msg)
+                                           const pr_msgs::msg::PRMatH::ConstPtr& q_msg)
     {
         auto jac_dep_msg = pr_msgs::msg::PRMatH();
 
