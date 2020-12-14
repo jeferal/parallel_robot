@@ -32,6 +32,8 @@ namespace PRUtils
 
     void Eigen2ArMsg(const Eigen::Vector4d &eig_vec, pr_msgs::msg::PRArrayH &ar_msg);
 
+    void ArRMsg2Eigen(const pr_msgs::msg::PRArrayH::ConstPtr& ar_msg, Eigen::Vector4d &eig_vec);
+
 
     template <typename DerivedA>
     void Eigen2MatMsg(
@@ -57,7 +59,7 @@ namespace PRUtils
         for(int i=0; i<matrix.cols(); i++)
         {
             for(int j=0; j<matrix.rows(); j++)
-                mat_msg.data.push_back(matrix(i,j));
+                mat_msg.data.push_back(matrix(j,i));
         }
         mat_msg.rows = matrix.cols();
         mat_msg.cols = matrix.rows();
@@ -69,14 +71,11 @@ namespace PRUtils
             const pr_msgs::msg::PRMatH::SharedPtr mat_msg,
             Eigen::MatrixBase<DerivedA> &matrix)
     {
-        std::cout << std::endl;
-        std::cout << matrix.rows() << ", " << matrix.cols() << std::endl;
         //Return error if cols and rows don't match (msg and matrix)
         for(int i=0; i<mat_msg->data.size(); i++)
         {
             int row = i/(matrix.rows()-1);
             int col = i%(matrix.cols());
-            std::cout << "(" << row << ", " << col << ")" << std::endl;
             matrix.coeffRef(row,col) = mat_msg->data[i];
         }
     }
@@ -87,8 +86,10 @@ namespace PRUtils
             const pr_msgs::msg::PRMatH::ConstPtr& mat_msg,
             Eigen::MatrixBase<DerivedA> &matrix)
     {
-        std::cout << std::endl;
-        std::cout << matrix.rows() << ", " << matrix.cols() << std::endl;
+        std::cout << "Calculando, size: " << mat_msg->data.size() << std::endl;
+        std::cout << "Size msg: " << mat_msg->rows << ", " << mat_msg->cols << std::endl;
+        std::cout << "Size matrix: " << matrix.rows() << ", " << matrix.cols() << std::endl;
+
         //Return error if cols and rows don't match (msg and matrix)
         for(int i=0; i<mat_msg->data.size(); i++)
         {

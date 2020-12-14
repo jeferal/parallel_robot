@@ -11,6 +11,7 @@
 #include "rclcpp/qos.hpp"
 
 #include "pr_msgs/msg/pr_array_h.hpp"
+#include "pr_lib/pr_utils.hpp"
 
 
 namespace pr_controllers
@@ -64,19 +65,16 @@ namespace pr_controllers
         auto control_action_msg = pr_msgs::msg::PRArrayH();
         //Conversión, crear función para esto:
 
-        for(int i=0; i<4; i++){
-            ref(i) = ref_msg->data[i];
-            pos(i) = pos_msg->data[i];
-            vel(i) = vel_msg->data[i];
-        }
+        PRUtils::ArRMsg2Eigen(ref_msg, ref);
+        PRUtils::ArRMsg2Eigen(pos_msg, pos);
+        PRUtils::ArRMsg2Eigen(vel_msg, vel);
         
         //Calculate control action
-        up_1 = 1/ts*(ref - k1*(ref_ant - q_ant)-q_ant);
+        up_1 = 1/ts*(ref -  k1*(ref_ant - q_ant)-q_ant);
         up_2 = up_1 - k2*(up_1_ant - vel) - vel;
-
-        for(int i=0; i<4; i++){
-            control_action_msg.data[i] = up_2(i)/ts;
-        }
+        ca = up_2/ts;
+        
+        PRUtils::Eigen2ArMsg(ca, control_action_msg);
 
         control_action_msg.header.stamp = this->get_clock()->now();
 

@@ -43,7 +43,7 @@ namespace pr_modelling
             10);
 
         subscription_ = this->create_subscription<pr_msgs::msg::PRArrayH>(
-            "ref_pose", 
+            "joint_position", 
             10, 
             std::bind(&ForwardKinematics::topic_callback, this, _1));
     }

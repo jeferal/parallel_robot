@@ -22,21 +22,14 @@ namespace pr_modelling
     /**** RastT COMPONENT ****/
     RastT::RastT(const rclcpp::NodeOptions & options)
     : Node("rast_t", options)
-    {
-        //Parameter declaration
-        this->declare_parameter<std::vector<double>>(
-            "robot_config_params", 
-            {0.4, 0.4, 0.4, 0.15, 90*(M_PI/180), 45*(M_PI/180), 0.3, 0.3, 0.3, 50*(M_PI/180), 90*(M_PI/180)});
-        
-        this->get_parameter("robot_config_params", robot_params);
-
+    {        
         sub_dep.subscribe(this, "dep_jac");
-        sub_ind.subscribe(this, "dep_ind");
+        sub_ind.subscribe(this, "ind_jac");
         sync_.reset(new Synchronizer(SyncPolicy(1), sub_dep, sub_ind));
         sync_->registerCallback(std::bind(&RastT::topic_callback, this, std::placeholders::_1, std::placeholders::_2));
         sync_->setMaxIntervalDuration(rclcpp::Duration(0, 10000000));
 
-        publisher_ = this->create_publisher<pr_msgs::msg::PRMatH>("jac_dep", 1);
+        publisher_ = this->create_publisher<pr_msgs::msg::PRMatH>("rast_t", 1);
     }
 
     void RastT::topic_callback(const pr_msgs::msg::PRMatH::ConstPtr& jac_dep_msg,

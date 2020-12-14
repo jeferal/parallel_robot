@@ -194,12 +194,13 @@ void PRModel::IndJacobian(
 }
 
 void PRModel::Rast(
-        Eigen::Matrix<double, 15, 4> &RastT , 
+        Eigen::Matrix<double, 15, 4> &Rast , 
         const Eigen::Matrix<double, 11,11> &DepJ, 
         const Eigen::Matrix<double, 11, 4> &IndJ)
 {
-    RastT.setZero();
-    RastT.block(0, 0, 11, 4) =  -DepJ.inverse() * IndJ;
+    Rast.setZero();
+    Rast.block(0, 0, 11, 4) =  -DepJ.inverse() * IndJ;
+    Rast.block(11, 0, 4, 4) = Eigen::Matrix<double, 4, 4>::Identity();
 }
 
 

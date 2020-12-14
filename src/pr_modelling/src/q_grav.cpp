@@ -24,11 +24,25 @@ namespace pr_modelling
     : Node("q_grav", options)
     {
         //Parameter declaration
-        this->declare_parameter<std::vector<double>>(
-            "robot_config_params", 
-            {0.4, 0.4, 0.4, 0.15, 90*(M_PI/180), 45*(M_PI/180), 0.3, 0.3, 0.3, 50*(M_PI/180), 90*(M_PI/180)});
-        
-        this->get_parameter("robot_config_params", robot_params);
+        this->declare_parameter<std::vector<double>>("p11", {8.57287, -0.03389, 0.00102, 0.19460,  0.17087, -0.00050, 0.01739, 0.18719, 0.00007, 0.02096});
+        this->declare_parameter<std::vector<double>>("p12", {0.86261, 0.00000, 0.00000, -0.26250, 0.02278, 0.00000, 0.00000, 0.02278, 0.00000, 0.00004});
+        this->declare_parameter<std::vector<double>>("p21", {8.57287, 0.03389, -0.00102, 0.19460, 0.17087, -0.00050, -0.01739, 0.18719, -0.00007, 0.02096});
+        this->declare_parameter<std::vector<double>>("p22", {0.86261, 0.00000, 0.00000, -0.26250, 0.02278, 0.00000, 0.00000, 0.02278, 0.00000, 0.00004});
+        this->declare_parameter<std::vector<double>>("p31", {8.57287, 0.03389, -0.00102, 0.19460, 0.17087, -0.00050, -0.01739, 0.18719, -0.00007, 0.02096});
+        this->declare_parameter<std::vector<double>>("p32", {0.86261, 0.00000, 0.00000, -0.26250, 0.02278, 0.00000, 0.00000, 0.02278, 0.00000, 0.00004});
+        this->declare_parameter<std::vector<double>>("p41", {8.81275, 0.00098, 0.01742, 0.13758, 0.09592, 0.00044, 0.00021, 0.08853, -0.00208, 0.01168});
+        this->declare_parameter<std::vector<double>>("p42", {1.73524, 0.00000, 0.15148, 0.00000, 0.03115, 0.00000, 0.00000, 0.00056, 0.00000, 0.03091});
+        this->declare_parameter<std::vector<double>>("pm", {9.82033, 0.00393, -0.00181, 0.03710, 0.26398, 0.01131, 0.00083, 0.21707, -0.00038, 0.47887});
+
+        this->get_parameter("p11", P11);
+        this->get_parameter("p12", P12);
+        this->get_parameter("p21", P21);
+        this->get_parameter("p22", P22);
+        this->get_parameter("p31", P31);
+        this->get_parameter("p32", P32);
+        this->get_parameter("p41", P41);
+        this->get_parameter("p42", P42);
+        this->get_parameter("pm", Pm);
 
         sub_x.subscribe(this, "x_coord");
         sub_q.subscribe(this, "q_sol");
@@ -54,7 +68,7 @@ namespace pr_modelling
         PRModel::QGravFunction(QGravTerms, RastT, x_msg->data[2], x_msg->data[3], Q, 
                                P11, P12, P21, P22, P31, P32, P41, P42, Pm);
 
-        PRUtils::Eigen2ArMsg(QGravTerms, q_grav_msg);
+        //PRUtils::Eigen2ArMsg(QGravTerms, q_grav_msg);
 
         q_grav_msg.header.stamp = this->get_clock()->now();
 

@@ -62,3 +62,9 @@ void PRUtils::Eigen2ArMsg(const Eigen::Vector4d &eig_vec, pr_msgs::msg::PRArrayH
     for(int i=0; i<eig_vec.size(); i++)
         ar_msg.data[i] = eig_vec(i);
 }
+
+void PRUtils::ArRMsg2Eigen(const pr_msgs::msg::PRArrayH::ConstPtr& ar_msg, Eigen::Vector4d &eig_vec)
+{
+	for(int i=0; i<ar_msg->data.size(); i++)
+		eig_vec(i) = ar_msg->data[i];
+}

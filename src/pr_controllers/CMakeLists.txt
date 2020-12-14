@@ -25,6 +25,7 @@ find_package(rcutils REQUIRED)
 find_package(message_filters REQUIRED)
 
 find_package(pr_msgs REQUIRED)
+find_package(pr_lib REQUIRED)
 
 find_package(eigen3_cmake_module REQUIRED)
 find_package(Eigen3 REQUIRED)
@@ -59,6 +60,7 @@ ament_target_dependencies(gus_controller
   "rclcpp_components"
   "message_filters"
   "pr_msgs"
+  "pr_lib"
   "Eigen3")
 
 rclcpp_components_register_nodes(gus_controller "pr_controllers::GusController")

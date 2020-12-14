@@ -38,7 +38,6 @@ namespace pr_modelling
 
             rclcpp::Publisher<pr_msgs::msg::PRMatH>::SharedPtr publisher_;
 
-            std::vector<double> robot_params;
             Eigen::Matrix<double, 11, 11> DepJ;
             Eigen::Matrix<double, 11, 4> IndJ;
             Eigen::Matrix<double, 15, 4> Rast;

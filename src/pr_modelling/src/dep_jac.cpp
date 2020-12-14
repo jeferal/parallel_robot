@@ -1,4 +1,4 @@
-#include "pr_modelling/jac_dep.hpp"
+#include "pr_modelling/dep_jac.hpp"
 
 #include <chrono>
 #include <memory>
@@ -36,7 +36,7 @@ namespace pr_modelling
         sync_->registerCallback(std::bind(&DependentJacobian::topic_callback, this, std::placeholders::_1, std::placeholders::_2));
         sync_->setMaxIntervalDuration(rclcpp::Duration(0, 10000000));
 
-        publisher_ = this->create_publisher<pr_msgs::msg::PRMatH>("jac_dep", 1);
+        publisher_ = this->create_publisher<pr_msgs::msg::PRMatH>("dep_jac", 1);
     }
 
     void DependentJacobian::topic_callback(const pr_msgs::msg::PRArrayH::ConstPtr& x_coord_msg,
@@ -44,9 +44,7 @@ namespace pr_modelling
     {
         auto jac_dep_msg = pr_msgs::msg::PRMatH();
 
-        for(int i=0; i<q_msg->data.size(); i++){
-            Q(0,0) = 2;
-        }
+        PRUtils::MatMsgR2Eigen(q_msg, Q);
 
         PRUtils::MatMsgR2Eigen(q_msg, Q);     
         PRModel::DepJacobian(DepJ, Q, x_coord_msg->data[2], x_coord_msg->data[3], robot_params);
