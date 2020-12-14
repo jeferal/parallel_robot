@@ -71,11 +71,10 @@ namespace PRUtils
             const pr_msgs::msg::PRMatH::SharedPtr mat_msg,
             Eigen::MatrixBase<DerivedA> &matrix)
     {
-        //Return error if cols and rows don't match (msg and matrix)
         for(int i=0; i<mat_msg->data.size(); i++)
         {
-            int row = i/(matrix.rows()-1);
-            int col = i%(matrix.cols());
+            int row = i/matrix.cols();
+            int col = i%matrix.cols();
             matrix.coeffRef(row,col) = mat_msg->data[i];
         }
     }
@@ -86,16 +85,15 @@ namespace PRUtils
             const pr_msgs::msg::PRMatH::ConstPtr& mat_msg,
             Eigen::MatrixBase<DerivedA> &matrix)
     {
-        std::cout << "Calculando, size: " << mat_msg->data.size() << std::endl;
-        std::cout << "Size msg: " << mat_msg->rows << ", " << mat_msg->cols << std::endl;
-        std::cout << "Size matrix: " << matrix.rows() << ", " << matrix.cols() << std::endl;
+        //std::cout << "Calculando, size: " << mat_msg->data.size() << std::endl;
+        //std::cout << "Size msg: " << mat_msg->rows << ", " << mat_msg->cols << std::endl;
+        //std::cout << "Size matrix: " << matrix.rows() << ", " << matrix.cols() << std::endl;
 
-        //Return error if cols and rows don't match (msg and matrix)
         for(int i=0; i<mat_msg->data.size(); i++)
         {
-            int row = i/(matrix.rows()-1);
-            int col = i%(matrix.cols());
-            std::cout << "(" << row << ", " << col << ")" << std::endl;
+            int row = i/matrix.cols();
+            int col = i%matrix.cols();
+            //std::cout << "(" << row << ", " << col << ")" << std::endl;
             matrix.coeffRef(row,col) = mat_msg->data[i];
         }
     }

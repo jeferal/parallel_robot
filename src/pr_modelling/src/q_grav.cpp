@@ -68,7 +68,7 @@ namespace pr_modelling
         PRModel::QGravFunction(QGravTerms, RastT, x_msg->data[2], x_msg->data[3], Q, 
                                P11, P12, P21, P22, P31, P32, P41, P42, Pm);
 
-        //PRUtils::Eigen2ArMsg(QGravTerms, q_grav_msg);
+        PRUtils::Eigen2ArMsg(QGravTerms, q_grav_msg);
 
         q_grav_msg.header.stamp = this->get_clock()->now();
 
