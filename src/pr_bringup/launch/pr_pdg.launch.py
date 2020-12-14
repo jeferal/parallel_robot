@@ -182,6 +182,22 @@ def generate_launch_description():
                         ("rast_t", "rast_t")
                     ]
                 ),
+
+                ComposableNode(
+                    package='pr_controllers',
+                    node_plugin='pr_controllers::PDGController',
+                    node_name='controller',
+                    remappings=[
+                        ("ref_pose", "ref_pose"),
+                        ("joint_position", "joint_position"),
+                        ("joint_velocity", "joint_velocity"),
+                        ("q_grav", "q_grav")
+                    ],
+                    parameters=[
+                        {"kp_gain": [27190.0, 27190.0, 27190.0, 361023.0]},
+                        {"kv_gain": [114.27, 114.27, 114.27, 491.32]},
+                    ]
+                ),
                 
                 ComposableNode(
                     package='pr_sensors_actuators',
