@@ -37,11 +37,10 @@ namespace pr_modelling
     {
         auto ind_j_msg = pr_msgs::msg::PRMatH();
         
-        PRUtils::Mat2Eigen__4_3(q_msg, Q);
-
+        PRUtils::MatMsg2Eigen(q_msg, Q);
         PRModel::IndJacobian(IndJ, Q);        
 
-        PRUtils::Eigen2Mat(IndJ, ind_j_msg);
+        PRUtils::Eigen2MatMsg(IndJ, ind_j_msg);
 
         ind_j_msg.header.stamp = this->get_clock()->now();
         publisher_->publish(ind_j_msg);

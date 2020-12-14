@@ -41,9 +41,10 @@ namespace pr_modelling
             rclcpp::Publisher<pr_msgs::msg::PRArrayH>::SharedPtr publisher_;
 
             std::vector<double> robot_params;
+            std::vector<double> P11, P12, P21, P22, P31, P32, P41, P42, Pm;
             Eigen::Matrix<double, 4, 3> Q;
             Eigen::Matrix<double, 4, 15> RastT;
-            Eigen::RowVector4d QGravTerms;
+            Eigen::Vector4d QGravTerms;
     };
 }
 

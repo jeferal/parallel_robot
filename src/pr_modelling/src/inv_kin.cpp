@@ -43,11 +43,10 @@ namespace pr_modelling
     void InverseKinematics::topic_callback(const pr_msgs::msg::PRArrayH::SharedPtr x_msg)
     {
         auto q_sol_msg = pr_msgs::msg::PRMatH();
-
+        
         PRModel::InverseKinematics(q_sol, x_msg->data, robot_params);
 
-        //Cambiar por función (to msg)
-        PRUtils::Eigen2Mat(q_sol, q_sol_msg);
+        PRUtils::Eigen2MatMsg(q_sol, q_sol_msg);
 
         q_sol_msg.header.stamp = this->get_clock()->now();
         publisher_->publish(q_sol_msg);

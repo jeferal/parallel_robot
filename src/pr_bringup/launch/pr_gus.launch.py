@@ -7,7 +7,10 @@ from numpy import fromstring, pi
 def generate_launch_description():
 
     """Generate launch description with multiple components."""
-    with open('/home/paralelo4dofnew/parallel_robot_ws/references/ref_qinde_TRR0_CF1_IdV1.txt', 'r') as f:
+
+    ref_file = "/home/paralelo4dofnew/parallel_robot_ws/references/ref_qinde_TRR0_CF1_IdV1.txt"
+    
+    with open(ref_file, 'r') as f:
         first_reference = fromstring(f.readline(), dtype=float, sep=" ").tolist()
 
     pr_gus = ComposableNodeContainer(
@@ -108,8 +111,8 @@ def generate_launch_description():
                         ("joint_position", "joint_position")
                     ],
                     parameters=[
-                        {"ref_path": "/home/paralelo4dofnew/parallel_robot_ws/references/ref_cart_TRR0_CF1_IdV1.txt"},
-                        {"is_cart": True},
+                        {"ref_path": ref_file},
+                        {"is_cart": False},
                         {"robot_config_params": [0.4, 0.4, 0.4, 0.15, 90*(pi/180), 45*(pi/180), 0.3, 0.3, 0.3, 50*(pi/180), 90*(pi/180)]}
                     ]
                 ),

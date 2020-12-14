@@ -45,11 +45,13 @@ namespace pr_modelling
         auto rast_t_msg = pr_msgs::msg::PRMatH();
 
         //Conversion
-        
-        PRModel::RastT(Rast, DepJ, IndJ);
+        PRUtils::MatMsgR2Eigen(jac_dep_msg, DepJ);
+        PRUtils::MatMsgR2Eigen(jac_ind_msg, IndJ);
+
+        PRModel::Rast(Rast, DepJ, IndJ);
 
         //Conversion y transponer
-
+        PRUtils::Eigen2MatMsgT(Rast, rast_t_msg);
 
         rast_t_msg.header.stamp = this->get_clock()->now();
 

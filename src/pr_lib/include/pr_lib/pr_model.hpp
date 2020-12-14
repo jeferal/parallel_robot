@@ -61,7 +61,7 @@ namespace PRModel
                                 const Eigen::Matrix<double, 4, 3> &Q);
 
     //*** RastT matrix ***//
-    void RastT(
+    void Rast(
                                 Eigen::Matrix<double, 15, 4> &RastT , 
                                 const Eigen::Matrix<double, 11,11> &DepJ, 
                                 const Eigen::Matrix<double, 11, 4> &IndJ);
@@ -70,7 +70,7 @@ namespace PRModel
     void QGravFunction(
                                 Eigen::Matrix<double, 4, 1> &Qgrav, 
                                 const Eigen::Matrix<double, 4, 15> &RastT, 
-                                const double &theta, double &psi, 
+                                const double &theta, const double &psi, 
                                 const Eigen::Matrix<double, 4, 3> &Q, 
                                 const std::vector<double> &P11, 
                                 const std::vector<double> &P12, 

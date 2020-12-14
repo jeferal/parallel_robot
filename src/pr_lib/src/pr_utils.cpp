@@ -57,30 +57,8 @@ void PRUtils::array2vector(const std::array<double, 4> &ar, std::vector<double> 
 }
 
 
-//Generalizar función (Eigen2Matmsg)
-void PRUtils::Eigen2Mat(
-	const Eigen::MatrixXd &matrix, 
-	pr_msgs::msg::PRMatH &mat_msg)
+void PRUtils::Eigen2ArMsg(const Eigen::Vector4d &eig_vec, pr_msgs::msg::PRArrayH &ar_msg)
 {
-	for(int i=0; i<matrix.rows(); i++)
-	{
-		for(int j=0; j<matrix.cols(); j++)
-			mat_msg.data.push_back(matrix(i,j));
-	}
-
-	mat_msg.rows = matrix.rows();
-	mat_msg.cols = matrix.cols();
-}
-
-
-//Ver cómo generalizar más esta función (Matmsg2Eigen)
-void PRUtils::Mat2Eigen__4_3(
-	    const pr_msgs::msg::PRMatH::SharedPtr mat_msg,
-	    Eigen::Matrix<double, 4, 3> &matrix)
-{
-	for(int i=0; i<(int)mat_msg->data.size(); i++)
-		matrix(i%matrix.rows(), i%matrix.cols()) = mat_msg->data[i];
-
-	mat_msg->rows = matrix.rows();
-	mat_msg->cols = matrix.cols();
+    for(int i=0; i<eig_vec.size(); i++)
+        ar_msg.data[i] = eig_vec(i);
 }

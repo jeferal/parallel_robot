@@ -47,10 +47,11 @@ namespace pr_modelling
         for(int i=0; i<q_msg->data.size(); i++){
             Q(0,0) = 2;
         }
-        
+
+        PRUtils::MatMsgR2Eigen(q_msg, Q);     
         PRModel::DepJacobian(DepJ, Q, x_coord_msg->data[2], x_coord_msg->data[3], robot_params);
 
-        PRUtils::Eigen2Mat(DepJ, jac_dep_msg);
+        PRUtils::Eigen2MatMsg(DepJ, jac_dep_msg);
 
         jac_dep_msg.header.stamp = this->get_clock()->now();
 

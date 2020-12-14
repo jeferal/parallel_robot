@@ -9,6 +9,8 @@
 #include <fstream>
 
 #include "eigen3/Eigen/Dense"
+#include "eigen3/Eigen/Core"
+
 #include "pr_msgs/msg/pr_mat_h.hpp"
 #include "pr_msgs/msg/pr_array_h.hpp"
 
@@ -27,13 +29,75 @@ namespace PRUtils
     //Usar template functions!!
     void array2vector(const std::array<double, 4> &ar, std::vector<double> &vec);
 
-    void Eigen2Mat(
-        const Eigen::MatrixXd &matrix, 
-        pr_msgs::msg::PRMatH &vec);
 
-    void Mat2Eigen__4_3(
-	    const pr_msgs::msg::PRMatH::SharedPtr vec,
-	    Eigen::Matrix<double, 4, 3> &matrix);
+    void Eigen2ArMsg(const Eigen::Vector4d &eig_vec, pr_msgs::msg::PRArrayH &ar_msg);
+
+
+    template <typename DerivedA>
+    void Eigen2MatMsg(
+        const Eigen::MatrixBase<DerivedA> &matrix,
+        pr_msgs::msg::PRMatH &mat_msg)
+    {
+        //Return error if cols and rows don't match (msg and matrix)
+        for(int i=0; i<matrix.rows(); i++)
+        {
+            for(int j=0; j<matrix.cols(); j++)
+                mat_msg.data.push_back(matrix(i,j));
+        }
+        mat_msg.rows = matrix.rows();
+        mat_msg.cols = matrix.cols();
+    }
+
+    template <typename DerivedA>
+    void Eigen2MatMsgT(
+        const Eigen::MatrixBase<DerivedA> &matrix,
+        pr_msgs::msg::PRMatH &mat_msg)
+    {
+        //Return error if cols and rows don't match (msg and matrix)
+        for(int i=0; i<matrix.cols(); i++)
+        {
+            for(int j=0; j<matrix.rows(); j++)
+                mat_msg.data.push_back(matrix(i,j));
+        }
+        mat_msg.rows = matrix.cols();
+        mat_msg.cols = matrix.rows();
+    }
+
+
+    template <typename DerivedA>
+    void MatMsg2Eigen(
+            const pr_msgs::msg::PRMatH::SharedPtr mat_msg,
+            Eigen::MatrixBase<DerivedA> &matrix)
+    {
+        std::cout << std::endl;
+        std::cout << matrix.rows() << ", " << matrix.cols() << std::endl;
+        //Return error if cols and rows don't match (msg and matrix)
+        for(int i=0; i<mat_msg->data.size(); i++)
+        {
+            int row = i/(matrix.rows()-1);
+            int col = i%(matrix.cols());
+            std::cout << "(" << row << ", " << col << ")" << std::endl;
+            matrix.coeffRef(row,col) = mat_msg->data[i];
+        }
+    }
+
+
+    template <typename DerivedA>
+    void MatMsgR2Eigen(
+            const pr_msgs::msg::PRMatH::ConstPtr& mat_msg,
+            Eigen::MatrixBase<DerivedA> &matrix)
+    {
+        std::cout << std::endl;
+        std::cout << matrix.rows() << ", " << matrix.cols() << std::endl;
+        //Return error if cols and rows don't match (msg and matrix)
+        for(int i=0; i<mat_msg->data.size(); i++)
+        {
+            int row = i/(matrix.rows()-1);
+            int col = i%(matrix.cols());
+            std::cout << "(" << row << ", " << col << ")" << std::endl;
+            matrix.coeffRef(row,col) = mat_msg->data[i];
+        }
+    }
 
 }
 
