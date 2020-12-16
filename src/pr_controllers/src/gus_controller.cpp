@@ -51,7 +51,7 @@ namespace pr_controllers
 
         sync_.reset(new Synchronizer(SyncPolicy(1), sub_ref, sub_pos, sub_vel));
         sync_->registerCallback(std::bind(&GusController::controller_callback, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
-        sync_->setMaxIntervalDuration(rclcpp::Duration(0, 1000000));
+        //sync_->setMaxIntervalDuration(rclcpp::Duration(0, 1000000));
 
         publisher_ = this->create_publisher<pr_msgs::msg::PRArrayH>("control_action", 1);
 
