@@ -70,7 +70,7 @@ namespace pr_modelling
 
         PRUtils::Eigen2ArMsg(QGravTerms, q_grav_msg);
 
-        //q_grav_msg.header.stamp = this->get_clock()->now();
+        q_grav_msg.current_time = this->get_clock()->now();
         q_grav_msg.header.stamp = x_msg->header.stamp;
         q_grav_msg.header.frame_id = x_msg->header.frame_id + ", " + q_msg->header.frame_id + ", " + rast_t_msg->header.frame_id; 
 

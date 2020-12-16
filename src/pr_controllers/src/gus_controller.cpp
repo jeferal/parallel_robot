@@ -76,7 +76,8 @@ namespace pr_controllers
         
         PRUtils::Eigen2ArMsg(ca, control_action_msg);
 
-        control_action_msg.header.stamp = this->get_clock()->now();
+        control_action_msg.current_time = this->get_clock()->now();
+        control_action_msg.header.stamp = ref_msg->header.stamp;
         control_action_msg.header.frame_id = pos_msg->header.frame_id + ", " + ref_msg->header.frame_id + ", " + vel_msg->header.frame_id;
 
         publisher_->publish(control_action_msg);

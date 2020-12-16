@@ -45,7 +45,7 @@ namespace pr_aux
         for(int i=0; i<4; i++)
             var_der_msg.data[i] = (var_msg->data[i] - var_ant[i])/ts;
 
-        //var_der_msg.header.stamp = this->get_clock()->now();
+        var_der_msg.current_time = this->get_clock()->now();
         var_der_msg.header.stamp = var_msg->header.stamp;
         var_der_msg.header.frame_id = var_msg->header.frame_id;
         publisher_->publish(var_der_msg);

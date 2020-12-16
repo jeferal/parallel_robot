@@ -48,7 +48,7 @@ namespace pr_modelling
 
         PRUtils::Eigen2MatMsg(q_sol, q_sol_msg);
 
-        //q_sol_msg.header.stamp = this->get_clock()->now();
+        q_sol_msg.current_time = this->get_clock()->now();
         q_sol_msg.header.stamp = x_msg->header.stamp;
         q_sol_msg.header.frame_id = x_msg->header.frame_id;
         

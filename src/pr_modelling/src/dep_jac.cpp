@@ -51,7 +51,7 @@ namespace pr_modelling
 
         PRUtils::Eigen2MatMsg(DepJ, jac_dep_msg);
 
-        //jac_dep_msg.header.stamp = this->get_clock()->now();
+        jac_dep_msg.current_time = this->get_clock()->now();
         jac_dep_msg.header.stamp = x_coord_msg->header.stamp;
         jac_dep_msg.header.frame_id = x_coord_msg->header.frame_id + ", " + q_msg->header.frame_id;
 

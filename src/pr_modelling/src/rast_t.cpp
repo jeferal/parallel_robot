@@ -46,7 +46,7 @@ namespace pr_modelling
         //Conversion y transponer
         PRUtils::Eigen2MatMsgT(Rast, rast_t_msg);
 
-        //rast_t_msg.header.stamp = this->get_clock()->now();
+        rast_t_msg.current_time = this->get_clock()->now();
         rast_t_msg.header.stamp = jac_ind_msg->header.stamp;
         rast_t_msg.header.frame_id = jac_dep_msg->header.frame_id + ", " + jac_ind_msg->header.frame_id;
 

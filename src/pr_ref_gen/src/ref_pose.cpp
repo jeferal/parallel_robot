@@ -85,7 +85,7 @@ namespace pr_ref_gen
             for(int i=0; i<4; i++)
                 ref_msg.data[i] = ref_matrix(idx, i);
 
-            //ref_msg.header.stamp = this->get_clock()->now();
+            ref_msg.current_time = this->get_clock()->now();
             ref_msg.header.stamp = q_msg->header.stamp;
             ref_msg.header.frame_id = q_msg->header.frame_id;
             publisher_->publish(ref_msg); 

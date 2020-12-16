@@ -134,7 +134,8 @@ namespace pr_sensors_actuators
 			position_msg.data[3] = pulsos[3]*0.000002325 + initial_position[3];
 
 			//Time clock
-			position_msg.header.stamp = this->get_clock()->now();
+			position_msg.current_time = this->get_clock()->now();
+			position_msg.header.stamp = position_msg.current_time;
 			position_msg.header.frame_id = std::to_string(iter);   
 
 			publisher_->publish(position_msg);
