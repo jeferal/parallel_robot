@@ -27,7 +27,7 @@ namespace pr_modelling
         sub_ind.subscribe(this, "ind_jac");
         sync_.reset(new Synchronizer(SyncPolicy(1), sub_dep, sub_ind));
         sync_->registerCallback(std::bind(&RastT::topic_callback, this, std::placeholders::_1, std::placeholders::_2));
-        sync_->setMaxIntervalDuration(rclcpp::Duration(0, 10000000));
+        sync_->setMaxIntervalDuration(rclcpp::Duration(0, 1000000));
 
         publisher_ = this->create_publisher<pr_msgs::msg::PRMatH>("rast_t", 1);
     }
@@ -47,6 +47,7 @@ namespace pr_modelling
         PRUtils::Eigen2MatMsgT(Rast, rast_t_msg);
 
         rast_t_msg.header.stamp = this->get_clock()->now();
+        rast_t_msg.header.frame_id = jac_dep_msg->header.frame_id + ", " + jac_ind_msg->header.frame_id;
 
         publisher_->publish(rast_t_msg);
     }

@@ -86,6 +86,7 @@ namespace pr_ref_gen
                 ref_msg.data[i] = ref_matrix(idx, i);
 
             ref_msg.header.stamp = this->get_clock()->now();
+            ref_msg.header.frame_id = q_msg->header.frame_id;
             publisher_->publish(ref_msg); 
         }
         else

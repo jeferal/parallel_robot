@@ -43,6 +43,7 @@ namespace pr_modelling
         PRUtils::Eigen2MatMsg(IndJ, ind_j_msg);
 
         ind_j_msg.header.stamp = this->get_clock()->now();
+        ind_j_msg.header.frame_id = q_msg->header.frame_id;
         publisher_->publish(ind_j_msg);
     }
 }

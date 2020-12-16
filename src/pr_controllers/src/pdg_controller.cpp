@@ -36,7 +36,7 @@ namespace pr_controllers
 
         sync_.reset(new Synchronizer(SyncPolicy(1), sub_ref, sub_pos, sub_vel, sub_grav));
         sync_->registerCallback(std::bind(&PDGController::controller_callback, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3, std::placeholders::_4));
-        sync_->setMaxIntervalDuration(rclcpp::Duration(0, 10000000));
+        sync_->setMaxIntervalDuration(rclcpp::Duration(0, 8000000));
 
         publisher_ = this->create_publisher<pr_msgs::msg::PRArrayH>("control_action", 1);
 
@@ -56,6 +56,7 @@ namespace pr_controllers
             control_action_msg.data[i] = Kp[i]*(ref_msg->data[i] - pos_msg->data[i]) - Kv[i]*vel_msg->data[i] + grav_msg->data[i];
 
         control_action_msg.header.stamp = this->get_clock()->now();
+        control_action_msg.header.frame_id = pos_msg->header.frame_id + ", " + ref_msg->header.frame_id + ", " + vel_msg->header.frame_id + ", " + grav_msg->header.frame_id;
 
         publisher_->publish(control_action_msg);
 

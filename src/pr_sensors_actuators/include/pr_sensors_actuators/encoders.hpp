@@ -53,6 +53,7 @@ namespace pr_sensors_actuators
             float ts;
             bool is_finished = false;
             std::vector<double> initial_position;
+            int iter = 0;
 
     };
 

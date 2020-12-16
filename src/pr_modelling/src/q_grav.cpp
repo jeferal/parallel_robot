@@ -50,7 +50,7 @@ namespace pr_modelling
 
         sync_.reset(new Synchronizer(SyncPolicy(1), sub_x, sub_q, sub_rast_t));
         sync_->registerCallback(std::bind(&QGrav::topic_callback, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
-        sync_->setMaxIntervalDuration(rclcpp::Duration(0, 10000000));
+        sync_->setMaxIntervalDuration(rclcpp::Duration(0, 1000000));
 
         publisher_ = this->create_publisher<pr_msgs::msg::PRArrayH>("q_grav", 1);
     }
@@ -71,6 +71,7 @@ namespace pr_modelling
         PRUtils::Eigen2ArMsg(QGravTerms, q_grav_msg);
 
         q_grav_msg.header.stamp = this->get_clock()->now();
+        q_grav_msg.header.frame_id = x_msg->header.frame_id + ", " + q_msg->header.frame_id + ", " + rast_t_msg->header.frame_id; 
 
         publisher_->publish(q_grav_msg);
     }

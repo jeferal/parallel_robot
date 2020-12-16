@@ -46,6 +46,7 @@ namespace pr_aux
             var_der_msg.data[i] = (var_msg->data[i] - var_ant[i])/ts;
 
         var_der_msg.header.stamp = this->get_clock()->now();
+        var_der_msg.header.frame_id = var_msg->header.frame_id;
         publisher_->publish(var_der_msg);
 
         var_ant = var_msg->data;
