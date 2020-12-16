@@ -56,7 +56,9 @@ namespace pr_modelling
 
         PRUtils::array2vector(x_sol_msg.data, x_prev);
 
-        x_sol_msg.header.stamp = this->get_clock()->now();
+        //x_sol_msg.header.stamp = this->get_clock()->now();
+        x_sol_msg.header.stamp = q_msg->header.stamp;
+
         x_sol_msg.header.frame_id = q_msg->header.frame_id;
             
         publisher_->publish(x_sol_msg);

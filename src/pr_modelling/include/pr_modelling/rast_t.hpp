@@ -6,6 +6,7 @@
 #include "message_filters/subscriber.h"
 #include "message_filters/time_synchronizer.h"
 #include "message_filters/sync_policies/approximate_time.h"
+#include "message_filters/sync_policies/exact_time.h"
 
 #include "pr_msgs/msg/pr_array_h.hpp"
 #include "pr_msgs/msg/pr_mat_h.hpp"
@@ -30,7 +31,10 @@ namespace pr_modelling
             message_filters::Subscriber<pr_msgs::msg::PRMatH> sub_dep;
             message_filters::Subscriber<pr_msgs::msg::PRMatH> sub_ind;
 
-            typedef message_filters::sync_policies::ApproximateTime
+            /*typedef message_filters::sync_policies::ApproximateTime
+                    <pr_msgs::msg::PRMatH, pr_msgs::msg::PRMatH> SyncPolicy;*/
+
+            typedef message_filters::sync_policies::ExactTime
                     <pr_msgs::msg::PRMatH, pr_msgs::msg::PRMatH> SyncPolicy;
 
             typedef message_filters::Synchronizer<SyncPolicy> Synchronizer;

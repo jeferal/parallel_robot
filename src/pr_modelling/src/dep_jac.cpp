@@ -34,7 +34,7 @@ namespace pr_modelling
         sub_q.subscribe(this, "q_sol");
         sync_.reset(new Synchronizer(SyncPolicy(1), sub_x, sub_q));
         sync_->registerCallback(std::bind(&DependentJacobian::topic_callback, this, std::placeholders::_1, std::placeholders::_2));
-        sync_->setMaxIntervalDuration(rclcpp::Duration(0, 1000000));
+        //sync_->setMaxIntervalDuration(rclcpp::Duration(0, 1000000));
 
         publisher_ = this->create_publisher<pr_msgs::msg::PRMatH>("dep_jac", 1);
     }
@@ -51,7 +51,8 @@ namespace pr_modelling
 
         PRUtils::Eigen2MatMsg(DepJ, jac_dep_msg);
 
-        jac_dep_msg.header.stamp = this->get_clock()->now();
+        //jac_dep_msg.header.stamp = this->get_clock()->now();
+        jac_dep_msg.header.stamp = x_coord_msg->header.stamp;
         jac_dep_msg.header.frame_id = x_coord_msg->header.frame_id + ", " + q_msg->header.frame_id;
 
         publisher_->publish(jac_dep_msg);

@@ -36,7 +36,7 @@ namespace pr_controllers
 
         sync_.reset(new Synchronizer(SyncPolicy(1), sub_ref, sub_pos, sub_vel, sub_grav));
         sync_->registerCallback(std::bind(&PDGController::controller_callback, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3, std::placeholders::_4));
-        sync_->setMaxIntervalDuration(rclcpp::Duration(0, 8000000));
+        //sync_->setMaxIntervalDuration(rclcpp::Duration(0, 8000000));
 
         publisher_ = this->create_publisher<pr_msgs::msg::PRArrayH>("control_action", 1);
 
