@@ -45,12 +45,12 @@ def generate_launch_description():
     )
     """
 
-    ref_file = "/home/paralelo4dofnew/parallel_robot_ws/references/ref_qinde_TRR0_CF1_IdV1.txt"
+    ref_file = "/home/paralelo4dofnew/parallel_robot_ws/references/refeprism_pata1234.txt"
     
     with open(ref_file, 'r') as f:
         first_reference = fromstring(f.readline(), dtype=float, sep=" ").tolist()
 
-    robot_config_params = LoadConfiguration(config=3)
+    robot_config_params = LoadConfiguration(config=1)
 
     print(robot_config_params)
 

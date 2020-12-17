@@ -43,6 +43,10 @@ namespace pr_controllers
             ref_ant(i) = init_ref[i];
         }
 
+        up_1_ant = Eigen::Vector4d::Zero(4);
+        up_1 = Eigen::Vector4d::Zero(4);
+        up_2 = Eigen::Vector4d::Zero(4);
+
         RCLCPP_INFO(this->get_logger(), "Creating communication");
 
         sub_ref.subscribe(this, "ref_pose");
@@ -74,6 +78,11 @@ namespace pr_controllers
         up_2 = up_1 - k2*(up_1_ant - vel) - vel;
         ca = up_2/ts;
         
+        //Update variables
+        ref_ant = ref;
+        q_ant = pos;
+        up_1_ant = up_1;
+
         PRUtils::Eigen2ArMsg(ca, control_action_msg);
 
         control_action_msg.current_time = this->get_clock()->now();
