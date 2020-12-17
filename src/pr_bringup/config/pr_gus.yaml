@@ -1,0 +1,37 @@
+position_sensors:
+  ros__paramters:
+    ts_ms: 10.0
+
+derivator:
+  ros__parameters:
+    ts: 0.01
+
+ref_pose_gen:
+  ros__parameters:
+    is_cart: False
+
+controller:
+  ros_parameters:
+    k1: 0.75
+    k2: 0.5
+    ts: 0.01
+
+motor_0:
+  ros_parameters:
+    vp_conversion: [1.0, 1.0, 1.0, 1.0]
+    max_v: 3.0
+
+motor_1:
+  ros_parameters:
+    vp_conversion: [1.0, 1.0, 1.0, 1.0]
+    max_v: 3.0
+
+motor_2:
+  ros_parameters:
+    vp_conversion: [1.0, 1.0, 1.0, 1.0]
+    max_v: 3.0
+
+motor_3:
+  ros_parameters:
+    vp_conversion: [1.0, 1.0, 1.0, 1.0]
+    max_v: 3.0
