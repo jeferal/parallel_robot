@@ -51,9 +51,7 @@ def generate_launch_description():
         first_reference = fromstring(f.readline(), dtype=float, sep=" ").tolist()
 
     robot_config_params = LoadConfiguration(config=1)
-
-    print(robot_config_params)
-
+    
     pr_gus = ComposableNodeContainer(
             node_name='pr_container',
             node_namespace='',
