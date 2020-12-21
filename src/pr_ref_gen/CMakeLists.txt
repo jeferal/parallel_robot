@@ -63,12 +63,32 @@ ament_target_dependencies(ref_pose
 rclcpp_components_register_nodes(ref_pose "pr_ref_gen::RefPose")
 set(node_plugins "${node_plugins}pr_ref_gen::RefPose;$<TARGET_FILE:ref_pose>\n")
 
+### Ref Server node ###
+
+add_library(ref_server SHARED
+  src/ref_server.cpp)
+
+target_compile_definitions(ref_server
+  PRIVATE "COMPOSITION_BUILDING_DLL")
+
+ament_target_dependencies(ref_server
+  "rclcpp"
+  "rclcpp_components"
+  "pr_msgs"
+  "std_msgs"
+  "pr_lib"
+  "Eigen3")
+
+rclcpp_components_register_nodes(ref_server "pr_ref_gen::RefServer")
+set(node_plugins "${node_plugins}pr_ref_gen::RefServer;$<TARGET_FILE:ref_server>\n")
+
 
 
 ### Installation ###
 
 install(TARGETS
   ref_pose
+  ref_server
   ARCHIVE DESTINATION lib
   LIBRARY DESTINATION lib
   RUNTIME DESTINATION bin)

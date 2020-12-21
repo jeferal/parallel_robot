@@ -1,0 +1,7 @@
+#Perform the specified trajectory on the path
+
+string path_trajectory  #Path of the txt file which contains the trajectory
+
+---
+
+bool success    #Returns true when trajectory has been performed correctly

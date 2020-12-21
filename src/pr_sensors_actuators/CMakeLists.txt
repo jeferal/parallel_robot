@@ -60,6 +60,7 @@ ament_target_dependencies(encoders
 rclcpp_components_register_nodes(encoders "pr_sensors_actuators::Encoders")
 set(node_plugins "${node_plugins}pr_sensors_actuators::Encoders;$<TARGET_FILE:encoders>\n")
 
+
 ### Motor node ###
 
 add_library(motor SHARED
@@ -80,6 +81,24 @@ rclcpp_components_register_nodes(motor "pr_sensors_actuators::Motor")
 set(node_plugins "${node_plugins}pr_sensors_actuators::Motor;$<TARGET_FILE:motor>\n")
 
 
+### Encoders sim node ###
+
+add_library(encoders_sim SHARED
+  src/encoders_sim.cpp)
+
+target_compile_definitions(encoders_sim
+  PRIVATE "COMPOSITION_BUILDING_DLL")
+
+ament_target_dependencies(encoders_sim
+  "rclcpp"
+  "rclcpp_components"
+  "std_msgs"
+  "pr_msgs")
+
+rclcpp_components_register_nodes(encoders_sim "pr_sensors_actuators::EncodersSim")
+set(node_plugins "${node_plugins}pr_sensors_actuators::EncodersSim;$<TARGET_FILE:encoders_sim>\n")
+
+
 
 
 ### Installation ###
@@ -87,6 +106,7 @@ set(node_plugins "${node_plugins}pr_sensors_actuators::Motor;$<TARGET_FILE:motor
 install(TARGETS
   encoders
   motor
+  encoders_sim
   ARCHIVE DESTINATION lib
   LIBRARY DESTINATION lib
   RUNTIME DESTINATION bin)
