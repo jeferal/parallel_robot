@@ -99,6 +99,23 @@ rclcpp_components_register_nodes(encoders_sim "pr_sensors_actuators::EncodersSim
 set(node_plugins "${node_plugins}pr_sensors_actuators::EncodersSim;$<TARGET_FILE:encoders_sim>\n")
 
 
+### Force sensor node ###
+
+add_library(force_sensor SHARED
+  src/force_sensor.cpp)
+
+target_compile_definitions(force_sensor
+  PRIVATE "COMPOSITION_BUILDING_DLL")
+
+ament_target_dependencies(force_sensor
+  "rclcpp"
+  "rclcpp_components"
+  "pr_msgs")
+
+rclcpp_components_register_nodes(force_sensor "pr_sensors_actuators::ForceSensor")
+set(node_plugins "${node_plugins}pr_sensors_actuators::ForceSensor;$<TARGET_FILE:force_sensor>\n")
+
+
 
 
 ### Installation ###
@@ -107,6 +124,7 @@ install(TARGETS
   encoders
   motor
   encoders_sim
+  force_sensor
   ARCHIVE DESTINATION lib
   LIBRARY DESTINATION lib
   RUNTIME DESTINATION bin)

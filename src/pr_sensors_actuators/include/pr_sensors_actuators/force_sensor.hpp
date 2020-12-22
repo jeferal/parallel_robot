@@ -31,7 +31,28 @@ namespace pr_sensors_actuators
             explicit ForceSensor(const rclcpp::NodeOptions & options);
 
         protected:
-            void 
+            //Change for a topic callback to sync with encoder
+            void timer_callback();
+            
+
+        private:
+            typedef struct response_struct {
+	            uint32_t rdt_sequence;
+	            uint32_t ft_sequence;
+	            uint32_t status;
+	            int32_t FTData[6];
+            } RESPONSE;
+
+            rclcpp::Publisher<pr_msgs::msg::PRForceState>::SharedPtr publisher_;
+            rclcpp::TimerBase::SharedPtr timer_;
+            int socketHandle;
+            uint8_t request[8];	/* The request data sent to the Net F/T. */
+            struct hostent *he;
+            struct sockaddr_in addr;	/* Address of Net F/T. */
+            int err;
+            RESPONSE resp;
+            uint8_t response[36];
+            int i_fuerza,j_fuerza;
     };
 
 }   // Namespace pr_sensors_actuators
