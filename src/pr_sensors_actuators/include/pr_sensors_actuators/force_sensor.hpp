@@ -21,7 +21,6 @@
 #define NUM_SAMPLES 1 /* Will send 1 sample before stopping */
 
 
-///***** TODO ******///
 namespace pr_sensors_actuators
 {
     class ForceSensor : public rclcpp::Node
