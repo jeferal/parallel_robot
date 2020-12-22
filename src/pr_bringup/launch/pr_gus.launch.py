@@ -37,13 +37,14 @@ def generate_launch_description():
     """Generate launch description with multiple components."""
 
     #Load config file
-    """
+    
     config = os.path.join(
         get_package_share_directory('pr_bringup'),
         'config',
         'pr_gus.yaml'
     )
-    """
+    
+    print(config)
 
     ref_file = "/home/paralelo4dofnew/parallel_robot_ws/references/refeprism_pata1234.txt"
     
