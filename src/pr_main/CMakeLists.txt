@@ -16,7 +16,10 @@ if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
 endif()
 
 # find dependencies
+
 find_package(ament_cmake REQUIRED)
+
+find_package(rclcpp REQUIRED)
 
 find_package(pr_sensors_actuators REQUIRED)
 find_package(pr_ref_gen REQUIRED)
@@ -36,11 +39,13 @@ if(BUILD_TESTING)
 endif()
 
 add_executable(pr_gus_exe "src/pr_gus_main.cpp")
-target_link_libraries(pr_gus_exe
-  pr_sensors_actuators::EncodersSim
-  pr_ref_gen::RefPose
-  pr_aux::Derivator
-  pr_controllers::GusController
+
+ament_target_dependencies(pr_gus_exe
+  rclcpp
+  encoders_sim
+  ref_pose
+  derivator
+  gus_controller
 )
 
 install(TARGETS pr_gus_exe

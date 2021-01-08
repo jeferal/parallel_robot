@@ -9,17 +9,11 @@
 
   <buildtool_depend>ament_cmake</buildtool_depend>
 
-  <build_depend>rclcpp</build_depend>
-  <build_depend>pr_sensors_actuators</build_depend>
-  <build_depend>pr_ref_gen</build_depend>
-  <build_depend>pr_aux</build_depend>
-  <build_depend>pr_controllers</build_depend>
-
-  <exec_depend>rclcpp</exec_depend>
-  <exec_depend>pr_sensors_actuators</exec_depend>
-  <exec_depend>pr_ref_gen</exec_depend>
-  <exec_depend>pr_aux</exec_depend>
-  <exec_depend>pr_controllers</exec_depend>
+  <depend>rclcpp</depend>
+  <depend>pr_sensors_actuators</depend>
+  <depend>pr_ref_gen</depend>
+  <depend>pr_aux</depend>
+  <depend>pr_controllers</depend>
 
   <test_depend>ament_lint_auto</test_depend>
   <test_depend>ament_lint_common</test_depend>
