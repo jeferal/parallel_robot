@@ -1,7 +1,9 @@
 #Perform the specified trajectory on the path
 
 string path_trajectory  #Path of the txt file which contains the trajectory
+bool is_cart
 
 ---
 
-bool success    #Returns true when trajectory has been performed correctly
+int8 error_code          #0, no error, >0 error
+int32 n_ref_loaded        #refs loaded and performing
