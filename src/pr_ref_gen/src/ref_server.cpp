@@ -144,6 +144,8 @@ namespace pr_ref_gen
                 idx++;
             } else {
                 is_running=false;
+                idx = 0;
+                RCLCPP_INFO(this->get_logger(), "Trajectory finished, is_running = false");
             }
         }
 
