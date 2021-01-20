@@ -36,7 +36,15 @@ namespace pr_ref_gen
         this->declare_parameter<std::vector<double>>("robot_config_params", 
             {0.4, 0.4, 0.4, 0.15, 90*(M_PI/180), 45*(M_PI/180), 0.3, 0.3, 0.3, 50*(M_PI/180), 90*(M_PI/180)});
 
+        this->declare_parameter<std::vector<double>>("initial_position", {0.665559, 0.654974, 0.691026, 0.631511});
+        
         this->get_parameter("robot_config_params", robot_params);
+        this->get_parameter("initial_position", initial_position);
+
+        is_running = false;
+
+        for(int i=0; i<4; i++)
+            current_reference[i] = initial_position[i];
 
         //Create communication
         publisher_ = this->create_publisher<pr_msgs::msg::PRArrayH>(
@@ -126,19 +134,13 @@ namespace pr_ref_gen
 
     void RefServer::topic_callback(const pr_msgs::msg::PRArrayH::SharedPtr q_msg)
     {
-        //RCLCPP_INFO(this->get_logger(), "topic callback");
+        auto ref_msg = pr_msgs::msg::PRArrayH();
+
         if(is_running) {
             
-            auto ref_msg = pr_msgs::msg::PRArrayH();
             //CONVERTIR A FUNCIÓN
             for(int i=0; i<4; i++)
-                ref_msg.data[i] = ref_matrix(idx, i);
-
-            ref_msg.current_time = this->get_clock()->now();
-            ref_msg.header.stamp = q_msg->header.stamp;
-            ref_msg.header.frame_id = q_msg->header.frame_id;
-            //RCLCPP_INFO(this->get_logger(), "msg.data[0] = %f, idx: %d", ref_msg.data[0], idx);
-            publisher_->publish(ref_msg);
+                current_reference[i] = ref_matrix(idx, i);
 
             if(idx < n_ref - 1){
                 idx++;
@@ -148,6 +150,13 @@ namespace pr_ref_gen
                 RCLCPP_INFO(this->get_logger(), "Trajectory finished, is_running = false");
             }
         }
+
+        ref_msg.data = current_reference;
+        ref_msg.header.stamp = q_msg->header.stamp;
+        ref_msg.header.frame_id = q_msg->header.frame_id;
+        ref_msg.current_time = this->get_clock()->now();
+
+        publisher_->publish(ref_msg);
 
         auto status_msg = std_msgs::msg::Bool();
 

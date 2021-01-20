@@ -5,7 +5,8 @@ from launch_ros.descriptions import ComposableNode
 from numpy import fromstring, pi
 
 def LoadConfiguration(config=1):
-
+    
+    """
     param_list = [
         #R1    R2    R3    ds     betaFD     betaFI    Rm1   Rm2   Rm3    betaMD     betaMI
         #config 0
@@ -27,6 +28,11 @@ def LoadConfiguration(config=1):
         #congig 8
         [0.35, 0.35, 0.35, 0.15, 35*pi/180, 30*pi/180, 0.15, 0.15, 0.15, 5*pi/180 , 90*pi/180]
     ]
+    """
+    #TODO, USE YAML
+    param_list = [
+        [0.5, 0.45, 0.45, 0.15, 70*(pi/180), 70*(pi/180), 0.3, 0.3, 0.3, 10*(pi/180), 10*(pi/180)]
+    ]
 
     return param_list[config]
 
@@ -37,7 +43,7 @@ def generate_launch_description():
     ref_file_q = "/home/paralelo4dofnew/parallel_robot_ws/references/refeprism_indep_TRR8.txt"
     ref_file_x = "/home/paralelo4dofnew/parallel_robot_ws/references/refecart_TRR8_identificar.txt"
 
-    robot_config_params = LoadConfiguration(config=1)
+    robot_config_params = LoadConfiguration(config=0)
 
     with open(ref_file_q, 'r') as f:
         first_reference_q = fromstring(f.readline(), dtype=float, sep=" ").tolist()
@@ -61,7 +67,7 @@ def generate_launch_description():
                     ],
                     parameters=[
                         {"vp_conversion": [28.4628, 28.4628, 28.4628, 246.6779]},
-                        {"max_v": 5.0}
+                        {"max_v": 9.5}
                     ]
                 ),
                 ComposableNode(
@@ -74,7 +80,7 @@ def generate_launch_description():
                     ],
                     parameters=[
                         {"vp_conversion": [28.4628, 28.4628, 28.4628, 246.6779]},
-                        {"max_v": 5.0}
+                        {"max_v": 9.5}
                     ]
                 ),
                 ComposableNode(
@@ -87,7 +93,7 @@ def generate_launch_description():
                     ],
                     parameters=[
                         {"vp_conversion": [28.4628, 28.4628, 28.4628, 246.6779]},
-                        {"max_v": 5.0}
+                        {"max_v": 9.5}
                     ]
                 ),
                 ComposableNode(
@@ -100,7 +106,7 @@ def generate_launch_description():
                     ],
                     parameters=[
                         {"vp_conversion": [28.4628, 28.4628, 28.4628, 246.6779]},
-                        {"max_v": 5.0}
+                        {"max_v": 9.5}
                     ]
                 ),
                 ComposableNode(
@@ -208,6 +214,17 @@ def generate_launch_description():
                         ("x_coord", "x_coord"),
                         ("q_sol", "q_sol"),
                         ("rast_t", "rast_t")
+                    ],
+                    parameters=[
+                        {"p11": [4.1050, -0.0364, -0.0350, 0.1918, 0.0882, 0.0040, 0.0052, 0.0890, 0.0049, 0.0105]},
+                        {"p12": [1.2620, 0, 0, -0.1785, 0.0444, 0, 0, 0.0444, 0, 0.0001]},
+                        {"p21": [4.1050, -0.0364, -0.0350, 0.1918, 0.0882, 0.0040, 0.0052, 0.0890, 0.0049, 0.0105]},
+                        {"p22": [1.2620, 0, 0, -0.1785, 0.0444, 0, 0, 0.0444, 0, 0.0001]},
+                        {"p31": [4.1050, -0.0364, -0.0350, 0.1918, 0.0882, 0.0040, 0.0052, 0.0890, 0.0049, 0.0105]},
+                        {"p32": [1.2620, 0, 0, -0.1785, 0.0444, 0, 0, 0.0444, 0, 0.0001]},
+                        {"p41": [5.5890, 0.0006, 0.0110, 0.2575, 0.1889, 0.0002, -0.0003, 0.1856, -0.0082, 0.0067]},
+                        {"p42": [1.8450, 0, 0.1922, 0, 0.0070, 0, 0, 0.0000, 0, 0.0070]},
+                        {"pm": [8.5558, 0.0494, -0.0003, 0.0380, 0.0925, 0.0011, -0.0012, 0.3504, 0.0001, 0.4393]},
                     ]
                 ),
 

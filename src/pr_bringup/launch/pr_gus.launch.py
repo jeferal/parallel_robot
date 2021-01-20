@@ -7,7 +7,7 @@ from ament_index_python.packages import get_package_share_directory
 from numpy import fromstring, pi
 
 def LoadConfiguration(config=1):
-
+    """
     param_list = [
         #R1    R2    R3    ds     betaFD     betaFI    Rm1   Rm2   Rm3    betaMD     betaMI
         #config 0
@@ -29,7 +29,10 @@ def LoadConfiguration(config=1):
         #congig 8
         [0.35, 0.35, 0.35, 0.15, 35*pi/180, 30*pi/180, 0.15, 0.15, 0.15, 5*pi/180 , 90*pi/180]
     ]
-
+    """
+    param_list = [
+        [0.5, 0.45, 0.45, 0.15, 70*(pi/180), 70*(pi/180), 0.3, 0.3, 0.3, 10*(pi/180), 10*(pi/180)]
+    ]
     return param_list[config]
 
 def generate_launch_description():
@@ -46,12 +49,13 @@ def generate_launch_description():
     
     print(config)
 
-    ref_file = "/home/paralelo4dofnew/parallel_robot_ws/references/refeprism_pata1234.txt"
+    ref_file = "/home/paralelo4dofnew/ros2_eloquent_ws/parallel_robot/references/ref_qinde_TRR17_CF1_5P_IdV1.txt"
     
     with open(ref_file, 'r') as f:
         first_reference = fromstring(f.readline(), dtype=float, sep=" ").tolist()
 
-    robot_config_params = LoadConfiguration(config=1)
+    robot_config_params = LoadConfiguration(config=0)
+    print(robot_config_params)
     
     pr_gus = ComposableNodeContainer(
             node_name='pr_container',
@@ -69,7 +73,7 @@ def generate_launch_description():
                     ],
                     parameters=[
                         {"vp_conversion": [1.0, 1.0, 1.0, 1.0]},
-                        {"max_v": 3.0}
+                        {"max_v": 9.5}
                     ]
                 ),
                 ComposableNode(
@@ -82,7 +86,7 @@ def generate_launch_description():
                     ],
                     parameters=[
                         {"vp_conversion": [1.0, 1.0, 1.0, 1.0]},
-                        {"max_v": 3.0}
+                        {"max_v": 9.5}
                     ]
                 ),
                 ComposableNode(
@@ -95,7 +99,7 @@ def generate_launch_description():
                     ],
                     parameters=[
                         {"vp_conversion": [1.0, 1.0, 1.0, 1.0]},
-                        {"max_v": 3.0}
+                        {"max_v": 9.5}
                     ]
                 ),
                 ComposableNode(
@@ -108,7 +112,7 @@ def generate_launch_description():
                     ],
                     parameters=[
                         {"vp_conversion": [1.0, 1.0, 1.0, 1.0]},
-                        {"max_v": 3.0}
+                        {"max_v": 9.5}
                     ]
                 ),
                 ComposableNode(

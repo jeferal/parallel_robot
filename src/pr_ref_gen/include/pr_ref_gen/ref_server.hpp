@@ -36,7 +36,8 @@ namespace pr_ref_gen
             //rclcpp::Client<std_srvs::srv::SetBool>::SharedPtr client;
 
             //rclcpp::Publisher<std_msgs::msg::Bool>::SharedPtr publisher_end_;
-            std::vector<double> robot_params;
+            std::vector<double> robot_params, initial_position;
+            std::array<double, 4> current_reference;
             std::string ref_path;
             Eigen::MatrixXd ref_matrix;
             int n_ref;
