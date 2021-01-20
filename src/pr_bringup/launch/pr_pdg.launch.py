@@ -40,8 +40,8 @@ def generate_launch_description():
 
     """Generate launch description with multiple components."""
 
-    ref_file_q = "/home/paralelo4dofnew/parallel_robot_ws/references/refeprism_indep_TRR8.txt"
-    ref_file_x = "/home/paralelo4dofnew/parallel_robot_ws/references/refecart_TRR8_identificar.txt"
+    ref_file_q = "/home/paralelo4dofnew/ros2_eloquent_ws/parallel_robot/references/ref_qinde_TRR17_CF1_5P_IdV1.txt"
+    ref_file_x = "/home/paralelo4dofnew/ros2_eloquent_ws/parallel_robot/references/ref_cart_TRR17_CF1_5P_IdV1.txt"
 
     robot_config_params = LoadConfiguration(config=0)
 
@@ -239,8 +239,8 @@ def generate_launch_description():
                         ("q_grav", "q_grav")
                     ],
                     parameters=[
-                        {"kp_gain": [70000.0, 70000.0, 70000.0, 683716.0]},
-                        {"kv_gain": [165.0, 165.0, 165.0, 12912.0]},
+                        {"kp_gain": [27394.2003, 27394.2003, 27394.2003, 255168.2203]},
+                        {"kv_gain": [109.7532, 109.7532, 109.7532, 17927.4511]},
                     ]
                 ),
                 
