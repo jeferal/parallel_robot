@@ -4,58 +4,35 @@ from launch_ros.actions import ComposableNodeContainer
 from launch_ros.descriptions import ComposableNode
 from ament_index_python.packages import get_package_share_directory
 
-from numpy import fromstring, pi
+from numpy import fromstring
 
-def LoadConfiguration(config=1):
-    """
-    param_list = [
-        #R1    R2    R3    ds     betaFD     betaFI    Rm1   Rm2   Rm3    betaMD     betaMI
-        #config 0
-        [0.4 , 0.4 , 0.4 , 0.0 , 50*pi/180, 40*pi/180, 0.2 , 0.2 , 0.2 , 30*pi/180, 40*pi/180],
-        #config 1
-        [0.4 , 0.4 , 0.4 , 0.15, 90*pi/180, 45*pi/180, 0.3 , 0.3 , 0.3 , 50*pi/180, 90*pi/180],
-        #config 2
-        [0.4 , 0.4 , 0.4 , 0.15, 90*pi/180, 45*pi/180, 0.25, 0.25, 0.25, 5*pi/180 , 90*pi/180],
-        #config 3
-        [0.3 , 0.3 , 0.3 , 0.0 , 5*pi/180 , 90*pi/180, 0.2 , 0.2 , 0.2 , 70*pi/180, 30*pi/180],
-        #config 4
-        [0.4 , 0.4 , 0.4 , 0.15, 90*pi/180, 5*pi/180 , 0.15, 0.15, 0.15, 45*pi/180, 90*pi/180],
-        #config 5
-        [0.3 , 0.3 , 0.3 , 0.15, 50*pi/180, 90*pi/180, 0.15, 0.15, 0.15, 90*pi/180, 45*pi/180],
-        #config 6
-        [0.25, 0.25, 0.25, 0.15, 5*pi/180 , 90*pi/180, 0.15, 0.15, 0.15, 80*pi/180, 75*pi/180],
-        #config 7
-        [0.35, 0.35, 0.35, 0.15, 90*pi/180, 25*pi/180, 0.2 , 0.2 , 0.2 , 60*pi/180, 90*pi/180],
-        #congig 8
-        [0.35, 0.35, 0.35, 0.15, 35*pi/180, 30*pi/180, 0.15, 0.15, 0.15, 5*pi/180 , 90*pi/180]
-    ]
-    """
-    param_list = [
-        [0.5, 0.45, 0.45, 0.15, 70*(pi/180), 70*(pi/180), 0.3, 0.3, 0.3, 10*(pi/180), 10*(pi/180)]
-    ]
-    return param_list[config]
+import yaml
+
 
 def generate_launch_description():
 
     """Generate launch description with multiple components."""
 
     #Load config file
-    
-    config = os.path.join(
+
+    robot = "robot_5p"
+    robot_config = 1
+
+    robot_parameters_file = os.path.join(
         get_package_share_directory('pr_bringup'),
         'config',
-        'pr_gus.yaml'
+        'pr_config_params.yaml'
     )
-    
-    print(config)
 
+    robot_yaml_file = open(robot_parameters_file)
+    pr_params = yaml.load(robot_yaml_file)    
+
+    pr_config_params = pr_params[robot]['config'][robot_config]
+    
     ref_file = "/home/paralelo4dofnew/ros2_eloquent_ws/parallel_robot/references/ref_qinde_TRR17_CF1_5P_IdV1.txt"
     
     with open(ref_file, 'r') as f:
         first_reference = fromstring(f.readline(), dtype=float, sep=" ").tolist()
-
-    robot_config_params = LoadConfiguration(config=0)
-    print(robot_config_params)
     
     pr_gus = ComposableNodeContainer(
             node_name='pr_container',
@@ -157,7 +134,7 @@ def generate_launch_description():
                     parameters=[
                         {"ref_path": ref_file},
                         {"is_cart": False},
-                        {"robot_config_params": robot_config_params}
+                        {"robot_config_params": pr_config_params}
                     ]
                 ),
                 ComposableNode(

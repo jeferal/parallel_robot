@@ -1,40 +1,12 @@
 import launch
 from launch_ros.actions import ComposableNodeContainer
 from launch_ros.descriptions import ComposableNode
+from ament_index_python.packages import get_package_share_directory
+
+import os
 
 from numpy import fromstring, pi
-
-def LoadConfiguration(config=1):
-    
-    """
-    param_list = [
-        #R1    R2    R3    ds     betaFD     betaFI    Rm1   Rm2   Rm3    betaMD     betaMI
-        #config 0
-        [0.4 , 0.4 , 0.4 , 0.0 , 50*pi/180, 40*pi/180, 0.2 , 0.2 , 0.2 , 30*pi/180, 40*pi/180],
-        #config 1
-        [0.4 , 0.4 , 0.4 , 0.15, 90*pi/180, 45*pi/180, 0.3 , 0.3 , 0.3 , 50*pi/180, 90*pi/180],
-        #config 2
-        [0.4 , 0.4 , 0.4 , 0.15, 90*pi/180, 45*pi/180, 0.25, 0.25, 0.25, 5*pi/180 , 90*pi/180],
-        #config 3
-        [0.3 , 0.3 , 0.3 , 0.0 , 5*pi/180 , 90*pi/180, 0.2 , 0.2 , 0.2 , 70*pi/180, 30*pi/180],
-        #config 4
-        [0.4 , 0.4 , 0.4 , 0.15, 90*pi/180, 5*pi/180 , 0.15, 0.15, 0.15, 45*pi/180, 90*pi/180],
-        #config 5
-        [0.3 , 0.3 , 0.3 , 0.15, 50*pi/180, 90*pi/180, 0.15, 0.15, 0.15, 90*pi/180, 45*pi/180],
-        #config 6
-        [0.25, 0.25, 0.25, 0.15, 5*pi/180 , 90*pi/180, 0.15, 0.15, 0.15, 80*pi/180, 75*pi/180],
-        #config 7
-        [0.35, 0.35, 0.35, 0.15, 90*pi/180, 25*pi/180, 0.2 , 0.2 , 0.2 , 60*pi/180, 90*pi/180],
-        #congig 8
-        [0.35, 0.35, 0.35, 0.15, 35*pi/180, 30*pi/180, 0.15, 0.15, 0.15, 5*pi/180 , 90*pi/180]
-    ]
-    """
-    #TODO, USE YAML
-    param_list = [
-        [0.5, 0.45, 0.45, 0.15, 70*(pi/180), 70*(pi/180), 0.3, 0.3, 0.3, 10*(pi/180), 10*(pi/180)]
-    ]
-
-    return param_list[config]
+import yaml
 
 def generate_launch_description():
 
@@ -43,7 +15,21 @@ def generate_launch_description():
     ref_file_q = "/home/paralelo4dofnew/ros2_eloquent_ws/parallel_robot/references/ref_qinde_TRR17_CF1_5P_IdV1.txt"
     ref_file_x = "/home/paralelo4dofnew/ros2_eloquent_ws/parallel_robot/references/ref_cart_TRR17_CF1_5P_IdV1.txt"
 
-    robot_config_params = LoadConfiguration(config=0)
+    robot = "robot_5p"
+    robot_config = 1
+
+    robot_parameters_file = os.path.join(
+        get_package_share_directory('pr_bringup'),
+        'config',
+        'pr_config_params.yaml'
+    )
+
+    robot_yaml_file = open(robot_parameters_file)
+    pr_params = yaml.load(robot_yaml_file)    
+
+    pr_config_params = pr_params[robot]['config'][robot_config]
+    pr_physical_properties =  pr_params[robot]['physical_properties']
+
 
     with open(ref_file_q, 'r') as f:
         first_reference_q = fromstring(f.readline(), dtype=float, sep=" ").tolist()
@@ -134,7 +120,7 @@ def generate_launch_description():
                     parameters=[
                         {"ref_path": ref_file_q},
                         {"is_cart": False},
-                        {"robot_config_params": robot_config_params}
+                        {"robot_config_params": pr_config_params}
                     ]
                 ),
 
@@ -147,7 +133,7 @@ def generate_launch_description():
                         ("x_coord", "x_coord"),
                     ],
                     parameters=[
-                        {"robot_config_params": robot_config_params},
+                        {"robot_config_params": pr_config_params},
                         {"initial_position": first_reference_x},
                         {"tol": 0.0000001},
                         {"iter": 30},
@@ -163,7 +149,7 @@ def generate_launch_description():
                         ("q_sol", "q_sol"),
                     ],
                     parameters=[
-                        {"robot_config_params": robot_config_params},
+                        {"robot_config_params": pr_config_params},
                     ]
                 ),
 
@@ -189,7 +175,7 @@ def generate_launch_description():
                         ("dep_jac", "dep_jac")
                     ],
                     parameters=[
-                        {"robot_config_params": robot_config_params}
+                        {"robot_config_params": pr_config_params}
                     ]
                 ),
 
@@ -216,15 +202,15 @@ def generate_launch_description():
                         ("rast_t", "rast_t")
                     ],
                     parameters=[
-                        {"p11": [4.1050, -0.0364, -0.0350, 0.1918, 0.0882, 0.0040, 0.0052, 0.0890, 0.0049, 0.0105]},
-                        {"p12": [1.2620, 0, 0, -0.1785, 0.0444, 0, 0, 0.0444, 0, 0.0001]},
-                        {"p21": [4.1050, -0.0364, -0.0350, 0.1918, 0.0882, 0.0040, 0.0052, 0.0890, 0.0049, 0.0105]},
-                        {"p22": [1.2620, 0, 0, -0.1785, 0.0444, 0, 0, 0.0444, 0, 0.0001]},
-                        {"p31": [4.1050, -0.0364, -0.0350, 0.1918, 0.0882, 0.0040, 0.0052, 0.0890, 0.0049, 0.0105]},
-                        {"p32": [1.2620, 0, 0, -0.1785, 0.0444, 0, 0, 0.0444, 0, 0.0001]},
-                        {"p41": [5.5890, 0.0006, 0.0110, 0.2575, 0.1889, 0.0002, -0.0003, 0.1856, -0.0082, 0.0067]},
-                        {"p42": [1.8450, 0, 0.1922, 0, 0.0070, 0, 0, 0.0000, 0, 0.0070]},
-                        {"pm": [8.5558, 0.0494, -0.0003, 0.0380, 0.0925, 0.0011, -0.0012, 0.3504, 0.0001, 0.4393]},
+                        {"p11": pr_physical_properties['p11']},
+                        {"p12": pr_physical_properties['p12']},
+                        {"p21": pr_physical_properties['p21']},
+                        {"p22": pr_physical_properties['p22']},
+                        {"p31": pr_physical_properties['p31']},
+                        {"p32": pr_physical_properties['p32']},
+                        {"p41": pr_physical_properties['p41']},
+                        {"p42": pr_physical_properties['p42']},
+                        {"pm":  pr_physical_properties['pm']},
                     ]
                 ),
 
