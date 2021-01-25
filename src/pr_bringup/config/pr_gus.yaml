@@ -11,3 +11,5 @@ actuators:
 controller:
   k1: 0.75
   k2: 0.5
+
+ref_path: "/home/paralelo4dofnew/ros2_eloquent_ws/parallel_robot/references/ref_qinde_TRR17_CF1_5P_IdV1.txt"

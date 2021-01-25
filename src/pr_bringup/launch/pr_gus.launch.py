@@ -38,7 +38,7 @@ def generate_launch_description():
 
     pr_config_params = pr_params[robot]['config'][robot_config]
     
-    ref_file = "/home/paralelo4dofnew/ros2_eloquent_ws/parallel_robot/references/ref_qinde_TRR17_CF1_5P_IdV1.txt"
+    ref_file = controller_params['ref_path']
     
     with open(ref_file, 'r') as f:
         first_reference = fromstring(f.readline(), dtype=float, sep=" ").tolist()

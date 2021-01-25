@@ -12,9 +12,6 @@ def generate_launch_description():
 
     """Generate launch description with multiple components."""
 
-    ref_file_q = "/home/paralelo4dofnew/ros2_eloquent_ws/parallel_robot/references/ref_qinde_TRR17_CF1_5P_IdV1.txt"
-    ref_file_x = "/home/paralelo4dofnew/ros2_eloquent_ws/parallel_robot/references/ref_cart_TRR17_CF1_5P_IdV1.txt"
-
     robot_parameters_file = os.path.join(
         get_package_share_directory('pr_bringup'),
         'config',
@@ -39,6 +36,8 @@ def generate_launch_description():
     pr_config_params = pr_params[robot]['config'][robot_config]
     pr_physical_properties =  pr_params[robot]['physical_properties']
 
+    ref_file_q = controller_params['ref_path']['q']
+    ref_file_x = controller_params['ref_path']['x']
 
     with open(ref_file_q, 'r') as f:
         first_reference_q = fromstring(f.readline(), dtype=float, sep=" ").tolist()
