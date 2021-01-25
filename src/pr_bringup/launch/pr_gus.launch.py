@@ -15,14 +15,23 @@ def generate_launch_description():
 
     #Load config file
 
-    robot = "robot_5p"
-    robot_config = 1
-
     robot_parameters_file = os.path.join(
         get_package_share_directory('pr_bringup'),
         'config',
         'pr_config_params.yaml'
     )
+
+    controller_params_file = os.path.join(
+        get_package_share_directory('pr_bringup'),
+        'config',
+        'pr_gus.yaml'
+    )
+
+    controller_yaml_file = open(controller_params_file)
+    controller_params = yaml.load(controller_yaml_file)
+
+    robot = controller_params['robot']['robot_name']
+    robot_config = controller_params['robot']['config']
 
     robot_yaml_file = open(robot_parameters_file)
     pr_params = yaml.load(robot_yaml_file)    
@@ -49,8 +58,8 @@ def generate_launch_description():
                         ("end_flag", "end_flag")
                     ],
                     parameters=[
-                        {"vp_conversion": 1.0},
-                        {"max_v": 9.5}
+                        {"vp_conversion": controller_params['actuators']['vp_conversion'][0]},
+                        {"max_v": controller_params['actuators']['v_sat']}
                     ]
                 ),
                 ComposableNode(
@@ -62,8 +71,8 @@ def generate_launch_description():
                         ("end_flag", "end_flag")
                     ],
                     parameters=[
-                        {"vp_conversion": 1.0},
-                        {"max_v": 9.5}
+                        {"vp_conversion": controller_params['actuators']['vp_conversion'][0]},
+                        {"max_v": controller_params['actuators']['v_sat']}
                     ]
                 ),
                 ComposableNode(
@@ -75,8 +84,8 @@ def generate_launch_description():
                         ("end_flag", "end_flag")
                     ],
                     parameters=[
-                        {"vp_conversion": 1.0},
-                        {"max_v": 9.5}
+                        {"vp_conversion": controller_params['actuators']['vp_conversion'][0]},
+                        {"max_v": controller_params['actuators']['v_sat']}
                     ]
                 ),
                 ComposableNode(
@@ -88,8 +97,8 @@ def generate_launch_description():
                         ("end_flag", "end_flag")
                     ],
                     parameters=[
-                        {"vp_conversion": 1.0},
-                        {"max_v": 9.5}
+                        {"vp_conversion": controller_params['actuators']['vp_conversion'][0]},
+                        {"max_v": controller_params['actuators']['v_sat']}
                     ]
                 ),
                 ComposableNode(
@@ -102,9 +111,9 @@ def generate_launch_description():
                         ("joint_velocity", "joint_velocity")
                     ],
                     parameters=[
-                        {"k1": 0.75},
-                        {"k2": 0.5},
-                        {"ts": 0.01},
+                        {"k1": controller_params['controller']['k1']},
+                        {"k2": controller_params['controller']['k1']},
+                        {"ts": controller_params['ts']},
                         {"initial_position": first_reference},
                         {"initial_reference": first_reference}
                     ]
@@ -119,7 +128,7 @@ def generate_launch_description():
                     ],
                     parameters=[
                         {"initial_value": first_reference},
-                        {"ts": 0.01}
+                        {"ts": controller_params['ts']}
                     ]
                 ),
                 ComposableNode(
@@ -145,7 +154,7 @@ def generate_launch_description():
                         ("joint_position", "joint_position")
                     ],
                     parameters=[
-                        {"ts_ms": 10.0},
+                        {"ts_ms": controller_params['ts']*1000},
                         {"initial_position": first_reference}
                     ]
                 ),
