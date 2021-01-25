@@ -19,7 +19,7 @@ namespace pr_sensors_actuators
     {
         //Parameter declaration
         this->declare_parameter<double>("max_v", 3.0);
-        this->declare_parameter<std::vector<double>>("vp_conversion",{1.0, 1.0, 1.0, 1.0});
+        this->declare_parameter<double>("vp_conversion", 1.0);
         this->get_parameter("vp_conversion", vp_conversion);
         this->get_parameter("max_v", max_v);
         
@@ -66,7 +66,7 @@ namespace pr_sensors_actuators
     void Motor::topic_callback(const pr_msgs::msg::PRArrayH::SharedPtr control_action_msg){
         if(is_finished == false){
                
-            volts = control_action_msg->data[n_motor]/vp_conversion[n_motor];
+            volts = control_action_msg->data[n_motor]/vp_conversion;
 
             RCLCPP_INFO(this->get_logger(), "I heard these and sat: '%f' %f", volts, max_v);
 

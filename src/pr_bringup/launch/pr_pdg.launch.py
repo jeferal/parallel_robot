@@ -52,7 +52,7 @@ def generate_launch_description():
                         ("end_flag", "end_flag")
                     ],
                     parameters=[
-                        {"vp_conversion": [28.4628, 28.4628, 28.4628, 246.6779]},
+                        {"vp_conversion": 28.4628},
                         {"max_v": 9.5}
                     ]
                 ),
@@ -65,7 +65,7 @@ def generate_launch_description():
                         ("end_flag", "end_flag")
                     ],
                     parameters=[
-                        {"vp_conversion": [28.4628, 28.4628, 28.4628, 246.6779]},
+                        {"vp_conversion": 28.4628},
                         {"max_v": 9.5}
                     ]
                 ),
@@ -78,7 +78,7 @@ def generate_launch_description():
                         ("end_flag", "end_flag")
                     ],
                     parameters=[
-                        {"vp_conversion": [28.4628, 28.4628, 28.4628, 246.6779]},
+                        {"vp_conversion": 28.4628},
                         {"max_v": 9.5}
                     ]
                 ),
@@ -91,7 +91,7 @@ def generate_launch_description():
                         ("end_flag", "end_flag")
                     ],
                     parameters=[
-                        {"vp_conversion": [28.4628, 28.4628, 28.4628, 246.6779]},
+                        {"vp_conversion": 246.6779},
                         {"max_v": 9.5}
                     ]
                 ),

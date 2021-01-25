@@ -30,12 +30,12 @@ namespace pr_sensors_actuators
             rclcpp::Subscription<pr_msgs::msg::PRArrayH>::SharedPtr subscription_;
             rclcpp::Subscription<std_msgs::msg::Bool>::SharedPtr subscription_end_;
             int n_motor;
-            std::vector<double> vp_conversion;
             InstantAoCtrl * pci1720;
             ErrorCode ret;
             double volts = 0.0;
             double max_v;
             bool is_finished = false;
+            double vp_conversion;
     };
 
 }   // Namespace pr_sensors_actuators
