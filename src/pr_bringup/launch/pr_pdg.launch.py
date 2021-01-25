@@ -15,17 +15,26 @@ def generate_launch_description():
     ref_file_q = "/home/paralelo4dofnew/ros2_eloquent_ws/parallel_robot/references/ref_qinde_TRR17_CF1_5P_IdV1.txt"
     ref_file_x = "/home/paralelo4dofnew/ros2_eloquent_ws/parallel_robot/references/ref_cart_TRR17_CF1_5P_IdV1.txt"
 
-    robot = "robot_5p"
-    robot_config = 1
-
     robot_parameters_file = os.path.join(
         get_package_share_directory('pr_bringup'),
         'config',
         'pr_config_params.yaml'
     )
 
+    controller_params_file = os.path.join(
+        get_package_share_directory('pr_bringup'),
+        'config',
+        'pr_pdg.yaml'
+    )
+
     robot_yaml_file = open(robot_parameters_file)
-    pr_params = yaml.load(robot_yaml_file)    
+    pr_params = yaml.load(robot_yaml_file)
+
+    controller_yaml_file = open(controller_params_file)
+    controller_params = yaml.load(controller_yaml_file)
+
+    robot = controller_params['robot']['robot_name']
+    robot_config = controller_params['robot']['config']    
 
     pr_config_params = pr_params[robot]['config'][robot_config]
     pr_physical_properties =  pr_params[robot]['physical_properties']
@@ -52,8 +61,8 @@ def generate_launch_description():
                         ("end_flag", "end_flag")
                     ],
                     parameters=[
-                        {"vp_conversion": 28.4628},
-                        {"max_v": 9.5}
+                        {"vp_conversion": controller_params['actuators']['vp_conversion'][0]},
+                        {"max_v": controller_params['actuators']['v_sat']}
                     ]
                 ),
                 ComposableNode(
@@ -65,8 +74,8 @@ def generate_launch_description():
                         ("end_flag", "end_flag")
                     ],
                     parameters=[
-                        {"vp_conversion": 28.4628},
-                        {"max_v": 9.5}
+                        {"vp_conversion": controller_params['actuators']['vp_conversion'][1]},
+                        {"max_v": controller_params['actuators']['v_sat']}
                     ]
                 ),
                 ComposableNode(
@@ -78,8 +87,8 @@ def generate_launch_description():
                         ("end_flag", "end_flag")
                     ],
                     parameters=[
-                        {"vp_conversion": 28.4628},
-                        {"max_v": 9.5}
+                        {"vp_conversion": controller_params['actuators']['vp_conversion'][2]},
+                        {"max_v": controller_params['actuators']['v_sat']}
                     ]
                 ),
                 ComposableNode(
@@ -91,8 +100,8 @@ def generate_launch_description():
                         ("end_flag", "end_flag")
                     ],
                     parameters=[
-                        {"vp_conversion": 246.6779},
-                        {"max_v": 9.5}
+                        {"vp_conversion": controller_params['actuators']['vp_conversion'][3]},
+                        {"max_v": controller_params['actuators']['v_sat']}
                     ]
                 ),
                 ComposableNode(
@@ -105,7 +114,7 @@ def generate_launch_description():
                     ],
                     parameters=[
                         {"initial_value": first_reference_q},
-                        {"ts": 0.01}
+                        {"ts": controller_params['ts']}
                     ]
                 ),
                 ComposableNode(
@@ -135,8 +144,8 @@ def generate_launch_description():
                     parameters=[
                         {"robot_config_params": pr_config_params},
                         {"initial_position": first_reference_x},
-                        {"tol": 0.0000001},
-                        {"iter": 30},
+                        {"tol": controller_params['dir_kin']['tol']},
+                        {"iter": controller_params['dir_kin']['iter']},
                     ]
                 ),
 
@@ -225,8 +234,8 @@ def generate_launch_description():
                         ("q_grav", "q_grav")
                     ],
                     parameters=[
-                        {"kp_gain": [27394.2003, 27394.2003, 27394.2003, 255168.2203]},
-                        {"kv_gain": [109.7532, 109.7532, 109.7532, 17927.4511]},
+                        {"kp_gain": controller_params['controller']['kp']},
+                        {"kv_gain": controller_params['controller']['kv']},
                     ]
                 ),
                 
@@ -238,7 +247,7 @@ def generate_launch_description():
                         ("joint_position", "joint_position")
                     ],
                     parameters=[
-                        {"ts_ms": 10.0},
+                        {"ts_ms": controller_params['ts']*1000},
                         {"initial_position": first_reference_q}
                     ]
                 ),
