@@ -133,10 +133,12 @@ namespace pr_mocap
 
         return ErrorCode_OK;
     }
-
+}
 
     void NATNET_CALLCONV DataHandler(sFrameOfMocapData* data, void* pUserData)
     {
+        using namespace pr_mocap;
+        
         PRXMocap* pr_x_mocap = (PRXMocap*) pUserData;
         NatNetClient* pClient = pr_x_mocap->g_pClient;
 
@@ -263,7 +265,6 @@ namespace pr_mocap
                                      MarkersMatrix.col(1),
                                      MarkersMatrix.col(2));
     }
-}
 
 #include "rclcpp_components/register_node_macro.hpp"
 
