@@ -17,9 +17,22 @@ endif()
 
 # find dependencies
 find_package(ament_cmake REQUIRED)
-# uncomment the following section in order to fill in
-# further dependencies manually.
-# find_package(<dependency> REQUIRED)
+
+find_package(rclcpp REQUIRED)
+find_package(rclcpp_components REQUIRED)
+find_package(rcutils REQUIRED)
+find_package(pr_msgs REQUIRED)
+find_package(eigen3_cmake_module REQUIRED)
+find_package(Eigen3 REQUIRED)
+find_package(pr_lib REQUIRED)
+
+find_library(/home/paralelo4dofnew/ros2_eloquent_ws/parallel_robot/src/pr_mocap/natnet_sdk/lib NatNetLibShared)
+
+include_directories(/home/paralelo4dofnew/ros2_eloquent_ws/parallel_robot/src/pr_mocap/natnet_sdk/include)
+
+include_directories(include)
+
+set(node_plugins "")
 
 if(BUILD_TESTING)
   find_package(ament_lint_auto REQUIRED)
@@ -30,6 +43,40 @@ if(BUILD_TESTING)
   # uncomment the line when this package is not in a git repo
   #set(ament_cmake_cpplint_FOUND TRUE)
   ament_lint_auto_find_test_dependencies()
+endif()
+
+### Pose Ref Generator node ###
+
+add_library(pr_x_mocap SHARED
+  src/pr_x_mocap.cpp)
+
+target_link_libraries(pr_x_mocap "-L/home/paralelo4dofnew/ros2_eloquent_ws/parallel_robot/src/pr_mocap/natnet_sdk/lib" NatNetLibShared)
+
+target_compile_definitions(pr_x_mocap
+  PRIVATE "COMPOSITION_BUILDING_DLL")
+
+ament_target_dependencies(pr_x_mocap
+  "rclcpp"
+  "rclcpp_components"
+  "pr_msgs"
+  "pr_lib"
+  "Eigen3"
+)
+
+rclcpp_components_register_nodes(pr_x_mocap "pr_mocap::PRXMocap")
+set(node_plugins "${node_plugins}pr_x_mocap::PRXMocap;$<TARGET_FILE:pr_x_mocap>\n")
+
+install(TARGETS
+  pr_x_mocap
+  ARCHIVE DESTINATION lib
+  LIBRARY DESTINATION lib
+  RUNTIME DESTINATION bin)
+
+# since the package installs libraries without exporting them
+# it needs to make sure that the library path is being exported
+if(NOT WIN32)
+  ament_environment_hooks(
+    "${ament_cmake_package_templates_ENVIRONMENT_HOOK_LIBRARY_PATH}")
 endif()
 
 ament_package()
