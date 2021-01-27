@@ -1,6 +1,8 @@
 #ifndef PR_MOCAP__PR_X_MOCAP_HPP_
 #define PR_MOCAP__PR_X_MOCAP_HPP_
 
+#include <string>
+
 #include "rclcpp/rclcpp.hpp"
 
 #include "pr_msgs/msg/pr_array_h.hpp"
@@ -38,6 +40,8 @@ namespace pr_mocap
             sNatNetClientConnectParams g_connectParams;
             int g_analogSamplesPerMocapFrame = 0;
             double tol;
+            std::string server_address;
+            int server_command_port, server_data_port;
 
             rclcpp::Publisher<pr_msgs::msg::PRMocap>::SharedPtr publisher_;
             rclcpp::Subscription<pr_msgs::msg::PRArrayH>::SharedPtr subscription_;

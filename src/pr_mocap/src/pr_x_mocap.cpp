@@ -16,7 +16,14 @@ namespace pr_mocap
     : Node("pr_x_mocap", options)
     {
         this->declare_parameter<double>("tol", 0.01);
+        this->declare_parameter<std::string>("server_address", "158.42.21.85");
+        this->declare_parameter<int>("server_command_port", 1510);
+        this->declare_parameter<int>("server_data_port", 1511);
+
         this->get_parameter("tol", tol);
+        this->get_parameter("server_address", server_address);
+        this->get_parameter("server_command_port", server_command_port);
+        this->get_parameter("server_data_port", server_data_port);
 
         publisher_ = this->create_publisher<pr_msgs::msg::PRMocap>(
             "x_coord_mocap",
@@ -37,9 +44,9 @@ namespace pr_mocap
         g_pClient->SetFrameReceivedCallback(DataHandler, this);
 
         g_connectParams.connectionType = ConnectionType_Multicast;
-        g_connectParams.serverCommandPort = 1510;
-        g_connectParams.serverDataPort = 1511;
-        g_connectParams.serverAddress = "158.42.21.85";
+        g_connectParams.serverCommandPort = server_command_port;
+        g_connectParams.serverDataPort = server_data_port;
+        g_connectParams.serverAddress = server_address.c_str();
         g_connectParams.localAddress = "";
         g_connectParams.multicastAddress = "";
 
@@ -172,9 +179,9 @@ namespace pr_mocap
         // The SecondsSinceHostTimestamp method relies on NatNetClient's internal clock synchronization with the server using Cristian's algorithm.
         const double transitLatencyMillisec = pClient->SecondsSinceHostTimestamp( data->TransmitTimestamp ) * 1000.0;
 
-        printf("FrameID : %d\n", data->iFrame);
-        printf("Timestamp : %3.2lf\n", data->fTimestamp);
-        printf("Software latency : %.2lf milliseconds\n", softwareLatencyMillisec);
+        //printf("FrameID : %d\n", data->iFrame);
+        //printf("Timestamp : %3.2lf\n", data->fTimestamp);
+        //printf("Software latency : %.2lf milliseconds\n", softwareLatencyMillisec);
 
         //Update latency on the topic message
         pr_x_mocap->mocap_msg.latency = softwareLatencyMillisec;
@@ -199,21 +206,21 @@ namespace pr_mocap
             // You could equivalently do the following (not accounting for time elapsed since we calculated transit latency above):
             //const double clientLatencyMillisec = systemLatencyMillisec + transitLatencyMillisec;
 
-            printf( "System latency : %.2lf milliseconds\n", systemLatencyMillisec );
-            printf( "Total client latency : %.2lf milliseconds (transit time +%.2lf ms)\n", clientLatencyMillisec, transitLatencyMillisec );
+            //printf( "System latency : %.2lf milliseconds\n", systemLatencyMillisec );
+            //printf( "Total client latency : %.2lf milliseconds (transit time +%.2lf ms)\n", clientLatencyMillisec, transitLatencyMillisec );
         }
         else
         {
-            printf( "Transit latency : %.2lf milliseconds\n", transitLatencyMillisec );
+            //printf( "Transit latency : %.2lf milliseconds\n", transitLatencyMillisec );
         }
 
         // FrameOfMocapData params
         bool bIsRecording = ((data->params & 0x01)!=0);
         bool bTrackedModelsChanged = ((data->params & 0x02)!=0);
-        if(bIsRecording)
-            printf("RECORDING\n");
-        if(bTrackedModelsChanged)
-            printf("Models Changed.\n");
+        //if(bIsRecording)
+            //printf("RECORDING\n");
+        //if(bTrackedModelsChanged)
+            //printf("Models Changed.\n");
         
 
         // timecode - for systems with an eSync and SMPTE timecode generator - decode to values
@@ -222,7 +229,7 @@ namespace pr_mocap
         // decode to friendly string
         char szTimecode[128] = "";
         NatNet_TimecodeStringify( data->Timecode, data->TimecodeSubframe, szTimecode, 128 );
-        printf("Timecode : %s\n", szTimecode);
+        //printf("Timecode : %s\n", szTimecode);
 
         // labeled markers - this includes all markers (Active, Passive, and 'unlabeled' (markers with no asset but a PointCloud ID)
         bool bOccluded;     // marker was not visible (occluded) in this frame
@@ -232,7 +239,7 @@ namespace pr_mocap
         bool bUnlabeled;    // marker is 'unlabeled', but has a point cloud ID that matches Motive PointCloud ID (In Motive 3D View)
         bool bActiveMarker; // marker is an actively labeled LED marker
 
-        printf("Markers [Count=%d]\n", data->nLabeledMarkers);
+        //printf("Markers [Count=%d]\n", data->nLabeledMarkers);
 
         Eigen::Matrix<double, 3, 10> MarkersMatrix = Eigen::Matrix<double, 3, 10>::Zero();
 
@@ -271,8 +278,8 @@ namespace pr_mocap
             else
                 strcpy(szMarkerType, "Labeled");
 
-            printf("%s Marker [ModelID=%d, MarkerID=%d, Occluded=%d, PCSolved=%d, ModelSolved=%d] [size=%3.2f] [pos=%3.2f,%3.2f,%3.2f]\n",
-                szMarkerType, modelID, markerID, bOccluded, bPCSolved, bModelSolved,  marker.size, marker.x, marker.y, marker.z);
+            //printf("%s Marker [ModelID=%d, MarkerID=%d, Occluded=%d, PCSolved=%d, ModelSolved=%d] [size=%3.2f] [pos=%3.2f,%3.2f,%3.2f]\n",
+            //    szMarkerType, modelID, markerID, bOccluded, bPCSolved, bModelSolved,  marker.size, marker.x, marker.y, marker.z);
         }
 
         //Get coordinates from the markers

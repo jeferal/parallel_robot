@@ -250,6 +250,20 @@ def generate_launch_description():
                         {"initial_position": first_reference_q}
                     ]
                 ),
+                ComposableNode(
+                    package='pr_mocap',
+                    node_plugin='pr_mocap::PRXMocap',
+                    node_name='mocap',
+                    remappings=[
+                        ("x_coord", "x_coord")
+                    ],
+                    parameters=[
+                        {"tol": 0.01},
+                        {"server_address": "158.42.21.85"},
+                        {"server_command_port": 1510},
+                        {"server_data_port": 1511}
+                    ]
+                ),
             ],
             output='screen',
     )
