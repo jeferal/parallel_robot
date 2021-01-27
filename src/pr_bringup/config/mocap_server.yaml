@@ -1,7 +1,7 @@
 mocap:
   ros__parameters:
-    tol: 0.01
     server_address: "158.42.21.85"
     server_command_port: 1510
     server_data_port: 1511
+    markers_ids: [10, 11, 12, 17, 18, 19]
     

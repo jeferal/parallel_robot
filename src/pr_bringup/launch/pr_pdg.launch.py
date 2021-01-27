@@ -267,6 +267,17 @@ def generate_launch_description():
                         mocap_config
                     ]
                 ),
+                ComposableNode(
+                    package='pr_mocap',
+                    node_plugin='pr_mocap::ErrorModel',
+                    node_name='model_error',
+                    remappings=[
+                        ("x_mocap_error", "x_mocap_error")
+                    ],
+                    parameters=[
+                        {"tol": 0.01}
+                    ]
+                ),
             ],
             output='screen',
     )

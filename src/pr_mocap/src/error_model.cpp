@@ -26,12 +26,12 @@ namespace pr_mocap
 			1);
         
         subscription_mocap_ = this->create_subscription<pr_msgs::msg::PRMocap>(
-            "x_coord",
+            "x_coord_mocap",
             1,
             std::bind(&ErrorModel::mocap_callback, this, _1));
         
         subscription_model_ = this->create_subscription<pr_msgs::msg::PRArrayH>(
-            "x_coord_mocap",
+            "x_coord",
             1,
             std::bind(&ErrorModel::model_callback, this, _1));
     }

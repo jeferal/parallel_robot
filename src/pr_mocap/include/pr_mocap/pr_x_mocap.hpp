@@ -6,7 +6,6 @@
 
 #include "rclcpp/rclcpp.hpp"
 
-#include "pr_msgs/msg/pr_array_h.hpp"
 #include "pr_msgs/msg/pr_mocap.hpp"
 
 #include "eigen3/Eigen/Dense"
@@ -36,7 +35,6 @@ namespace pr_mocap
             rclcpp::Publisher<pr_msgs::msg::PRMocap>::SharedPtr publisher_;
 
         protected:
-            void topic_callback(const pr_msgs::msg::PRArrayH::SharedPtr q_msg);
             int ConnectClient();
 
         private:

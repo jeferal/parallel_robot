@@ -42,10 +42,10 @@ add_executable(pr_gus_exe "src/pr_gus_main.cpp")
 
 ament_target_dependencies(pr_gus_exe
   rclcpp
-  encoders_sim
-  ref_pose
-  derivator
-  gus_controller
+  pr_sensors_actuators::EncodersSim
+  ref_pose::RefPose
+  derivator::Derivator
+  gus_controller::GusController
 )
 
 install(TARGETS pr_gus_exe
