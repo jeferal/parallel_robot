@@ -19,21 +19,16 @@ namespace pr_mocap
         this->declare_parameter<std::string>("server_address", "158.42.21.85");
         this->declare_parameter<int>("server_command_port", 1510);
         this->declare_parameter<int>("server_data_port", 1511);
+        this->declare_parameter<std::vector<double>>("markers_ids", {10, 11, 12, 17, 18, 19});
 
-        this->get_parameter("tol", tol);
         this->get_parameter("server_address", server_address);
         this->get_parameter("server_command_port", server_command_port);
         this->get_parameter("server_data_port", server_data_port);
+        this->get_parameter("markers_ids", markers_ids);
 
         publisher_ = this->create_publisher<pr_msgs::msg::PRMocap>(
             "x_coord_mocap",
             1
-        );
-
-        subscription_ = this->create_subscription<pr_msgs::msg::PRArrayH>(
-            "x_coord",
-            1,
-            std::bind(&PRXMocap::topic_callback, this, _1)
         );
 
         unsigned char ver[4];
@@ -66,33 +61,6 @@ namespace pr_mocap
 		    delete g_pClient;
 		    g_pClient = NULL;
 	    }
-    }
-
-    void PRXMocap::topic_callback(const pr_msgs::msg::PRArrayH::SharedPtr x_msg)
-    {
-
-        mocap_msg.x_coord.data[0] = XCoords(0, 0);
-        mocap_msg.x_coord.data[1] = XCoords(2, 0);
-        mocap_msg.x_coord.data[2] = XCoords(1, 1);
-        mocap_msg.x_coord.data[3] = XCoords(2, 1);
-
-        mocap_msg.header.stamp = x_msg->header.stamp;
-        mocap_msg.current_time = this->get_clock()->now();
-
-        //Calculate error between mocap and the model
-        if(error_calc(tol, mocap_msg.error, mocap_msg.x_coord.data, x_msg->data))
-            RCLCPP_INFO(this->get_logger(), "Mocap coordinates are different from the model!!");
-
-        publisher_->publish(mocap_msg);
-    }
-
-    int PRXMocap::error_calc(const double &tol, double &error, const std::array<double, 4> &x_mocap, const std::array<double, 4> &x_model)
-    {
-        error = 0.0;
-        for(int i=0; i<4; i++)
-            error = error + pow(x_mocap[i] - x_model[i], 2);
-
-        return error > tol;
     }
 
     int PRXMocap::ConnectClient()
@@ -241,8 +209,6 @@ namespace pr_mocap
 
         //printf("Markers [Count=%d]\n", data->nLabeledMarkers);
 
-        Eigen::Matrix<double, 3, 10> MarkersMatrix = Eigen::Matrix<double, 3, 10>::Zero();
-
         for(int i=0; i < data->nLabeledMarkers; i++)
         {
             bOccluded = ((data->LabeledMarkers[i].params & 0x01)!=0);
@@ -252,11 +218,7 @@ namespace pr_mocap
             bUnlabeled = ((data->LabeledMarkers[i].params & 0x10) != 0);
             bActiveMarker = ((data->LabeledMarkers[i].params & 0x20) != 0);
 
-            //Rellenar matriz de marcadores
             sMarker marker = data->LabeledMarkers[i];
-            MarkersMatrix(0,i) = marker.x;
-            MarkersMatrix(1,i) = marker.y;
-            MarkersMatrix(2,i) = marker.z;
 
             // Marker ID Scheme:
             // Active Markers:
@@ -272,7 +234,7 @@ namespace pr_mocap
             
             char szMarkerType[512];
             if (bActiveMarker)
-                strcpy(szMarkerType, "Active");
+                strcpy(szMarkerType, "Aceetive");
             else if(bUnlabeled)
                 strcpy(szMarkerType, "Unlabeled");
             else
@@ -280,16 +242,34 @@ namespace pr_mocap
 
             //printf("%s Marker [ModelID=%d, MarkerID=%d, Occluded=%d, PCSolved=%d, ModelSolved=%d] [size=%3.2f] [pos=%3.2f,%3.2f,%3.2f]\n",
             //    szMarkerType, modelID, markerID, bOccluded, bPCSolved, bModelSolved,  marker.size, marker.x, marker.y, marker.z);
+            
+            //Fill Markers Matrix
+            for (int i=0; i<6; i++){
+                if (markerID == pr_x_mocap->markers_ids[i]){
+                    pr_x_mocap->MarkersMatrix(0,i) = marker.x;
+                    pr_x_mocap->MarkersMatrix(1,i) = marker.y;
+                    pr_x_mocap->MarkersMatrix(2,i) = marker.z;
+                }
+            }
         }
 
         //Get coordinates from the markers
         PRModel::OptiTrack::PosOriPM(pr_x_mocap->XCoords,
-                                     MarkersMatrix.col(6),
-                                     MarkersMatrix.col(7),
-                                     MarkersMatrix.col(8),
-                                     MarkersMatrix.col(0),
-                                     MarkersMatrix.col(1),
-                                     MarkersMatrix.col(2));
+                                     pr_x_mocap->MarkersMatrix.col(3),
+                                     pr_x_mocap->MarkersMatrix.col(4),
+                                     pr_x_mocap->MarkersMatrix.col(5),
+                                     pr_x_mocap->MarkersMatrix.col(0),
+                                     pr_x_mocap->MarkersMatrix.col(1),
+                                     pr_x_mocap->MarkersMatrix.col(2));
+
+        pr_x_mocap->mocap_msg.x_coord.data[0] = pr_x_mocap->XCoords(0, 0);
+        pr_x_mocap->mocap_msg.x_coord.data[1] = pr_x_mocap->XCoords(2, 0);
+        pr_x_mocap->mocap_msg.x_coord.data[2] = pr_x_mocap->XCoords(1, 1);
+        pr_x_mocap->mocap_msg.x_coord.data[3] = pr_x_mocap->XCoords(2, 1);
+
+        pr_x_mocap->mocap_msg.current_time = pr_x_mocap->get_clock()->now();
+
+        pr_x_mocap->publisher_->publish(pr_x_mocap->mocap_msg);
     }
 
 #include "rclcpp_components/register_node_macro.hpp"

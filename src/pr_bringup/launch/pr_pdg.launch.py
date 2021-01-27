@@ -261,7 +261,7 @@ def generate_launch_description():
                     node_plugin='pr_mocap::PRXMocap',
                     node_name='mocap',
                     remappings=[
-                        ("x_coord", "x_coord")
+                        ("x_coord_mocap", "x_coord_mocap")
                     ],
                     parameters=[
                         mocap_config

@@ -45,7 +45,7 @@ if(BUILD_TESTING)
   ament_lint_auto_find_test_dependencies()
 endif()
 
-### Pose Ref Generator node ###
+### Mocap node ###
 
 add_library(pr_x_mocap SHARED
   src/pr_x_mocap.cpp)
@@ -66,8 +66,26 @@ ament_target_dependencies(pr_x_mocap
 rclcpp_components_register_nodes(pr_x_mocap "pr_mocap::PRXMocap")
 set(node_plugins "${node_plugins}pr_x_mocap::PRXMocap;$<TARGET_FILE:pr_x_mocap>\n")
 
+### Mocap error node ###
+
+add_library(error_model SHARED
+  src/error_model.cpp)
+
+target_compile_definitions(error_model
+  PRIVATE "COMPOSITION_BUILDING_DLL")
+
+ament_target_dependencies(error_model
+  "rclcpp"
+  "rclcpp_components"
+  "pr_msgs"
+)
+
+rclcpp_components_register_nodes(error_model "pr_mocap::ErrorModel")
+set(node_plugins "${node_plugins}error_model::ErrorModel;$<TARGET_FILE:error_model>\n")
+
 install(TARGETS
   pr_x_mocap
+  error_model
   ARCHIVE DESTINATION lib
   LIBRARY DESTINATION lib
   RUNTIME DESTINATION bin)

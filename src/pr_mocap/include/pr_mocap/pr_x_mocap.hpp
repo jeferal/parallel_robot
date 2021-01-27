@@ -2,6 +2,7 @@
 #define PR_MOCAP__PR_X_MOCAP_HPP_
 
 #include <string>
+#include <vector>
 
 #include "rclcpp/rclcpp.hpp"
 
@@ -29,12 +30,14 @@ namespace pr_mocap
             NatNetClient* g_pClient = NULL;
             sServerDescription g_serverDescription;
             Eigen::Matrix<double, 3, 2> XCoords;
+            Eigen::Matrix<double, 3, 6> MarkersMatrix;
             pr_msgs::msg::PRMocap mocap_msg;
+            std::vector<double> markers_ids;
+            rclcpp::Publisher<pr_msgs::msg::PRMocap>::SharedPtr publisher_;
 
         protected:
             void topic_callback(const pr_msgs::msg::PRArrayH::SharedPtr q_msg);
             int ConnectClient();
-            int error_calc(const double &tol, double &error, const std::array<double, 4> &x_mocap, const std::array<double, 4> &x_model);
 
         private:
             sNatNetClientConnectParams g_connectParams;
@@ -42,9 +45,6 @@ namespace pr_mocap
             double tol;
             std::string server_address;
             int server_command_port, server_data_port;
-
-            rclcpp::Publisher<pr_msgs::msg::PRMocap>::SharedPtr publisher_;
-            rclcpp::Subscription<pr_msgs::msg::PRArrayH>::SharedPtr subscription_;
     };
 
 }
