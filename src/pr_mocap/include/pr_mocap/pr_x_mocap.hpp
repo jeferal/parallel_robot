@@ -4,6 +4,7 @@
 #include "rclcpp/rclcpp.hpp"
 
 #include "pr_msgs/msg/pr_array_h.hpp"
+#include "pr_msgs/msg/pr_mocap.hpp"
 
 #include "eigen3/Eigen/Dense"
 #include "eigen3/Eigen/Geometry"
@@ -26,16 +27,18 @@ namespace pr_mocap
             NatNetClient* g_pClient = NULL;
             sServerDescription g_serverDescription;
             Eigen::Matrix<double, 3, 2> XCoords;
+            pr_msgs::msg::PRMocap mocap_msg;
 
         protected:
             void topic_callback(const pr_msgs::msg::PRArrayH::SharedPtr q_msg);
             int ConnectClient();
+            int error_calc(const double &tol, double &error, const std::array<double, 4> &x_mocap, const std::array<double, 4> &x_model);
 
         private:
             sNatNetClientConnectParams g_connectParams;
             int g_analogSamplesPerMocapFrame = 0;
 
-            rclcpp::Publisher<pr_msgs::msg::PRArrayH>::SharedPtr publisher_;
+            rclcpp::Publisher<pr_msgs::msg::PRMocap>::SharedPtr publisher_;
             rclcpp::Subscription<pr_msgs::msg::PRArrayH>::SharedPtr subscription_;
     };
 

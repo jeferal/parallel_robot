@@ -15,13 +15,13 @@ namespace pr_mocap
     PRXMocap::PRXMocap(const rclcpp::NodeOptions & options)
     : Node("pr_x_mocap", options)
     {
-        publisher_ = this->create_publisher<pr_msgs::msg::PRArrayH>(
+        publisher_ = this->create_publisher<pr_msgs::msg::PRMocap>(
             "x_coord_mocap",
             1
         );
 
         subscription_ = this->create_subscription<pr_msgs::msg::PRArrayH>(
-            "joint_position",
+            "x_coord",
             1,
             std::bind(&PRXMocap::topic_callback, this, _1)
         );
@@ -58,19 +58,29 @@ namespace pr_mocap
 	    }
     }
 
-    void PRXMocap::topic_callback(const pr_msgs::msg::PRArrayH::SharedPtr q_msg)
+    void PRXMocap::topic_callback(const pr_msgs::msg::PRArrayH::SharedPtr x_msg)
     {
-        auto x_pose_msg = pr_msgs::msg::PRArrayH();
 
-        x_pose_msg.data[0] = XCoords(0, 0);
-        x_pose_msg.data[1] = XCoords(2, 0);
-        x_pose_msg.data[2] = XCoords(1, 1);
-        x_pose_msg.data[3] = XCoords(2, 1);
+        mocap_msg.x_coord.data[0] = XCoords(0, 0);
+        mocap_msg.x_coord.data[1] = XCoords(2, 0);
+        mocap_msg.x_coord.data[2] = XCoords(1, 1);
+        mocap_msg.x_coord.data[3] = XCoords(2, 1);
 
-        x_pose_msg.header.stamp = q_msg->header.stamp;
-        x_pose_msg.current_time = this->get_clock()->now();
+        mocap_msg.header.stamp = x_msg->header.stamp;
+        mocap_msg.current_time = this->get_clock()->now();
 
-        publisher_->publish(x_pose_msg);
+        //Calculate error between mocap and the model
+
+        publisher_->publish(mocap_msg);
+    }
+
+    int PRXMocap::error_calc(const double &tol, double &error, const std::array<double, 4> &x_mocap, const std::array<double, 4> &x_model)
+    {
+        error = 0.0;
+        for(int i=0; i<4; i++)
+            error = error + pow(x_mocap[i] - x_mocap[i], 2);
+
+        return error > tol;
     }
 
     int PRXMocap::ConnectClient()
@@ -133,6 +143,7 @@ namespace pr_mocap
 
         return ErrorCode_OK;
     }
+
 }
 
     void NATNET_CALLCONV DataHandler(sFrameOfMocapData* data, void* pUserData)
@@ -159,6 +170,9 @@ namespace pr_mocap
         printf("FrameID : %d\n", data->iFrame);
         printf("Timestamp : %3.2lf\n", data->fTimestamp);
         printf("Software latency : %.2lf milliseconds\n", softwareLatencyMillisec);
+
+        //Update latency on the topic message
+        pr_x_mocap->mocap_msg.latency = softwareLatencyMillisec;
 
         // Only recent versions of the Motive software in combination with ethernet camera systems support system latency measurement.
         // If it's unavailable (for example, with USB camera systems, or during playback), this field will be zero.
