@@ -37,6 +37,7 @@ namespace pr_mocap
         private:
             sNatNetClientConnectParams g_connectParams;
             int g_analogSamplesPerMocapFrame = 0;
+            double tol;
 
             rclcpp::Publisher<pr_msgs::msg::PRMocap>::SharedPtr publisher_;
             rclcpp::Subscription<pr_msgs::msg::PRArrayH>::SharedPtr subscription_;

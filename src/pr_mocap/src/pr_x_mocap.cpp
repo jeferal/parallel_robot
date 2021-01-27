@@ -15,6 +15,9 @@ namespace pr_mocap
     PRXMocap::PRXMocap(const rclcpp::NodeOptions & options)
     : Node("pr_x_mocap", options)
     {
+        this->declare_parameter<double>("tol", 0.01);
+        this->get_parameter("tol", tol);
+
         publisher_ = this->create_publisher<pr_msgs::msg::PRMocap>(
             "x_coord_mocap",
             1
@@ -70,6 +73,8 @@ namespace pr_mocap
         mocap_msg.current_time = this->get_clock()->now();
 
         //Calculate error between mocap and the model
+        if(error_calc(tol, mocap_msg.error, mocap_msg.x_coord.data, x_msg->data))
+            RCLCPP_INFO(this->get_logger(), "Mocap coordinates are different from the model!!");
 
         publisher_->publish(mocap_msg);
     }
@@ -78,7 +83,7 @@ namespace pr_mocap
     {
         error = 0.0;
         for(int i=0; i<4; i++)
-            error = error + pow(x_mocap[i] - x_mocap[i], 2);
+            error = error + pow(x_mocap[i] - x_model[i], 2);
 
         return error > tol;
     }
