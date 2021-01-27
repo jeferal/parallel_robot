@@ -68,12 +68,12 @@ namespace pr_sensors_actuators
                
             volts = control_action_msg->data[n_motor]/vp_conversion;
 
-            RCLCPP_INFO(this->get_logger(), "I heard these and sat: '%f' %f", volts, max_v);
+            //RCLCPP_INFO(this->get_logger(), "I heard these and sat: '%f' %f", volts, max_v);
 
             //Control action saturation
             sat_ca(volts, max_v);
                
-            RCLCPP_INFO(this->get_logger(), "Control action %f", volts);
+            //RCLCPP_INFO(this->get_logger(), "Control action %f", volts);
                
             pci1720->Write(n_motor, 1, &volts);
         }
