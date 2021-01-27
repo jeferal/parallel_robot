@@ -24,6 +24,12 @@ def generate_launch_description():
         'pr_pdg.yaml'
     )
 
+    mocap_config = os.path.join(
+        get_package_share_directory('pr_bringup'),
+        'config',
+        'mocap_server.yaml'
+        )
+
     robot_yaml_file = open(robot_parameters_file)
     pr_params = yaml.load(robot_yaml_file)
 
@@ -258,10 +264,7 @@ def generate_launch_description():
                         ("x_coord", "x_coord")
                     ],
                     parameters=[
-                        {"tol": 0.01},
-                        {"server_address": "158.42.21.85"},
-                        {"server_command_port": 1510},
-                        {"server_data_port": 1511}
+                        mocap_config
                     ]
                 ),
             ],
