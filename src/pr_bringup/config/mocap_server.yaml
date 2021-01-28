@@ -1,7 +1,6 @@
-mocap:
-  ros__parameters:
-    server_address: "158.42.21.85"
-    server_command_port: 1510
-    server_data_port: 1511
-    markers_ids: [10, 11, 12, 17, 18, 19]
-    
+server_address: "158.42.21.85"
+server_command_port: 1510
+server_data_port: 1511
+marker_names: 
+  robot_3ups_rpu: ["P_Movil1_1", "P_Movil1_2", "P_Movil1_3", "P_Fija1_1", "P_Fija1_2", "P_Fija1_3"]
+  robot_5p:  ["P_Movil_5P_1", "P_Movil_5P_2", "P_Movil_5P_3", "P_Fija_5P_1", "P_Fija_5P_1", "P_Fija_5P_1"]

@@ -36,6 +36,9 @@ def generate_launch_description():
     controller_yaml_file = open(controller_params_file)
     controller_params = yaml.load(controller_yaml_file)
 
+    mocap_yaml_file = open(mocap_config)
+    mocap_params = yaml.load(mocap_yaml_file)
+
     robot = controller_params['robot']['robot_name']
     robot_config = controller_params['robot']['config']    
 
@@ -264,7 +267,11 @@ def generate_launch_description():
                         ("x_coord_mocap", "x_coord_mocap")
                     ],
                     parameters=[
-                        mocap_config
+                        {"server_address": mocap_params["server_address"]},
+                        {"server_command_port": mocap_params["server_command_port"]},
+                        {"server_data_port": mocap_params["server_data_port"]},
+                        {"marker_names":  mocap_params["marker_names"][robot]},
+                        {"robot_p5": robot=="robot_5p"},
                     ]
                 ),
                 ComposableNode(

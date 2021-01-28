@@ -19,13 +19,13 @@ namespace pr_mocap
         this->declare_parameter<std::string>("server_address", "158.42.21.85");
         this->declare_parameter<int>("server_command_port", 1510);
         this->declare_parameter<int>("server_data_port", 1511);
-        this->declare_parameter<std::vector<double>>("markers_ids", {10, 11, 12, 17, 18, 19});
+        this->declare_parameter<std::vector<std::string>>("marker_names", {"P_Movil1_1", "P_Movil1_2", "P_Movil1_3", "P_Fija1_1", "P_Fija1_2", "P_Fija1_3"});
         this->declare_parameter<bool>("robot_5p", true);
 
         this->get_parameter("server_address", server_address);
         this->get_parameter("server_command_port", server_command_port);
         this->get_parameter("server_data_port", server_data_port);
-        this->get_parameter("markers_ids", markers_ids);
+        this->get_parameter("marker_names", markers_name);
         this->get_parameter("robot_p5", robot_5p);
 
         publisher_ = this->create_publisher<pr_msgs::msg::PRMocap>(
@@ -54,6 +54,47 @@ namespace pr_mocap
         else
             printf("Client initialized and ready.\n");
 
+        //Retrieve Data Descriptions from Motive
+        void* response;
+        int nBytes;
+        printf("[SampleClient] Sending Test Request\n");
+        iResult = g_pClient->SendMessageAndWait("TestRequest", &response, &nBytes);
+        if (iResult == ErrorCode_OK)
+        {
+            printf("[SampleClient] Received: %s", (char*)response);
+        }
+
+        // Retrieve Data Descriptions from Motive
+        printf("\n\n[SampleClient] Requesting Data Descriptions...");
+        sDataDescriptions* pDataDefs = NULL;
+        iResult = g_pClient->GetDataDescriptionList(&pDataDefs);
+        if (iResult != ErrorCode_OK || pDataDefs == NULL)
+        {
+            printf("[SampleClient] Unable to retrieve Data Descriptions.");
+        }
+        else
+        {
+            for (int i=0; i < pDataDefs->nDataDescriptions; i++)
+            {
+                if(pDataDefs->arrDataDescriptions[i].type == Descriptor_MarkerSet)
+                {
+                    // MarkerSet
+                    sMarkerSetDescription* pMS = pDataDefs->arrDataDescriptions[i].Data.MarkerSetDescription;
+                    if (strcmp(pMS->szName, "all")==0){
+                        printf("\nMarkerSet Name : %s\n", pMS->szName);
+                        for(int i=0; i < pMS->nMarkers; i++){
+                            printf("%s\n", pMS->szMarkerNames[i]);
+                        
+                            for(int j=0; j<6; j++){
+                                if(strcmp(pMS->szMarkerNames[i], markers_name[j].c_str())==0)
+                                    markers_pos[j] = i;
+                            }
+                        }
+                    printf("\nIDS: %d, %d, %d, %d, %d, %d\n", markers_pos[0], markers_pos[1],markers_pos[2],markers_pos[3],markers_pos[4],markers_pos[5]);
+                    }
+                }
+            }
+        }
     }
 
     PRXMocap::~PRXMocap()
@@ -246,11 +287,11 @@ namespace pr_mocap
             //    szMarkerType, modelID, markerID, bOccluded, bPCSolved, bModelSolved,  marker.size, marker.x, marker.y, marker.z);
             
             //Fill Markers Matrix
-            for (int i=0; i<6; i++){
-                if (markerID == pr_x_mocap->markers_ids[i]){
-                    pr_x_mocap->MarkersMatrix(0,i) = marker.x;
-                    pr_x_mocap->MarkersMatrix(1,i) = marker.y;
-                    pr_x_mocap->MarkersMatrix(2,i) = marker.z;
+            for (int j=0; j<6; j++){
+                if (i == pr_x_mocap->markers_pos[j]){
+                    pr_x_mocap->MarkersMatrix(0,j) = marker.x;
+                    pr_x_mocap->MarkersMatrix(1,j) = marker.y;
+                    pr_x_mocap->MarkersMatrix(2,j) = marker.z;
                 }
             }
         }
