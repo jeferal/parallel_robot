@@ -92,7 +92,8 @@ namespace PRModel
                                 const Eigen::Vector3d &mf3,
                                 const Eigen::Vector3d &mm1,
                                 const Eigen::Vector3d &mm2,
-                                const Eigen::Vector3d &mm3);
+                                const Eigen::Vector3d &mm3,
+                                const bool &robot_5p);
     }
 
 }

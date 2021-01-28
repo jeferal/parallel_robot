@@ -33,6 +33,7 @@ namespace pr_mocap
             pr_msgs::msg::PRMocap mocap_msg;
             std::vector<double> markers_ids;
             rclcpp::Publisher<pr_msgs::msg::PRMocap>::SharedPtr publisher_;
+            bool robot_5p;
 
         protected:
             int ConnectClient();

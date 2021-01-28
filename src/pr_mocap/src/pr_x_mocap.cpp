@@ -20,11 +20,13 @@ namespace pr_mocap
         this->declare_parameter<int>("server_command_port", 1510);
         this->declare_parameter<int>("server_data_port", 1511);
         this->declare_parameter<std::vector<double>>("markers_ids", {10, 11, 12, 17, 18, 19});
+        this->declare_parameter<bool>("robot_5p", true);
 
         this->get_parameter("server_address", server_address);
         this->get_parameter("server_command_port", server_command_port);
         this->get_parameter("server_data_port", server_data_port);
         this->get_parameter("markers_ids", markers_ids);
+        this->get_parameter("robot_p5", robot_5p);
 
         publisher_ = this->create_publisher<pr_msgs::msg::PRMocap>(
             "x_coord_mocap",
@@ -260,7 +262,8 @@ namespace pr_mocap
                                      pr_x_mocap->MarkersMatrix.col(5),
                                      pr_x_mocap->MarkersMatrix.col(0),
                                      pr_x_mocap->MarkersMatrix.col(1),
-                                     pr_x_mocap->MarkersMatrix.col(2));
+                                     pr_x_mocap->MarkersMatrix.col(2),
+                                     pr_x_mocap->robot_5p);
 
         pr_x_mocap->mocap_msg.x_coord.data[0] = pr_x_mocap->XCoords(0, 0);
         pr_x_mocap->mocap_msg.x_coord.data[1] = pr_x_mocap->XCoords(2, 0);

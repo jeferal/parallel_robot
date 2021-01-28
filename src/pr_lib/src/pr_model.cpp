@@ -249,7 +249,8 @@ void PRModel::OptiTrack::PosOriPM(
         const Eigen::Vector3d &mf3,
         const Eigen::Vector3d &mm1,
         const Eigen::Vector3d &mm2,
-        const Eigen::Vector3d &mm3)
+        const Eigen::Vector3d &mm3,
+        const bool &robot_5p)
 {
         //Sistema de referencia fijo
         
@@ -274,6 +275,9 @@ void PRModel::OptiTrack::PosOriPM(
         Eigen::Matrix<double, 3, 3> Rlm;
         //eje xf
         Eigen::Vector3d rmm1mm2_l = mm2 - mm1;
+        if(robot_5p)
+            rmm1mm2_l = -rmm1mm2_l;
+        
         Rlm.col(0) = rmm1mm2_l/sqrt(rmm1mm2_l.transpose()*rmm1mm2_l);
         //eje yf
         Eigen::Vector3d rmm1mm3_l = mm3 - mm1;
@@ -291,7 +295,15 @@ void PRModel::OptiTrack::PosOriPM(
         Coordinates(2,1) = atan2(Rfm(1,0), Rfm(1,1));
 
         //Posición de la plataforma móvil
-        Eigen::Vector3d rdf_f(-0.276, 0.064, 0.018);
-        Eigen::Vector3d rdm_m(0,0,-0.1605);
+        Eigen::Vector3d rdf_f;
+        Eigen::Vector3d rdm_m;
+        if(robot_5p){
+            rdf_f << -0.350, 0, 0;
+            rdm_m << -0.320, 0.150, -0.098;
+        } else {
+            rdf_f << -0.276, 0.064, 0.018;
+            rdm_m << 0,0,-0.1605;
+        }
+        
         Coordinates.col(0) = Rfl*(mm1 + Rlm*rdm_m - (mf1 + Rlf*rdf_f));
     }
