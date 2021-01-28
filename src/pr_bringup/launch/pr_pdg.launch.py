@@ -255,7 +255,7 @@ def generate_launch_description():
                         {"ts_ms": controller_params['ts']*1000},
                         {"initial_position": first_reference_q}
                     ]
-                ),
+                ),       
                 ComposableNode(
                     package='pr_mocap',
                     node_plugin='pr_mocap::PRXMocap',
@@ -277,7 +277,7 @@ def generate_launch_description():
                     parameters=[
                         {"tol": 0.01}
                     ]
-                ),
+                ),             
             ],
             output='screen',
     )

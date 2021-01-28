@@ -38,19 +38,20 @@ namespace pr_mocap
 
     void ErrorModel::mocap_callback(const pr_msgs::msg::PRMocap::SharedPtr x_mocap_msg)
     {
-        x_mocap = x_mocap_msg;
+        x_mocap.x_coord.data = x_mocap_msg->x_coord.data;
+        x_mocap.latency = x_mocap_msg->latency;
     }
 
     void ErrorModel::model_callback(const pr_msgs::msg::PRArrayH::SharedPtr x_model_msg)
     {
         auto error_msg = pr_msgs::msg::PRMocap();
 
-        error_calc(tol, error_msg.error, x_mocap->x_coord.data, x_model_msg->data);
+        error_calc(tol, error_msg.error, x_mocap.x_coord.data, x_model_msg->data);
 
         error_msg.header = x_model_msg->header;
         error_msg.current_time = this->get_clock()->now();
-        error_msg.latency = x_mocap->latency;
-        error_msg.x_coord.data = x_mocap->x_coord.data;
+        error_msg.latency = x_mocap.latency;
+        error_msg.x_coord.data = x_mocap.x_coord.data;
 
         publisher_->publish(error_msg);
     }

@@ -30,7 +30,7 @@ namespace pr_mocap
             rclcpp::Publisher<pr_msgs::msg::PRMocap>::SharedPtr publisher_;
 
             double tol;
-            pr_msgs::msg::PRMocap::SharedPtr x_mocap;
+            pr_msgs::msg::PRMocap x_mocap;
     };
 }
 
