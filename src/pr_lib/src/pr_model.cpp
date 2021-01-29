@@ -273,16 +273,16 @@ void PRModel::OptiTrack::PosOriPM(
         
         //Matriz de rotación del sistema movil al sistema local
         Eigen::Matrix<double, 3, 3> Rlm;
-        //eje xf
+        //eje xm
         Eigen::Vector3d rmm1mm2_l = mm2 - mm1;
         if(robot_5p)
             rmm1mm2_l = -rmm1mm2_l;
         
         Rlm.col(0) = rmm1mm2_l/sqrt(rmm1mm2_l.transpose()*rmm1mm2_l);
-        //eje yf
+        //eje ym
         Eigen::Vector3d rmm1mm3_l = mm3 - mm1;
         Rlm.col(1) = rmm1mm3_l/sqrt(rmm1mm3_l.transpose()*rmm1mm3_l);
-        //eje zf
+        //eje zm
         Eigen::Vector3d rzm_l = rmm1mm2_l.cross(rmm1mm3_l);
         Rlm.col(2) = rzm_l/sqrt(rzm_l.transpose()*rzm_l);
         

@@ -271,7 +271,7 @@ def generate_launch_description():
                         {"server_command_port": mocap_params["server_command_port"]},
                         {"server_data_port": mocap_params["server_data_port"]},
                         {"marker_names":  mocap_params["marker_names"][robot]},
-                        {"robot_p5": robot=="robot_5p"},
+                        {"robot_5p": robot=="robot_5p"},
                     ]
                 ),
                 ComposableNode(

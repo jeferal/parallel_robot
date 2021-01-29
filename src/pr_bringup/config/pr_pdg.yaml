@@ -1,7 +1,7 @@
 ts: 0.01
 
 robot: 
-  robot_name: "robot_3ups_rpu"
+  robot_name: "robot_5p"
   config: 1
 
 actuators:

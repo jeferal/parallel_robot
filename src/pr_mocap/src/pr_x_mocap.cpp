@@ -26,7 +26,7 @@ namespace pr_mocap
         this->get_parameter("server_command_port", server_command_port);
         this->get_parameter("server_data_port", server_data_port);
         this->get_parameter("marker_names", markers_name);
-        this->get_parameter("robot_p5", robot_5p);
+        this->get_parameter("robot_5p", robot_5p);
 
         publisher_ = this->create_publisher<pr_msgs::msg::PRMocap>(
             "x_coord_mocap",
