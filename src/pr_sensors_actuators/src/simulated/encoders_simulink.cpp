@@ -33,6 +33,12 @@ namespace pr_sensors_actuators
 			"joint_position", 
 			1);
 
+        subscription_ = this->create_subscription<geometry_msgs::msg::Quaternion>(
+            "posicion_sim",
+            10,
+            std::bind(&EncodersSimulink::topic_callback,this,_1)
+        );
+
         //Create timer
         timer_ = this->create_wall_timer(
             std::chrono::duration<float, std::milli>(ts), 

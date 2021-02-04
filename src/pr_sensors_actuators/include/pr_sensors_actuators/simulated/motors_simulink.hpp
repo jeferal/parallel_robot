@@ -27,8 +27,8 @@ namespace pr_sensors_actuators
 
             rclcpp::Publisher<geometry_msgs::msg::Quaternion>::SharedPtr publisher_;
             rclcpp::Subscription<pr_msgs::msg::PRArrayH>::SharedPtr subscription_;
-            double vp_conversion, max_v;
-            std::vector<double> volts;
+            double max_v;
+            std::vector<double> volts, vp_conversion;
 
 
     };
