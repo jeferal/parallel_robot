@@ -62,7 +62,6 @@ def generate_launch_description():
                         {"max_v": controller_params['actuators']['v_sat']}
                     ]
                 ),
-                
                 ComposableNode(
                     package='pr_controllers',
                     node_plugin='pr_controllers::GusController',

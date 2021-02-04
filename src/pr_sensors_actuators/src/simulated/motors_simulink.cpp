@@ -57,7 +57,6 @@ namespace pr_sensors_actuators
 
     void MotorsSimulink::topic_callback(const pr_msgs::msg::PRArrayH::SharedPtr control_action_msg) 
     {
-        RCLCPP_INFO(this->get_logger(), "Control action received");
         
         volts[0] = control_action_msg->data[0]/vp_conversion[0];
         volts[1] = control_action_msg->data[1]/vp_conversion[1];
@@ -75,8 +74,6 @@ namespace pr_sensors_actuators
         volts_msg.y = volts[1];
         volts_msg.z = volts[2];
         volts_msg.w = volts[3];
-
-        RCLCPP_INFO(this->get_logger(), "Sending control action");
 
         publisher_->publish(volts_msg);
     
