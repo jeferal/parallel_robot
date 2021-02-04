@@ -13,8 +13,8 @@ controller:
   kv: [109.7532, 109.7532, 109.7532, 17927.4511]
 
 ref_path:
-  q: "/home/paralelo4dofnew/ros2_eloquent_ws/parallel_robot/references/ref_qinde_TRR17_CF1_5P_IdV1.txt"
-  x: "/home/paralelo4dofnew/ros2_eloquent_ws/parallel_robot/references/ref_cart_TRR17_CF1_5P_IdV1.txt"
+  q: "/home/paralelo4dofnew/ros2_eloquent_ws/parallel_robot/references/ref_qinde_TRR3_CF1_5P_IdV1.txt"
+  x: "/home/paralelo4dofnew/ros2_eloquent_ws/parallel_robot/references/ref_cart_TRR3_CF1_5P_IdV1.txt"
 
 dir_kin:
   tol: 0.0000001

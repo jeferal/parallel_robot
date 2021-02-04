@@ -22,6 +22,8 @@ find_package(rclcpp_components REQUIRED)
 find_package(rcutils REQUIRED)
 
 find_package(std_msgs REQUIRED)
+find_package(geometry_msgs REQUIRED)
+
 find_package(pr_msgs REQUIRED)
 
 find_library(BIODAQ_LIBRARY NAMES biodaq)
@@ -117,6 +119,25 @@ set(node_plugins "${node_plugins}pr_sensors_actuators::ForceSensor;$<TARGET_FILE
 
 
 
+### Encoders Simulink node ###
+
+add_library(encoders_simulink SHARED
+  src/simulated/encoders_simulink.cpp)
+
+target_compile_definitions(encoders_simulink
+  PRIVATE "COMPOSITION_BUILDING_DLL")
+
+ament_target_dependencies(encoders_simulink
+  "rclcpp"
+  "rclcpp_components"
+  "std_msgs"
+  "pr_msgs"
+  "geometry_msgs")
+
+rclcpp_components_register_nodes(encoders_simulink "pr_sensors_actuators::EncodersSimulink")
+set(node_plugins "${node_plugins}pr_sensors_actuators::EncodersSimulink;$<TARGET_FILE:encoders_simulink>\n")
+
+
 
 ### Installation ###
 
@@ -125,6 +146,7 @@ install(TARGETS
   motor
   encoders_sim
   force_sensor
+  encoders_simulink
   ARCHIVE DESTINATION lib
   LIBRARY DESTINATION lib
   RUNTIME DESTINATION bin)
