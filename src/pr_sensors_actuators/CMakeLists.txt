@@ -138,6 +138,25 @@ rclcpp_components_register_nodes(encoders_simulink "pr_sensors_actuators::Encode
 set(node_plugins "${node_plugins}pr_sensors_actuators::EncodersSimulink;$<TARGET_FILE:encoders_simulink>\n")
 
 
+### Motors Simulink node ###
+
+add_library(motors_simulink SHARED
+  src/simulated/motors_simulink.cpp)
+
+target_compile_definitions(motors_simulink
+  PRIVATE "COMPOSITION_BUILDING_DLL")
+
+ament_target_dependencies(motors_simulink
+  "rclcpp"
+  "rclcpp_components"
+  "std_msgs"
+  "pr_msgs"
+  "geometry_msgs")
+
+rclcpp_components_register_nodes(motors_simulink "pr_sensors_actuators::MotorsSimulink")
+set(node_plugins "${node_plugins}pr_sensors_actuators::MotorsSimulink;$<TARGET_FILE:motors_simulink>\n")
+
+
 
 ### Installation ###
 
@@ -147,6 +166,7 @@ install(TARGETS
   encoders_sim
   force_sensor
   encoders_simulink
+  motors_simulink
   ARCHIVE DESTINATION lib
   LIBRARY DESTINATION lib
   RUNTIME DESTINATION bin)
