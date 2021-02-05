@@ -9,8 +9,8 @@ actuators:
   vp_conversion: [28.4628, 28.4628, 28.4628, 246.6779]
 
 controller:
-  kp: [27394.2003, 27394.2003, 27394.2003, 255168.2203]
-  kv: [109.7532, 109.7532, 109.7532, 17927.4511]
+  kp: [27190.0, 27190.0, 27190.0, 361023.0]
+  kv: [114.27, 114.27, 114.27, 491.32]
 
 ref_path:
   q: "/home/paralelo4dofnew/ros2_eloquent_ws/parallel_robot/references/refeprism_indep_TRR8.txt"

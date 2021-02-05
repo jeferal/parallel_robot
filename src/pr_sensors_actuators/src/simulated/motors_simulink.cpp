@@ -7,6 +7,7 @@
 #include <string>
 
 #include "rclcpp/rclcpp.hpp"
+#include "rclcpp/qos.hpp"
 
 using std::placeholders::_1;
 
@@ -34,9 +35,11 @@ namespace pr_sensors_actuators
             std::bind(&MotorsSimulink::topic_callback,this,_1));
 
         //Voltage publisher
+        rclcpp::SensorDataQoS sensor_qos;
+
         publisher_ = this->create_publisher<geometry_msgs::msg::Quaternion>(
             "voltaje_sim",
-            10
+            sensor_qos
         );
 
         RCLCPP_INFO(this->get_logger(), "Motors initialized");

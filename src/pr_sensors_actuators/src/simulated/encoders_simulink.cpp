@@ -9,6 +9,8 @@
 #include "rclcpp/rclcpp.hpp"
 #include "pr_msgs/msg/pr_array_h.hpp"
 
+#include "rclcpp/qos.hpp"
+
 using std::placeholders::_1;
 
 
@@ -33,9 +35,11 @@ namespace pr_sensors_actuators
 			"joint_position", 
 			1);
 
+        rclcpp::SensorDataQoS sensor_qos;
+
         subscription_ = this->create_subscription<geometry_msgs::msg::Quaternion>(
             "posicion_sim",
-            10,
+            sensor_qos,
             std::bind(&EncodersSimulink::topic_callback,this,_1)
         );
 
@@ -70,13 +74,13 @@ namespace pr_sensors_actuators
           }
           
           is_connected = true;
+          position_msg.current_time = this->get_clock()->now();
     
     }
 
     void EncodersSimulink::on_timer() {
 
-        position_msg.current_time = this->get_clock()->now();
-		position_msg.header.stamp = position_msg.current_time;
+		position_msg.header.stamp = this->get_clock()->now();
 
         if(is_connected){
           publisher_->publish(position_msg);
