@@ -20,6 +20,7 @@ setup(
     tests_require=['pytest'],
     entry_points={
         'console_scripts': [
+            'pr_rl_main = pr_rl.pr_rl_main:main'
         ],
     },
 )
