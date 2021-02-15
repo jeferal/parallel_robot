@@ -1,4 +1,4 @@
-#Message to comunicato position and velocity with header
+#Message to comunicate position and velocity with header
 
 std_msgs/Header header
 builtin_interfaces/Time current_time
