@@ -210,6 +210,16 @@ def generate_launch_description():
                         {"max_v": controller_params['actuators']['v_sat']},
                     ]
                 ),
+                ComposableNode(
+                    package='pr_modelling',
+                    node_plugin='pr_modelling::StatePublisher',
+                    node_name='state_publisher',
+                    remappings=[
+                        ("joint_position", "joint_position"),
+                        ("joint_velocity", "joint_velocity"),
+                        ("pr_state", "pr_state"),
+                    ],
+                ),
             ],
             output='screen',
     )
