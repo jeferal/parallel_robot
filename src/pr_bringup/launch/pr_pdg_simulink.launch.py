@@ -52,19 +52,6 @@ def generate_launch_description():
             package='rclcpp_components',
             node_executable='component_container',
             composable_node_descriptions=[
-                 ComposableNode(
-                    package='pr_sensors_actuators',
-                    node_plugin='pr_sensors_actuators::MotorsSimulink',
-                    node_name='motors',
-                    remappings=[
-                        ("control_action", "control_action"),
-                        ("voltaje_sim", "voltaje_sim")
-                    ],
-                    parameters=[
-                        {"vp_conversion": controller_params['actuators']['vp_conversion']},
-                        {"max_v": controller_params['actuators']['v_sat']}
-                    ]
-                ),
                 ComposableNode(
                     package='pr_aux',
                     node_plugin='pr_aux::Derivator',
@@ -93,7 +80,6 @@ def generate_launch_description():
                         {"robot_config_params": pr_config_params}
                     ]
                 ),
-
                 ComposableNode(
                     package='pr_modelling',
                     node_plugin='pr_modelling::ForwardKinematics',
@@ -183,7 +169,6 @@ def generate_launch_description():
                         {"pm":  pr_physical_properties['pm']},
                     ]
                 ),
-
                 ComposableNode(
                     package='pr_controllers',
                     node_plugin='pr_controllers::PDGController',
@@ -198,19 +183,33 @@ def generate_launch_description():
                         {"kp_gain": controller_params['controller']['kp']},
                         {"kv_gain": controller_params['controller']['kv']},
                     ]
-                ),    
+                ),
                 ComposableNode(
                     package='pr_sensors_actuators',
                     node_plugin='pr_sensors_actuators::EncodersSimulink',
-                    node_name='position_sensors',
+                    node_name='position_sensor',
                     remappings=[
-                        ("joint_position", "joint_position")
+                        ("joint_position", "joint_position"),
+                        ("posicion_sim", "posicion_sim"),
                     ],
                     parameters=[
-                        {"ts_ms": controller_params['ts']*1000},
-                        {"initial_position": first_reference_q}
+                        {"ts_ms": controller_params['ts']*1000.0},
+                        {"initial_position": first_reference_q},
                     ]
-                ),             
+                ),
+                ComposableNode(
+                    package='pr_sensors_actuators',
+                    node_plugin='pr_sensors_actuators::MotorsSimulink',
+                    node_name='actuators',
+                    remappings=[
+                        ("control_action", "control_action"),
+                        ("voltaje_sim", "voltaje_sim"),
+                    ],
+                    parameters=[
+                        {"vp_conversion": controller_params['actuators']['vp_conversion']},
+                        {"max_v": controller_params['actuators']['v_sat']},
+                    ]
+                ),
             ],
             output='screen',
     )

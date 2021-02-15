@@ -156,6 +156,69 @@ ament_target_dependencies(motors_simulink
 rclcpp_components_register_nodes(motors_simulink "pr_sensors_actuators::MotorsSimulink")
 set(node_plugins "${node_plugins}pr_sensors_actuators::MotorsSimulink;$<TARGET_FILE:motors_simulink>\n")
 
+### Encoders Simulink Socket node ###
+
+add_library(encoders_simulink_socket SHARED
+  src/simulated/encoders_simulink_socket.cpp)
+
+target_compile_definitions(encoders_simulink_socket
+  PRIVATE "COMPOSITION_BUILDING_DLL")
+
+ament_target_dependencies(encoders_simulink_socket
+  "rclcpp"
+  "rclcpp_components"
+  "std_msgs"
+  "pr_msgs"
+  "geometry_msgs")
+
+rclcpp_components_register_nodes(encoders_simulink_socket "pr_sensors_actuators::EncodersSimulinkSocket")
+set(node_plugins "${node_plugins}pr_sensors_actuators::EncodersSimulinkSocket;$<TARGET_FILE:encoders_simulink_socket>\n")
+
+### Motors Simulink Socket node ###
+
+add_library(motors_simulink_socket SHARED
+  src/simulated/motors_simulink_socket.cpp)
+
+target_compile_definitions(motors_simulink_socket
+  PRIVATE "COMPOSITION_BUILDING_DLL")
+
+ament_target_dependencies(motors_simulink_socket
+  "rclcpp"
+  "rclcpp_components"
+  "std_msgs"
+  "pr_msgs"
+  "geometry_msgs")
+
+rclcpp_components_register_nodes(motors_simulink_socket "pr_sensors_actuators::MotorsSimulinkSocket")
+set(node_plugins "${node_plugins}pr_sensors_actuators::MotorsSimulinkSocket;$<TARGET_FILE:motors_simulink_socket>\n")
+
+### Simulink Socket Interface ###
+
+add_library(simulink_socket_interface SHARED
+  src/simulated/simulink_socket_interface.cpp)
+
+target_compile_definitions(simulink_socket_interface
+  PRIVATE "COMPOSITION_BUILDING_DLL")
+
+ament_target_dependencies(simulink_socket_interface
+  "rclcpp"
+  "rclcpp_components"
+  "std_msgs"
+  "pr_msgs")
+
+rclcpp_components_register_nodes(simulink_socket_interface "pr_sensors_actuators::SimulinkSocketInterface")
+set(node_plugins "${node_plugins}pr_sensors_actuators::SimulinkSocketInterface;$<TARGET_FILE:simulink_socket_interface>\n")
+
+
+
+add_executable(sim_exe
+  src/simulated/sim_exe.cpp)
+
+target_link_libraries(sim_exe
+  simulink_socket_interface)
+
+ament_target_dependencies(sim_exe
+  "rclcpp")
 
 
 ### Installation ###
@@ -167,9 +230,17 @@ install(TARGETS
   force_sensor
   encoders_simulink
   motors_simulink
+  encoders_simulink_socket
+  motors_simulink_socket
+  simulink_socket_interface
   ARCHIVE DESTINATION lib
   LIBRARY DESTINATION lib
   RUNTIME DESTINATION bin)
+
+
+install(TARGETS
+  sim_exe
+  DESTINATION lib/${PROJECT_NAME})
 
 
 # since the package installs libraries without exporting them

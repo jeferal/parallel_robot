@@ -1,4 +1,4 @@
-#include "pr_sensors_actuators/simulated/motors_simulink.hpp"
+#include "pr_sensors_actuators/simulated/motors_simulink_socket.hpp"
 
 #include <chrono>
 #include <iostream>
@@ -16,7 +16,7 @@ namespace pr_sensors_actuators
 {
     /**** MOTOR SIMULINK COMPONENT ****/
     
-    MotorsSimulink::MotorsSimulink(const rclcpp::NodeOptions & options)
+    MotorsSimulinkSocket::MotorsSimulinkSocket(const rclcpp::NodeOptions & options)
     : Node("motors", options)
     {
         //Parameter declaration
@@ -32,35 +32,37 @@ namespace pr_sensors_actuators
         subscription_ = this->create_subscription<pr_msgs::msg::PRArrayH>(
             "control_action",
             10,
-            std::bind(&MotorsSimulink::topic_callback,this,_1));
-
-        //Voltage publisher
-        rclcpp::SensorDataQoS sensor_qos;
-        sensor_qos.keep_last(1);
-        sensor_qos.transient_local();
-
-        publisher_ = this->create_publisher<geometry_msgs::msg::Quaternion>(
-            "voltaje_sim",
-            sensor_qos
-        );
+            std::bind(&MotorsSimulinkSocket::topic_callback,this,_1));
 
         RCLCPP_INFO(this->get_logger(), "Motors initialized");
 
+        //Create socket file descriptor
+        int server_fd; 
+        struct sockaddr_in address; 
+        int opt = 1; 
+        int addrlen = sizeof(address);
+
+        server_fd = socket(AF_INET, SOCK_STREAM, 0);
+
+        setsockopt(server_fd, SOL_SOCKET, SO_REUSEADDR | SO_REUSEPORT, &opt, sizeof(opt));
+        
+        address.sin_family = AF_INET; 
+        address.sin_addr.s_addr = INADDR_ANY; 
+        address.sin_port = htons( PORT );
+
+        bind(server_fd, (struct sockaddr *)&address, sizeof(address));
+
+        listen(server_fd, 3);
+
+        new_socket = accept(server_fd, (struct sockaddr *)&address, (socklen_t*)&addrlen);
     }
 
-    MotorsSimulink::~MotorsSimulink()
+    MotorsSimulinkSocket::~MotorsSimulinkSocket()
     {
-        auto volts_msg = geometry_msgs::msg::Quaternion();
-
-        volts_msg.x = 0.0;
-        volts_msg.y = 0.0;
-        volts_msg.z = 0.0;
-        volts_msg.w = 0.0;
-
-        publisher_->publish(volts_msg);
+        
     }
 
-    void MotorsSimulink::topic_callback(const pr_msgs::msg::PRArrayH::SharedPtr control_action_msg) 
+    void MotorsSimulinkSocket::topic_callback(const pr_msgs::msg::PRArrayH::SharedPtr control_action_msg) 
     {
         
         volts[0] = control_action_msg->data[0]/vp_conversion[0];
@@ -73,18 +75,18 @@ namespace pr_sensors_actuators
         sat_ca(volts[2], max_v);
         sat_ca(volts[3], max_v);
 
-        auto volts_msg = geometry_msgs::msg::Quaternion();
+        std::string v_msg;
 
-        volts_msg.x = volts[0];
-        volts_msg.y = volts[1];
-        volts_msg.z = volts[2];
-        volts_msg.w = volts[3];
+        v_msg = std::to_string(volts[0]) + " " + 
+                std::to_string(volts[1]) + " " + 
+                std::to_string(volts[2]) + " " + 
+                std::to_string(volts[3]);
 
-        publisher_->publish(volts_msg);
-    
+        send(new_socket, v_msg.c_str(), strlen(v_msg.c_str()), 0);
+
     }
 
-    void MotorsSimulink::sat_ca(double &control_action, const double &sat)
+    void MotorsSimulinkSocket::sat_ca(double &control_action, const double &sat)
     {
 	     if(control_action > sat) control_action = sat;
 	     if(control_action < -sat) control_action = -sat;
@@ -97,4 +99,4 @@ namespace pr_sensors_actuators
 // Register the component with class_loader.
 // This acts as a sort of entry point, allowing the component to be discoverable when its library
 // is being loaded into a running process.
-RCLCPP_COMPONENTS_REGISTER_NODE(pr_sensors_actuators::MotorsSimulink)
+RCLCPP_COMPONENTS_REGISTER_NODE(pr_sensors_actuators::MotorsSimulinkSocket)

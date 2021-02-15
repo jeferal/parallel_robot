@@ -36,6 +36,7 @@ namespace pr_sensors_actuators
 			1);
 
         rclcpp::SensorDataQoS sensor_qos;
+        sensor_qos.keep_last(1);
 
         subscription_ = this->create_subscription<geometry_msgs::msg::Quaternion>(
             "posicion_sim",
@@ -72,14 +73,12 @@ namespace pr_sensors_actuators
           position_msg.data[2] = msg->z;
           position_msg.data[3] = msg->w;
           }
-          
-          is_connected = true;
-          position_msg.current_time = this->get_clock()->now();
-    
     }
 
     void EncodersSimulink::on_timer() {
 
+        is_connected = true;
+        position_msg.current_time = this->get_clock()->now();
 		position_msg.header.stamp = this->get_clock()->now();
 
         if(is_connected){
