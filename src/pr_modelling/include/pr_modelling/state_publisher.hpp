@@ -9,6 +9,7 @@
 #include "message_filters/sync_policies/exact_time.h"
 
 #include "pr_msgs/msg/pr_array_h.hpp"
+#include "pr_msgs/msg/pr_state.hpp"
 
 
 namespace pr_modelling
@@ -37,7 +38,7 @@ namespace pr_modelling
             typedef message_filters::Synchronizer<SyncPolicy> Synchronizer;
             std::shared_ptr<Synchronizer> sync_;
 
-            rclcpp::Publisher<pr_msgs::msg::PRArrayH>::SharedPtr publisher_;
+            rclcpp::Publisher<pr_msgs::msg::PRState>::SharedPtr publisher_;
     };
 }
 

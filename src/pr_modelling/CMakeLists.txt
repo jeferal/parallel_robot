@@ -161,6 +161,23 @@ rclcpp_components_register_nodes(q_grav "pr_modelling::QGrav")
 set(node_plugins "${node_plugins}pr_modelling::QGrav;$<TARGET_FILE:q_grav>\n")
 
 
+### STATE PUBLISHER node ###
+
+add_library(state_publisher SHARED
+  src/state_publisher.cpp)
+
+target_compile_definitions(state_publisher
+  PRIVATE "COMPOSITION_BUILDING_DLL")
+
+ament_target_dependencies(state_publisher
+  "rclcpp"
+  "rclcpp_components"
+  "message_filters"
+  "pr_msgs")
+
+rclcpp_components_register_nodes(state_publisher "pr_modelling::StatePublisher")
+set(node_plugins "${node_plugins}pr_modelling::StatePublisher;$<TARGET_FILE:state_publisher>\n")
+
 
 ### Installation ###
 
@@ -171,6 +188,7 @@ install(TARGETS
   dep_jac
   rast_t
   q_grav
+  state_publisher
   ARCHIVE DESTINATION lib
   LIBRARY DESTINATION lib
   RUNTIME DESTINATION bin)
