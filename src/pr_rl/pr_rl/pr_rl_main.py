@@ -1,22 +1,29 @@
-import rclpy
-
 import gym
 
 from time import sleep
 
-print(gym.__file__)
-
 
 def main(args=None):
 
-    rclpy.init(args=args)
 
     env = gym.make('gym_parallel_robot:ParallelRobot-v0')
 
-    loop = True
+    n_episodes = 20
+    i = 0
 
-    while loop:
-        obs_, reward, done, info = env.step([0.8, 0.8, 0.8, 0.8])
+    for i in range(0, n_episodes):
+        print('episode number' + str(i))
+        env.reset()
+        loop = True
+
+        while loop:
+            obs_, reward, done, info = env.step([0.8, 0.8, 0.8, 0.8])
+            print(reward)
+            print(obs_)
+            if done == True:
+                loop = False
+            
+        i = i+1
 
     env.close()
 

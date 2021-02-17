@@ -45,6 +45,7 @@ namespace pr_sensors_actuators
         );
 
         //Create timer
+        /*
         timer_ = this->create_wall_timer(
             std::chrono::duration<float, std::milli>(ts), 
             std::bind(&EncodersSimulink::on_timer, this));
@@ -58,10 +59,11 @@ namespace pr_sensors_actuators
 		position_msg.header.stamp = position_msg.current_time;
 
         publisher_->publish(position_msg);
+        */
     }
 
     void EncodersSimulink::topic_callback(const geometry_msgs::msg::Quaternion::SharedPtr msg) {
-        if(msg->x==0.0){
+        /*if(msg->x==0.0){
             position_msg.data[0] = 0.656465;
             position_msg.data[1] = 0.647034;
             position_msg.data[2] = 0.677844;
@@ -72,11 +74,20 @@ namespace pr_sensors_actuators
           position_msg.data[1] = msg->y;
           position_msg.data[2] = msg->z;
           position_msg.data[3] = msg->w;
-          }
+          }*/
+        auto pos_msg = pr_msgs::msg::PRArrayH();
+        pos_msg.current_time = this->get_clock()->now();
+		pos_msg.header.stamp = this->get_clock()->now();
+        pos_msg.data[0] = msg->x;
+        pos_msg.data[1] = msg->y;
+        pos_msg.data[2] = msg->z;
+        pos_msg.data[3] = msg->w;
+        publisher_->publish(pos_msg);
+
     }
 
     void EncodersSimulink::on_timer() {
-
+        /*
         is_connected = true;
         position_msg.current_time = this->get_clock()->now();
 		position_msg.header.stamp = this->get_clock()->now();
@@ -85,7 +96,8 @@ namespace pr_sensors_actuators
           publisher_->publish(position_msg);
           //RCLCPP_INFO(this->get_logger(), "Publishing: %f %f %f %f", position_msg.data[0], position_msg.data[1], position_msg.data[2], position_msg.data[3]);
         }
-      }
+        */
+    }
 
 
 }
