@@ -7,7 +7,7 @@ import os
 
 def generate_launch_description():
 
-    first_reference_q = [0.695245, 0.691370, 0.693736, 0.654154]
+    first_reference_q = [0.679005, 0.708169, 0.684298, 0.637145]
 
     pr_rl = ComposableNodeContainer(
                 node_name='pr_container',
@@ -25,7 +25,7 @@ def generate_launch_description():
                     ],
                     parameters=[
                         {"initial_value": first_reference_q},
-                        {"ts": 0.01}
+                        {"ts": 0.005}
                     ]
                 ),
                 ComposableNode(
@@ -37,7 +37,7 @@ def generate_launch_description():
                         ("posicion_sim", "posicion_sim"),
                     ],
                     parameters=[
-                        {"ts_ms": 10.0},
+                        {"ts_ms": 5.0},
                         {"initial_position": first_reference_q},
                     ]
                 ),
