@@ -36,6 +36,12 @@ namespace pr_aux
             "joint_position",
             1,
             std::bind(&Derivator::topic_callback, this, _1));
+
+        subscription_reset_ = this->create_subscription<std_msgs::msg::Bool>(
+            "der_reset",
+            1,
+            std::bind(&Derivator::reset_callback, this, _1)
+        );
     }
 
     void Derivator::topic_callback(const pr_msgs::msg::PRArrayH::SharedPtr var_msg)
@@ -51,6 +57,12 @@ namespace pr_aux
         publisher_->publish(var_der_msg);
 
         var_ant = var_msg->data;
+    }
+
+    void Derivator::reset_callback(const std_msgs::msg::Bool::SharedPtr reset_msg)
+    {
+        for(int i=0; i<4; i++)
+            var_ant[i] = init_val[i];
     }
 }
 
