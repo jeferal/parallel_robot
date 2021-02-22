@@ -48,11 +48,20 @@ def main(args=None):
 
     for i in range(n_games):
         observation = env.reset()
+        print('returned observation: ')
+        print(observation)
         done = False
         score = 0
         while not done:
+            print(observation)
             action = agent.choose_action(observation, evaluate)
-            observation_, reward, done, info = env.step(action)
+            action_m = tf.make_tensor_proto(action)
+            control_action = tf.make_ndarray(action_m)
+            print('control action:')
+            print(control_action)
+            observation_, reward, done, info = env.step(control_action)
+            print('reward: ')
+            print(reward)
             score += reward
             agent.remember(observation, action, reward, observation_, done)
             if not load_checkpoint:
