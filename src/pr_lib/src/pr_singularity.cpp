@@ -2,30 +2,43 @@
 
 
 Eigen::Matrix<double,6,1> PRSingularity::CalculateAngOts(
-        const Eigen::Vector4d &X,
-        const Eigen::Vector4d &q,
-        Eigen::Matrix<double, 5, 1> &X_OTS,
-        Eigen::Matrix<double,6,4> &solOTS,
-        Eigen::Matrix<double, 5, 1> &Xn_OTS,
-        std::vector<double> &RParam,
-        int iter_OTS, double tol_OTS)
+        const double &theta, const double &psi,
+        const Eigen::Matrix<double,4,3> &q,
+		Eigen::Matrix<double,6,4> &OTS_ant,
+        const std::vector<double> &RParam,
+        const int iter_OTS, const double tol_OTS)
 {
-    double theta = X(2), psi = X(3);
 	double error_OTS;
 	int ci;
-	Eigen::Matrix<double, 5, 1> f_OTS;
+	//Solución de los OTS
+	
+	Eigen::Matrix<double,5,1> X_OTS = Eigen::Matrix<double,5,1>::Zero();
+
+	Eigen::Matrix<double,5,1> Xn_OTS = Eigen::Matrix<double,5,1>::Zero();
+
+	Eigen::Matrix<double,6,4> solOTS = Eigen::Matrix<double,6,4>::Zero();
+
 	Eigen::Matrix<double, 3, 1> ang_OTS_i, ang_OTS_j;
-	Eigen::Matrix<double, 6, 1> sol_AngOTS;
-	Eigen::Matrix<double, 5, 5> J_OTS;
+	//Solución del angulo entre ejes instantaneos de dos OTS
+	Eigen::Matrix<double, 6, 1> sol_AngOTS = Eigen::Matrix<double,6,1>::Zero();
+	//Sistema ecuaciones para resolver cada OTS
+	Eigen::Matrix<double, 5, 1> f_OTS = Eigen::Matrix<double,5,1>::Zero();
+	//Jacobiano de las ecuaciones para resolver cada OTS
+	Eigen::Matrix<double, 5, 5> J_OTS = Eigen::Matrix<double,5,5>::Zero();
 
     // SOLUCION DE LOS CUATRO OTS
 	for (int op=1; op<=4; op++){
 		
 		// Punto inicial para solucionar el sistema de ecuaciones para un OTS
-		X_OTS(0) = solOTS(0,op-1); X_OTS(1) = solOTS(1,op-1); X_OTS(2) = solOTS(2,op-1); X_OTS(3) = solOTS(3,op-1); X_OTS(4) = solOTS(5,op-1);
+		X_OTS(0) = OTS_ant(0,op-1); 
+		X_OTS(1) = OTS_ant(1,op-1); 
+		X_OTS(2) = OTS_ant(2,op-1); 
+		X_OTS(3) = OTS_ant(3,op-1); 
+		X_OTS(4) = OTS_ant(5,op-1);
 		
 		// Error inicial para la resolucion del sistema basada en el punto inicial
-		error_OTS = EqOTS(X_OTS(0), X_OTS(1), X_OTS(2), X_OTS(3), X_OTS(4), theta, psi, q, op, RParam[6], RParam[7], RParam[8], RParam[9], RParam[10]).norm();
+		EqOTS(f_OTS, X_OTS(0), X_OTS(1), X_OTS(2), X_OTS(3), X_OTS(4), theta, psi, q, op, RParam[6], RParam[7], RParam[8], RParam[9], RParam[10]);
+		error_OTS = f_OTS.norm();
 
 		// Iteracion inicial
 		ci = 1;
@@ -33,13 +46,13 @@ Eigen::Matrix<double,6,1> PRSingularity::CalculateAngOts(
 		// Algoritmo de Newton Raphson
 		while (error_OTS>tol_OTS){
 			// Funcion con las ecuaciones que determinan los componentes de un OTS
-			f_OTS = EqOTS(X_OTS(0), X_OTS(1), X_OTS(2), X_OTS(3), X_OTS(4), theta, psi, q, op, RParam[6], RParam[7], RParam[8], RParam[9], RParam[10]);
+			EqOTS(f_OTS, X_OTS(0), X_OTS(1), X_OTS(2), X_OTS(3), X_OTS(4), theta, psi, q, op, RParam[6], RParam[7], RParam[8], RParam[9], RParam[10]);
 			
 			// Error de la solucion actual
 			error_OTS = f_OTS.norm();
 			
 			// Jacobiano del sistema de ecuaciones para un OTS
-			J_OTS = EqOTSJacobian(X_OTS(0), X_OTS(1), X_OTS(2), theta, psi, q, op, RParam[6], RParam[7], RParam[8], RParam[9], RParam[10]);
+			EqOTSJacobian(J_OTS, X_OTS(0), X_OTS(1), X_OTS(2), theta, psi, q, op, RParam[6], RParam[7], RParam[8], RParam[9], RParam[10]);
 			
 			// Calculo de la nueva solucion
 			//Xn_OTS = X_OTS - linSolve(J_OTS, f_OTS);
@@ -86,15 +99,15 @@ Eigen::Matrix<double,6,1> PRSingularity::CalculateAngOts(
 	return sol_AngOTS;
 }
 
-Eigen::Matrix<double, 5, 5> PRSingularity::EqOTSJacobian(
+void PRSingularity::EqOTSJacobian(
+		Eigen::Matrix<double,5,5> &J,
         const double &wx, const double &wy, const double &wz, 
         const double &theta, const double &psi, 
-        const Eigen::Vector4d &q, 
+        const Eigen::Matrix<double,4,3> &q, 
         const int &op, 
         const double &Rm1, const double &Rm2, const double &Rm3, 
         const double &betaMD, const double &betaMI)
 {
-    Eigen::Matrix<double, 5, 5> J = Eigen::Matrix<double, 5, 5>::Zero(5,5);
 	double q11 = q(0), q12 = q(1), q13 = q(2);
 	double q21 = q(3), q22 = q(4), q23 = q(5);
 	double q31 = q(6), q32 = q(7), q33 = q(8);
@@ -186,16 +199,15 @@ Eigen::Matrix<double, 5, 5> PRSingularity::EqOTSJacobian(
 			break;
 
 	}
-
-	return J;
 }
 
 
-Eigen::Matrix<double,5,1> PRSingularity::EqOTS(
+void PRSingularity::EqOTS(
+	   Eigen::Matrix<double,5,1> &f,
        const double &wx, const double &wy, const double &wz, 
        const double &vx, const double &vz, 
        const double &theta, const double &psi, 
-       const Eigen::Vector4d &q, 
+       const Eigen::Matrix<double,4,3> &q, 
        const int &op, 
        const double &Rm1, const double &Rm2, const double &Rm3, 
        const double &betaMD, const double &betaMI 
@@ -203,8 +215,6 @@ Eigen::Matrix<double,5,1> PRSingularity::EqOTS(
 {
     //A partir de la orientacion (theta y psi) del centro de la plataforma del robot paralelo y de la solucion de la cinematica inversa determinamos las componentes del Output Screw Salida (OTS). El OTS a determinar se selecciona mediante la variable op.
 	
-	Eigen::Matrix<double,5,1> f = Eigen::Matrix<double,5,1>::Zero(5);
-
 	f(3) = wx - (sin(theta)/cos(theta))*wz;
 	f(4) = pow(wx,2) + pow(wy,2) + pow(wz,2) -1;
 	double q11 = q(0), q12 = q(1), q13 = q(2);
@@ -239,10 +249,9 @@ Eigen::Matrix<double,5,1> PRSingularity::EqOTS(
 			break;
 
 	}
-	return f;
 }
 
-
+/*
 Eigen::Vector4d PRSingularity::CalculateQindMod(
         const Eigen::Vector4d &X_cart, 
         const Eigen::Vector4d &q_ref, 
@@ -389,3 +398,4 @@ Eigen::Vector4d PRSingularity::CalculateQindMod(
 
 	return q_ind_mod;
 }
+*/

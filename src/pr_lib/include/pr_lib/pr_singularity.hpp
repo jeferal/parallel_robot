@@ -14,33 +14,33 @@ namespace PRSingularity
     //*** Calculate Ang OTS ***//
 
     Eigen::Matrix<double,6,1> CalculateAngOts(
-        const Eigen::Vector4d &X,
-        const Eigen::Vector4d &Q,
-        Eigen::Matrix<double, 5, 1> &X_OTS,
-        Eigen::Matrix<double,6,4> &solOTS,
-        Eigen::Matrix<double, 5, 1> &Xn_OTS,
-        std::vector<double> &RParam,
-        int iter_OTS, double tol_OTS);
+        const double &theta, const double &psi,
+        const Eigen::Matrix<double,4,3> &q,
+		Eigen::Matrix<double,6,4> &OTS_ant,
+        const std::vector<double> &RParam,
+        const int iter_OTS, const double tol_OTS);
 
     //*** Ang OTS Jacobian Equations ***//
 
-    Eigen::Matrix<double, 5, 5> EqOTSJacobian(
+    void EqOTSJacobian(
+        Eigen::Matrix<double,5,5> &J,
         const double &wx, const double &wy, const double &wz, 
         const double &theta, const double &psi, 
-        const Eigen::Vector4d &q, 
+        const Eigen::Matrix<double,4,3> &q, 
         const int &op, 
         const double &Rm1, const double &Rm2, const double &Rm3, 
         const double &betaMD, const double &betaMI
     );
 
-    Eigen::Matrix<double,5,1> EqOTS(
+    void EqOTS(
+       Eigen::Matrix<double,5,1> &f,
        const double &wx, const double &wy, const double &wz, 
        const double &vx, const double &vz, 
        const double &theta, const double &psi, 
-       const Eigen::Vector4d &q, 
+       const Eigen::Matrix<double,4,3> &q, 
        const int &op, 
        const double &Rm1, const double &Rm2, const double &Rm3, 
-       const double &betaMD, const double &betaMI 
+       const double &betaMD, const double &betaMI
     );
 
     Eigen::Vector4d CalculateQindMod(

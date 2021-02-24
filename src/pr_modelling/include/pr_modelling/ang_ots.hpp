@@ -8,6 +8,7 @@
 #include "pr_msgs/msg/pr_array_h.hpp"
 #include "pr_msgs/msg/pr_mat_h.hpp"
 #include "pr_lib/pr_singularity.hpp"
+#include "pr_lib/pr_model.hpp"
 
 #include "eigen3/Eigen/Dense"
 
@@ -27,6 +28,7 @@ namespace pr_modelling
             rclcpp::Publisher<pr_msgs::msg::PRArrayH>::SharedPtr publisher_;
 
             std::vector<double> robot_params;
+            Eigen::Matrix<double, 4, 3> q_sol = Eigen::Matrix<double, 4, 3>::Zero();
 
     };
 }

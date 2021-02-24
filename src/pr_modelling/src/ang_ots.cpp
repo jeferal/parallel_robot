@@ -39,7 +39,10 @@ namespace pr_modelling
 
     void AngOTS::topic_callback(const pr_msgs::msg::PRArrayH::SharedPtr x_msg)
     {
-        
+        //Calculate inverse kinematics
+        PRModel::InverseKinematics(q_sol, x_msg->data, robot_params);
+
+        //
         
     }
 }
