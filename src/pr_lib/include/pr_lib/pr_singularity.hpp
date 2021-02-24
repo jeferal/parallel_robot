@@ -1,0 +1,39 @@
+#ifndef PR_LIB__SINGULARITY_HPP_
+#define PR_LIB__SINGULARITY_HPP_
+
+#include <vector>
+#include <array>
+#include <cmath>
+
+#include "eigen3/Eigen/Dense"
+
+namespace PRSingularity
+{
+    //*** Calculate Ang OTS ***//
+
+    Eigen::Vector4d CalculateAngOts(
+                                    const Eigen::Vector4d &X,
+                                    const Eigen::Vector4d &Q);
+
+    Eigen::Matrix<double, 5, 5> EcOTSJacobian(
+        const double &wx, const double &wy, const double &wz, 
+        const double &theta, const double &psi, 
+        const Eigen::Vector4d &q, 
+        const int &op, 
+        const double &Rm1, const double &Rm2, const double &Rm3, 
+        const double &betaMD, const double &betaMI
+    );
+
+    Eigen::Matrix<double,5,1> EcOTS(
+       const double &wx, const double &wy, const double &wz, 
+       const double &vx, const double &vz, 
+       const double &theta, const double &psi, 
+       const Eigen::Vector4d &q, 
+       const int &op, 
+       const double &Rm1, const double &Rm2, const double &Rm3, 
+       const double &betaMD, const double &betaMI 
+    );
+}
+
+
+#endif  // PR_LIB__SINGULARITY_HPP_
