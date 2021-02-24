@@ -28,7 +28,12 @@ namespace pr_modelling
             rclcpp::Publisher<pr_msgs::msg::PRArrayH>::SharedPtr publisher_;
 
             std::vector<double> robot_params;
-            Eigen::Matrix<double, 4, 3> q_sol = Eigen::Matrix<double, 4, 3>::Zero();
+            Eigen::Matrix<double,4,3> q_sol = Eigen::Matrix<double,4,3>::Zero();
+            std::vector<double> initial_ots;
+            Eigen::Matrix<double,6,4> OTS = Eigen::Matrix<double,6,4>::Zero();
+            Eigen::Matrix<double,6,1> sol_OTS = Eigen::Matrix<double,6,1>::Zero();
+            int iter_max_ots;
+            double tol_ots;
 
     };
 }
