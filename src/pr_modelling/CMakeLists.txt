@@ -179,6 +179,25 @@ rclcpp_components_register_nodes(state_publisher "pr_modelling::StatePublisher")
 set(node_plugins "${node_plugins}pr_modelling::StatePublisher;$<TARGET_FILE:state_publisher>\n")
 
 
+### ANG OTS PUBLISHER node ###
+
+add_library(ang_ots SHARED
+  src/ang_ots.cpp)
+
+target_compile_definitions(ang_ots
+  PRIVATE "COMPOSITION_BUILDING_DLL")
+
+ament_target_dependencies(ang_ots
+  "rclcpp"
+  "rclcpp_components"
+  "message_filters"
+  "pr_msgs"
+  "pr_lib")
+
+rclcpp_components_register_nodes(ang_ots "pr_modelling::AngOTS")
+set(node_plugins "${node_plugins}pr_modelling::StatePublisher;$<TARGET_FILE:ang_ots>\n")
+
+
 ### Installation ###
 
 install(TARGETS
@@ -189,6 +208,7 @@ install(TARGETS
   rast_t
   q_grav
   state_publisher
+  ang_ots
   ARCHIVE DESTINATION lib
   LIBRARY DESTINATION lib
   RUNTIME DESTINATION bin)

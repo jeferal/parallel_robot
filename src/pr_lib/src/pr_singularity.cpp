@@ -1,7 +1,7 @@
 #include "pr_lib/pr_singularity.hpp"
 
 
-Eigen::Vector4d PRSingularity::CalculateAngOts(
+Eigen::Matrix<double,6,1> PRSingularity::CalculateAngOts(
         const Eigen::Vector4d &X,
         const Eigen::Vector4d &q,
         Eigen::Matrix<double, 5, 1> &X_OTS,
@@ -13,10 +13,11 @@ Eigen::Vector4d PRSingularity::CalculateAngOts(
     double theta = X(2), psi = X(3);
 	double error_OTS;
 	int ci;
-	Eigen::Matrix<double, 5, 1> f_OTS, ang_OTS_i, ang_OTS_j, sol_AngOTS;
+	Eigen::Matrix<double, 5, 1> f_OTS;
+	Eigen::Matrix<double, 3, 1> ang_OTS_i, ang_OTS_j;
+	Eigen::Matrix<double, 6, 1> sol_AngOTS;
 	Eigen::Matrix<double, 5, 5> J_OTS;
-	sol_AngOTS.resize(6);
-    
+
     // SOLUCION DE LOS CUATRO OTS
 	for (int op=1; op<=4; op++){
 		
@@ -64,7 +65,7 @@ Eigen::Vector4d PRSingularity::CalculateAngOts(
 		solOTS(4,op-1)=0;
 		solOTS(5,op-1)=X_OTS(4);
     }
-
+	
     // ANGULO ENTRE DOS OUTPUT TWIST SCREW CALCULADOS (Componentes angular y lineal)
 	// Indice donde se almacenara el angulo
 	int k=0;
@@ -83,7 +84,6 @@ Eigen::Vector4d PRSingularity::CalculateAngOts(
 	}
 	
 	return sol_AngOTS;
-
 }
 
 Eigen::Matrix<double, 5, 5> PRSingularity::EqOTSJacobian(

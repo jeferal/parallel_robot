@@ -16,7 +16,7 @@ namespace pr_modelling
             explicit IndependentJacobian(const rclcpp::NodeOptions & options);
 
         protected:
-            void topic_callback(const pr_msgs::msg::PRMatH::SharedPtr x_msg);
+            void topic_callback(const pr_msgs::msg::PRMatH::SharedPtr q_msg);
 
         private:
             rclcpp::Subscription<pr_msgs::msg::PRMatH>::SharedPtr subscription_;

@@ -30,4 +30,4 @@ namespace pr_aux
     };
 }
 
-#endif // PR_AUX__MOTOR_HPP_
+#endif // PR_AUX__DERIVATOR_HPP_

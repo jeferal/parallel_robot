@@ -11,7 +11,7 @@ namespace PRSingularity
 {
     //*** Calculate Ang OTS ***//
 
-    Eigen::Vector4d CalculateAngOts(
+    Eigen::Matrix<double,6,1> CalculateAngOts(
         const Eigen::Vector4d &X,
         const Eigen::Vector4d &Q,
         Eigen::Matrix<double, 5, 1> &X_OTS,
