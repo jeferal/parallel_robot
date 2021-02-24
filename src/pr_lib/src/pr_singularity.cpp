@@ -11,20 +11,17 @@ Eigen::Matrix<double,6,1> PRSingularity::CalculateAngOts(
 	double error_OTS;
 	int ci;
 	//Solución de los OTS
-	
-	Eigen::Matrix<double,5,1> X_OTS = Eigen::Matrix<double,5,1>::Zero();
 
-	Eigen::Matrix<double,5,1> Xn_OTS = Eigen::Matrix<double,5,1>::Zero();
-
-	Eigen::Matrix<double,6,4> solOTS = Eigen::Matrix<double,6,4>::Zero();
-
-	Eigen::Matrix<double, 3, 1> ang_OTS_i, ang_OTS_j;
 	//Solución del angulo entre ejes instantaneos de dos OTS
 	Eigen::Matrix<double, 6, 1> sol_AngOTS = Eigen::Matrix<double,6,1>::Zero();
 	//Sistema ecuaciones para resolver cada OTS
 	Eigen::Matrix<double, 5, 1> f_OTS = Eigen::Matrix<double,5,1>::Zero();
 	//Jacobiano de las ecuaciones para resolver cada OTS
 	Eigen::Matrix<double, 5, 5> J_OTS = Eigen::Matrix<double,5,5>::Zero();
+
+	Eigen::Matrix<double,5,1> X_OTS = Eigen::Matrix<double,5,1>::Zero();
+
+	Eigen::Matrix<double, 3, 1> ang_OTS_i, ang_OTS_j;
 
     // SOLUCION DE LOS CUATRO OTS
 	for (int op=1; op<=4; op++){
@@ -56,11 +53,10 @@ Eigen::Matrix<double,6,1> PRSingularity::CalculateAngOts(
 			
 			// Calculo de la nueva solucion
 			//Xn_OTS = X_OTS - linSolve(J_OTS, f_OTS);
-			Xn_OTS = X_OTS - J_OTS.partialPivLu().solve(f_OTS);
+			X_OTS = X_OTS - J_OTS.partialPivLu().solve(f_OTS);
 			//Xn_OTS = X_OTS - J_OTS.inverse()*f_OTS;
 
 			// Actualizo la solucion de un OTS
-			X_OTS = Xn_OTS;
 			//cout << X_OTS.transpose() << endl;
 			
 			// Incremento el contador de iteraciones
@@ -70,13 +66,13 @@ Eigen::Matrix<double,6,1> PRSingularity::CalculateAngOts(
                 break;
 		}
 		
-		// Almaceno la solucion del OTS seleccionado por op
-		solOTS(0,op-1)=X_OTS(0);
-		solOTS(1,op-1)=X_OTS(1);
-		solOTS(2,op-1)=X_OTS(2);
-		solOTS(3,op-1)=X_OTS(3);
-		solOTS(4,op-1)=0;
-		solOTS(5,op-1)=X_OTS(4);
+		// Almaceno la solucion del OTS seleccionado por op y actualizo la variable para el siguiente Ts
+		OTS_ant(0,op-1)=X_OTS(0);
+		OTS_ant(1,op-1)=X_OTS(1);
+		OTS_ant(2,op-1)=X_OTS(2);
+		OTS_ant(3,op-1)=X_OTS(3);
+		OTS_ant(4,op-1)=0;
+		OTS_ant(5,op-1)=X_OTS(4);
     }
 	
     // ANGULO ENTRE DOS OUTPUT TWIST SCREW CALCULADOS (Componentes angular y lineal)
@@ -87,8 +83,8 @@ Eigen::Matrix<double,6,1> PRSingularity::CalculateAngOts(
 		// Contador segundo OTS
 		for (int j=i+1;j<4;j++){
 			// OTS - Componente Angular
-			ang_OTS_i = (solOTS.col(i)).head(3);
-			ang_OTS_j = (solOTS.col(j)).head(3);
+			ang_OTS_i = (OTS_ant.col(i)).head(3);
+			ang_OTS_j = (OTS_ant.col(j)).head(3);
 			sol_AngOTS(k) = acos(ang_OTS_i.dot(ang_OTS_j)/(ang_OTS_i.norm()*ang_OTS_j.norm()))*180/M_PI;
 			// Incremento el indice de almacenamiento del angulo entre dos OTS
 			k++;
