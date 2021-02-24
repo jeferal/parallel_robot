@@ -7,6 +7,8 @@
 
 #include "eigen3/Eigen/Dense"
 
+#include "pr_lib/pr_model.hpp"
+
 namespace PRSingularity
 {
     //*** Calculate Ang OTS ***//
@@ -40,6 +42,14 @@ namespace PRSingularity
        const double &Rm1, const double &Rm2, const double &Rm3, 
        const double &betaMD, const double &betaMI 
     );
+
+    Eigen::Vector4d CalculateQindMod(
+        const Eigen::Vector4d &X_cart, 
+        const Eigen::Vector4d &q_ref, 
+        const Eigen::Matrix<double,6,1> &angOTS, 
+        const Eigen::Matrix<double,6,4> &solOTS
+    );
+
 }
 
 
