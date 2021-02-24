@@ -12,10 +12,17 @@ namespace PRSingularity
     //*** Calculate Ang OTS ***//
 
     Eigen::Vector4d CalculateAngOts(
-                                    const Eigen::Vector4d &X,
-                                    const Eigen::Vector4d &Q);
+        const Eigen::Vector4d &X,
+        const Eigen::Vector4d &Q,
+        Eigen::Matrix<double, 5, 1> &X_OTS,
+        Eigen::Matrix<double,6,4> &solOTS,
+        Eigen::Matrix<double, 5, 1> &Xn_OTS,
+        std::vector<double> &RParam,
+        int iter_OTS, double tol_OTS);
 
-    Eigen::Matrix<double, 5, 5> EcOTSJacobian(
+    //*** Ang OTS Jacobian Equations ***//
+
+    Eigen::Matrix<double, 5, 5> EqOTSJacobian(
         const double &wx, const double &wy, const double &wz, 
         const double &theta, const double &psi, 
         const Eigen::Vector4d &q, 
@@ -24,7 +31,7 @@ namespace PRSingularity
         const double &betaMD, const double &betaMI
     );
 
-    Eigen::Matrix<double,5,1> EcOTS(
+    Eigen::Matrix<double,5,1> EqOTS(
        const double &wx, const double &wy, const double &wz, 
        const double &vx, const double &vz, 
        const double &theta, const double &psi, 
