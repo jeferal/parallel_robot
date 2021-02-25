@@ -32,6 +32,10 @@ namespace PRSingularity
         const double &betaMD, const double &betaMI
     );
 
+    void OTSSolverNR(
+        
+    );
+
     void EqOTS(
        Eigen::Matrix<double,5,1> &f,
        const double &wx, const double &wy, const double &wz, 

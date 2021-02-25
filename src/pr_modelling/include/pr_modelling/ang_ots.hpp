@@ -6,7 +6,8 @@
 #include "rclcpp/rclcpp.hpp"
 
 #include "pr_msgs/msg/pr_array_h.hpp"
-#include "pr_msgs/msg/pr_mat_h.hpp"
+#include "pr_msgs/msg/prots.hpp"
+
 #include "pr_lib/pr_singularity.hpp"
 #include "pr_lib/pr_model.hpp"
 
@@ -25,7 +26,7 @@ namespace pr_modelling
 
         private:
             rclcpp::Subscription<pr_msgs::msg::PRArrayH>::SharedPtr subscription_;
-            rclcpp::Publisher<pr_msgs::msg::PRArrayH>::SharedPtr publisher_;
+            rclcpp::Publisher<pr_msgs::msg::PROTS>::SharedPtr publisher_;
 
             std::vector<double> robot_params;
             Eigen::Matrix<double,4,3> q_sol = Eigen::Matrix<double,4,3>::Zero();

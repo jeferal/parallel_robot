@@ -37,13 +37,13 @@ namespace pr_modelling
         this->get_parameter("iter_max_ots", iter_max_ots);
         this->get_parameter("iter_max_ots", tol_ots);
 
-        publisher_ = this->create_publisher<pr_msgs::msg::PRArrayH>(
+        publisher_ = this->create_publisher<pr_msgs::msg::PROTS>(
             "ang_ots", 
-            10);
+            1);
 
         subscription_ = this->create_subscription<pr_msgs::msg::PRArrayH>(
             "x_coord_cams", 
-            10, 
+            1, 
             std::bind(&AngOTS::topic_callback, this, _1));
     }
 
@@ -54,10 +54,21 @@ namespace pr_modelling
 
         //Calculate ots angles
         sol_OTS = PRSingularity::CalculateAngOts(x_msg->data[2], x_msg->data[3],
-                                                q_sol, OTS,
-                                                robot_params,
-                                                iter_max_ots, tol_ots);
-        
+                                                 q_sol, OTS,
+                                                 robot_params,
+                                                 iter_max_ots, tol_ots);
+
+        //Publish OTS solution
+
+        auto ots_msg = pr_msgs::msg::PROTS();
+
+        ots_msg.header.stamp = x_msg->header.stamp;
+        ots_msg.current_time = this->get_clock()->now();
+
+        for(int i=0; i<ots_msg.data.size(); i++)
+            ots_msg.data[i] = OTS(i);
+
+        publisher_->publish(ots_msg);
     }
 }
 

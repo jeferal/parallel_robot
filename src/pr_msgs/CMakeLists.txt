@@ -43,6 +43,7 @@ rosidl_generate_interfaces(${PROJECT_NAME}
   "msg/PRMatH.msg"
   "msg/PRMocap.msg"
   "msg/PRState.msg"
+  "msg/PROTS.msg"
   "srv/Trajectory.srv"
   DEPENDENCIES builtin_interfaces std_msgs
  )
