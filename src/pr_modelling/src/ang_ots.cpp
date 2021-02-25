@@ -60,7 +60,7 @@ namespace pr_modelling
                                                  robot_params,
                                                  iter_max_ots, tol_ots);
 
-        //Publish OTS solution
+        //Fill OTS msg and publish
 
         auto ots_msg = pr_msgs::msg::PROTS();
 

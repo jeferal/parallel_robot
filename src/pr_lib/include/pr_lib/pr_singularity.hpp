@@ -55,10 +55,7 @@ namespace PRSingularity
 		const Eigen::Matrix<double,2,4> &minc_des,
 		const std::vector<double> &RParam,
 		Eigen::Vector4d &vc_des,
-		Eigen::MatrixXd &solOTS_2,
-		Eigen::VectorXd &solAngOTS_mod,
 		Eigen::Matrix<double,4,-1> &mq_ind_mod,
-		Eigen::Vector2d &i_qind,
 		double des_qind,
 		const int iteraciones,
 		const double lmin_Ang_OTS,
@@ -67,7 +64,8 @@ namespace PRSingularity
 		const double tol,
 		const int iter_max,
 		const double tol_OTS,
-		const double iter_OTS
+		const double iter_OTS,
+		int ncomb
     );
 
 }

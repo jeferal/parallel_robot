@@ -256,10 +256,7 @@ Eigen::Vector4d PRSingularity::CalculateQindMod(
 		const Eigen::Matrix<double,2,4> &minc_des,
 		const std::vector<double> &RParam,
 		Eigen::Vector4d &vc_des,
-		Eigen::MatrixXd &solOTS_2,
-		Eigen::VectorXd &solAngOTS_mod,
 		Eigen::Matrix<double,4,-1> &mq_ind_mod,
-		Eigen::Vector2d &i_qind,
 		double des_qind,
 		const int iteraciones,
 		const double lmin_Ang_OTS,
@@ -268,7 +265,8 @@ Eigen::Vector4d PRSingularity::CalculateQindMod(
 		const double tol,
 		const int iter_max,
 		const double tol_OTS,
-		const double iter_OTS
+		const double iter_OTS,
+		int ncomb
 )
 {
 	bool flag = false;
@@ -279,19 +277,21 @@ Eigen::Vector4d PRSingularity::CalculateQindMod(
 
 		double minAng_OTS, error, error_OTS, maxAng_OTS_mod;
 		double x_m, z_m, theta, psi;
-		int ncomb;
-		Eigen::VectorXd qa, Xn, X_OTS, Xn_OTS, f_OTS, ang_OTS_1, ang_OTS_2;
-		X_OTS.resize(5);
+
+		Eigen::Matrix<double,3,1> ang_OTS_1, ang_OTS_2;
+		Eigen::Matrix<double,5,1> X_OTS;
+		Eigen::Matrix<double,5,1> Xn_OTS;
 		Eigen::Matrix<double,4,3> q;
+		Eigen::Vector4d qa;
 
 		std::array<double,4> X;
-		Eigen::Matrix<double,5,1> f;
+		Eigen::Matrix<double,5,1> f_OTS;
 		Eigen::Matrix<double,5,5> J_OTS;
 
 		// Minimo angulo entre un par de ejes instantaneos de los OTS medidos
 		minAng_OTS = angOTS.minCoeff();
 
-		i_qind = Eigen::Vector2d::Zero(2);
+		Eigen::Vector2d i_qind = Eigen::Vector2d::Zero();
 
 		// Condicion para modificar la referencia
 		if (minAng_OTS<lmin_Ang_OTS){
@@ -308,7 +308,7 @@ Eigen::Vector4d PRSingularity::CalculateQindMod(
 			// Numero de posibles modificaciones
 			ncomb = minc_des.cols();
 			// Calculo las posibles referencias modificadas
-			mq_ind_mod = Eigen::Matrix<double,4,-1>::Zero(4,ncomb);
+			mq_ind_mod = Eigen::MatrixX4d::Zero(4,ncomb);
 			for (int i=0; i<ncomb; i++){
 			
 				// Posicion de referencia inicial modificada
@@ -322,7 +322,7 @@ Eigen::Vector4d PRSingularity::CalculateQindMod(
 
 			// ANGULO OMEGA PARA LOS OTS INVOLUCRADOS EN LA SINGULARIDAD PARA CADA POSIBLE NUEVA REFERENCIA MODIFICADA
 			// Inicializacion del vector para almacenar angulos OMEGA
-			solAngOTS_mod = Eigen::VectorXd::Zero(ncomb);
+			Eigen::VectorXd solAngOTS_mod = Eigen::VectorXd::Zero(ncomb);
 
 			// Lazo para calculo en cada posible modificacion
 			for (int c_comb=0; c_comb<ncomb; c_comb++){
@@ -349,22 +349,22 @@ Eigen::Vector4d PRSingularity::CalculateQindMod(
 
 				// RESOLUCION DE LOS OTS INVOLUCRADOS EN LA SINGULARIDAD
 				// Matriz para los dos OTS buscados
-				solOTS_2 = Eigen::MatrixXd::Zero(6,2);
+				Eigen::Matrix<double,6,2> solOTS_2 = Eigen::Matrix<double,6,2>::Zero();
 			
 				// Lazo para resolver los dos OTS de la singularidad
 				for (int c_OTS=0; c_OTS<2; c_OTS++){
 					// Punto inicial para solucionar el sistema de ecuaciones para un OTS
 					X_OTS << solOTS(0,i_qind(c_OTS)), solOTS(1,i_qind(c_OTS)), solOTS(2,i_qind(c_OTS)), solOTS(3,i_qind(c_OTS)), solOTS(5,i_qind(c_OTS));
 					// Error inicial para la resolucion del sistema
-					EqOTS(f, X_OTS(0), X_OTS(1), X_OTS(2), X_OTS(3), X_OTS(4), theta, psi, q, i_qind(c_OTS)+1, RParam[6], RParam[7], RParam[8], RParam[9], RParam[10]);
-					error_OTS = f.norm();
+					EqOTS(f_OTS, X_OTS(0), X_OTS(1), X_OTS(2), X_OTS(3), X_OTS(4), theta, psi, q, i_qind(c_OTS)+1, RParam[6], RParam[7], RParam[8], RParam[9], RParam[10]);
+					error_OTS = f_OTS.norm();
 					// Iteracion inicial
 					int ci = 1;
 				
 					// Algoritmo de Newton Raphson
 					while (error_OTS>tol_OTS){
 						// Funcion con las ecuaciones que determinan los componentes de un OTS
-						EqOTS(f, X_OTS(0), X_OTS(1), X_OTS(2), X_OTS(3), X_OTS(4), theta, psi, q, i_qind(c_OTS)+1, RParam[6], RParam[7], RParam[8], RParam[9], RParam[10]);
+						EqOTS(f_OTS, X_OTS(0), X_OTS(1), X_OTS(2), X_OTS(3), X_OTS(4), theta, psi, q, i_qind(c_OTS)+1, RParam[6], RParam[7], RParam[8], RParam[9], RParam[10]);
 						// Error de la solucion actual
 						error_OTS = f_OTS.norm();
 						// Jacobiano del sistema de ecuaciones para un OTS
