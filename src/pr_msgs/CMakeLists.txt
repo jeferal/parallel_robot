@@ -41,6 +41,7 @@ rosidl_generate_interfaces(${PROJECT_NAME}
   "msg/PRArrayH.msg"
   "msg/PRForceState.msg"
   "msg/PRMatH.msg"
+  "msg/PRMat.msg"
   "msg/PRMocap.msg"
   "msg/PRState.msg"
   "msg/PROTS.msg"

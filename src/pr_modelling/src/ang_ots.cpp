@@ -11,6 +11,8 @@
 
 #include "pr_msgs/msg/pr_mat_h.hpp"
 
+#include "pr_lib/pr_utils.hpp"
+
 using std::placeholders::_1;
 
 namespace pr_modelling
@@ -65,8 +67,16 @@ namespace pr_modelling
         ots_msg.header.stamp = x_msg->header.stamp;
         ots_msg.current_time = this->get_clock()->now();
 
-        for(int i=0; i<ots_msg.data.size(); i++)
-            ots_msg.data[i] = OTS(i);
+        for(int i=0; i<ots_msg.ots_ang.size(); i++)
+            ots_msg.ots_ang[i] = sol_OTS(i);
+
+        for(int i=0; i<OTS.rows(); i++)
+        {
+            for(int j=0; j<OTS.cols(); j++)
+                ots_msg.ots.data.push_back(OTS(i,j));
+        }
+        ots_msg.ots.rows = OTS.rows();
+        ots_msg.ots.cols = OTS.cols();
 
         publisher_->publish(ots_msg);
     }

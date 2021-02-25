@@ -3,4 +3,6 @@
 std_msgs/Header header
 builtin_interfaces/Time current_time
 
-float64[6] data
+float64[6] ots_ang
+
+pr_msgs/PRMat ots

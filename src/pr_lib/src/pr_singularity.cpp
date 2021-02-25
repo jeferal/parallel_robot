@@ -135,7 +135,7 @@ void PRSingularity::EqOTSJacobian(
 			J(0,1) = sin(q12) * cos(psi) * Rm1 * (sin(q11) * cos(theta) + sin(theta) * cos(q11));
 			J(0,2) = Rm1 * (cos(theta) * cos(q12) * cos(psi) + cos(q11) * sin(q12) * sin(psi));
 			J(0,3) = cos(q11) * sin(q12);
-			J(0,4) = cos(q11) * sin(q12);
+			J(0,4) = sin(q11) * sin(q12);
 			
 			J(1,0) = -Rm3 * (cos(psi) * sin(theta) * cos(betaMI) * cos(q32) + cos(psi) * sin(q31) * sin(betaMI) * sin(q32) + sin(psi) * sin(theta) * sin(betaMI) * cos(q32) - sin(psi) * sin(q31) * cos(betaMI) * sin(q32));
 			J(1,1) = -sin(q32) * Rm3 * (cos(psi) * cos(theta) * sin(q31) * cos(betaMI) + cos(psi) * sin(theta) * cos(betaMI) * cos(q31) + sin(psi) * cos(theta) * sin(q31) * sin(betaMI) + sin(psi) * sin(theta) * sin(betaMI) * cos(q31));
@@ -206,7 +206,7 @@ void PRSingularity::EqOTS(
        const Eigen::Matrix<double,4,3> &q, 
        const int &op, 
        const double &Rm1, const double &Rm2, const double &Rm3, 
-       const double &betaMD, const double &betaMI 
+       const double &betaMD, const double &betaMI
 )
 {
     //A partir de la orientacion (theta y psi) del centro de la plataforma del robot paralelo y de la solucion de la cinematica inversa determinamos las componentes del Output Screw Salida (OTS). El OTS a determinar se selecciona mediante la variable op.
@@ -247,32 +247,51 @@ void PRSingularity::EqOTS(
 	}
 }
 
-/*
+
 Eigen::Vector4d PRSingularity::CalculateQindMod(
         const Eigen::Vector4d &X_cart, 
         const Eigen::Vector4d &q_ref, 
         const Eigen::Matrix<double,6,1> &angOTS, 
         const Eigen::Matrix<double,6,4> &solOTS,
-		const std::vector<double> &RParam
+		const Eigen::Matrix<double,2,4> &minc_des,
+		const std::vector<double> &RParam,
+		Eigen::Vector4d &vc_des,
+		Eigen::MatrixXd &solOTS_2,
+		Eigen::VectorXd &solAngOTS_mod,
+		Eigen::Matrix<double,4,-1> &mq_ind_mod,
+		Eigen::Vector2d &i_qind,
+		double des_qind,
+		const int iteraciones,
+		const double lmin_Ang_OTS,
+		const double ts,
+		const double t_activation,
+		const double tol,
+		const int iter_max,
+		const double tol_OTS,
+		const double iter_OTS
 )
 {
 	bool flag = false;
 	Eigen::Vector4d q_ind_mod = q_ref+des_qind*vc_des.cast<double>();
 	
-	// Activacion de las modificaciones de las referencias
-	if (t_activation/periodo <= iteraciones){
+	// Activacio0n de las modificaciones de las referencias
+	if (t_activation/ts <= iteraciones){
 
 		double minAng_OTS, error, error_OTS, maxAng_OTS_mod;
 		double x_m, z_m, theta, psi;
 		int ncomb;
-		MatrixXd J, J_OTS;
-		VectorXd qa, f, X, Xn, q, X_OTS, Xn_OTS, f_OTS, ang_OTS_1, ang_OTS_2;
+		Eigen::VectorXd qa, Xn, X_OTS, Xn_OTS, f_OTS, ang_OTS_1, ang_OTS_2;
 		X_OTS.resize(5);
+		Eigen::Matrix<double,4,3> q;
+
+		std::array<double,4> X;
+		Eigen::Matrix<double,5,1> f;
+		Eigen::Matrix<double,5,5> J_OTS;
 
 		// Minimo angulo entre un par de ejes instantaneos de los OTS medidos
 		minAng_OTS = angOTS.minCoeff();
 
-		i_qind = VectorXi::Zero(2);
+		i_qind = Eigen::Vector2d::Zero(2);
 
 		// Condicion para modificar la referencia
 		if (minAng_OTS<lmin_Ang_OTS){
@@ -289,7 +308,7 @@ Eigen::Vector4d PRSingularity::CalculateQindMod(
 			// Numero de posibles modificaciones
 			ncomb = minc_des.cols();
 			// Calculo las posibles referencias modificadas
-			mq_ind_mod = MatrixXd::Zero(4,ncomb);
+			mq_ind_mod = Eigen::Matrix<double,4,-1>::Zero(4,ncomb);
 			for (int i=0; i<ncomb; i++){
 			
 				// Posicion de referencia inicial modificada
@@ -303,19 +322,26 @@ Eigen::Vector4d PRSingularity::CalculateQindMod(
 
 			// ANGULO OMEGA PARA LOS OTS INVOLUCRADOS EN LA SINGULARIDAD PARA CADA POSIBLE NUEVA REFERENCIA MODIFICADA
 			// Inicializacion del vector para almacenar angulos OMEGA
-			solAngOTS_mod = VectorXd::Zero(ncomb);
+			solAngOTS_mod = Eigen::VectorXd::Zero(ncomb);
 
 			// Lazo para calculo en cada posible modificacion
 			for (int c_comb=0; c_comb<ncomb; c_comb++){
 				// Selecciono la referencia modificada para analizar
 				qa = mq_ind_mod.col(c_comb);
+				
+				std::array<double,4> q_sol;
+				std::vector<double> x_pose;
+				for(int i=0; i<3; i++) {
+					q_sol[i] = qa(i);
+					x_pose[i] = X_cart(i);
+				}
 
 				// RESOLUCION DE LA CINEMATICA DIRECTA-POSICION
 				// Vector de posicion y orientacion medida de la plataforma
-				PRModel::ForwardKinematics(q,X_cart,RParam,tol,iter_max);
+				X = PRModel::ForwardKinematics(q_sol,x_pose,RParam,tol,iter_max);
 
 				// Posicion alcanzada por la plataforma para la referencia modificada
-				x_m = X(0); z_m = X(1); theta = X(2); psi = X(3);
+				x_m = X[0]; z_m = X[1]; theta = X[2]; psi = X[3];
 
 				// RESOLUCION DE LA CINEMATICA INVERSA POSICION
 				// Dimensionamiento previo de q
@@ -323,25 +349,26 @@ Eigen::Vector4d PRSingularity::CalculateQindMod(
 
 				// RESOLUCION DE LOS OTS INVOLUCRADOS EN LA SINGULARIDAD
 				// Matriz para los dos OTS buscados
-				solOTS_2 = MatrixXd::Zero(6,2);
+				solOTS_2 = Eigen::MatrixXd::Zero(6,2);
 			
 				// Lazo para resolver los dos OTS de la singularidad
 				for (int c_OTS=0; c_OTS<2; c_OTS++){
 					// Punto inicial para solucionar el sistema de ecuaciones para un OTS
 					X_OTS << solOTS(0,i_qind(c_OTS)), solOTS(1,i_qind(c_OTS)), solOTS(2,i_qind(c_OTS)), solOTS(3,i_qind(c_OTS)), solOTS(5,i_qind(c_OTS));
 					// Error inicial para la resolucion del sistema
-					error_OTS = singuEcOTS(X_OTS(0), X_OTS(1), X_OTS(2), X_OTS(3), X_OTS(4), theta, psi, q, i_qind(c_OTS)+1, Rm1, Rm2, Rm3, betaMD, betaMI).norm();
+					EqOTS(f, X_OTS(0), X_OTS(1), X_OTS(2), X_OTS(3), X_OTS(4), theta, psi, q, i_qind(c_OTS)+1, RParam[6], RParam[7], RParam[8], RParam[9], RParam[10]);
+					error_OTS = f.norm();
 					// Iteracion inicial
 					int ci = 1;
 				
 					// Algoritmo de Newton Raphson
 					while (error_OTS>tol_OTS){
 						// Funcion con las ecuaciones que determinan los componentes de un OTS
-						f_OTS = singuEcOTS(X_OTS(0), X_OTS(1), X_OTS(2), X_OTS(3), X_OTS(4), theta, psi, q, i_qind(c_OTS)+1, Rm1, Rm2, Rm3, betaMD, betaMI);
+						EqOTS(f, X_OTS(0), X_OTS(1), X_OTS(2), X_OTS(3), X_OTS(4), theta, psi, q, i_qind(c_OTS)+1, RParam[6], RParam[7], RParam[8], RParam[9], RParam[10]);
 						// Error de la solucion actual
 						error_OTS = f_OTS.norm();
 						// Jacobiano del sistema de ecuaciones para un OTS
-						J_OTS = singuEcOTSJacobian(X_OTS(0), X_OTS(1), X_OTS(2), theta, psi, q, i_qind(c_OTS)+1, Rm1, Rm2, Rm3, betaMD, betaMI);
+						EqOTSJacobian(J_OTS, X_OTS(0), X_OTS(1), X_OTS(2), theta, psi, q, i_qind(c_OTS)+1, RParam[6], RParam[7], RParam[8], RParam[9], RParam[10]);
 						// Calculo de la nueva solucion
 						//Xn_OTS = X_OTS - linSolve(J_OTS, f_OTS);
 						Xn_OTS = X_OTS - J_OTS.partialPivLu().solve(f_OTS);
@@ -367,7 +394,7 @@ Eigen::Vector4d PRSingularity::CalculateQindMod(
 				// Nuevo angulo OMEGA para la referencia modificada
 				ang_OTS_1 = (solOTS_2.col(0)).head(3);
 				ang_OTS_2 = (solOTS_2.col(1)).head(3);
-				solAngOTS_mod(c_comb) = acos(ang_OTS_1.dot(ang_OTS_2)/(ang_OTS_1.norm()*ang_OTS_2.norm()))*180/pi; 	
+				solAngOTS_mod(c_comb) = acos(ang_OTS_1.dot(ang_OTS_2)/(ang_OTS_1.norm()*ang_OTS_2.norm()))*180/M_PI; 	
 			}
 		
 			// REFERENCIA MODIFICADA QUE PRODUCIRA EL MAXIMO ANGULO OMEGA
@@ -394,4 +421,3 @@ Eigen::Vector4d PRSingularity::CalculateQindMod(
 
 	return q_ind_mod;
 }
-*/
