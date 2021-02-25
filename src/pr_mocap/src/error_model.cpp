@@ -13,7 +13,7 @@ using std::placeholders::_1;
 
 namespace pr_mocap
 {
-    /**** DERIVATOR COMPONENT ****/
+    /**** MODEL MOCAP ERROR COMPONENT ****/
     ErrorModel::ErrorModel(const rclcpp::NodeOptions & options)
     : Node("error_model", options)
     {
@@ -21,9 +21,15 @@ namespace pr_mocap
         this->declare_parameter<double>("tol", 0.01);
         this->get_parameter("tol", tol);
         
-        publisher_ = this->create_publisher<pr_msgs::msg::PRMocap>(
+        publisher_info_ = this->create_publisher<pr_msgs::msg::PRMocap>(
 			"x_mocap_error", 
 			1);
+
+        publisher_mocap_ = this->create_publisher<pr_msgs::msg::PRArrayH>(
+            "x_mocap_sync",
+            1
+        );
+
         
         subscription_mocap_ = this->create_subscription<pr_msgs::msg::PRMocap>(
             "x_coord_mocap",
@@ -44,16 +50,26 @@ namespace pr_mocap
 
     void ErrorModel::model_callback(const pr_msgs::msg::PRArrayH::SharedPtr x_model_msg)
     {
-        auto error_msg = pr_msgs::msg::PRMocap();
+        //Publish mocap coordinates syncronized with sample time
+        auto x_mocap_msg = pr_msgs::msg::PRArrayH();
 
-        error_calc(tol, error_msg.error, x_mocap.x_coord.data, x_model_msg->data);
+        x_mocap_msg.data = x_mocap.x_coord.data;
+        x_mocap_msg.header.stamp = x_model_msg->header.stamp;
+        x_mocap_msg.current_time = this->get_clock()->now();
 
-        error_msg.header = x_model_msg->header;
-        error_msg.current_time = this->get_clock()->now();
-        error_msg.latency = x_mocap.latency;
-        error_msg.x_coord.data = x_mocap.x_coord.data;
+        publisher_mocap_->publish(x_mocap_msg);
 
-        publisher_->publish(error_msg);
+        auto error_info_msg = pr_msgs::msg::PRMocap();
+
+        error_calc(tol, error_info_msg.error, x_mocap.x_coord.data, x_model_msg->data);
+
+        error_info_msg.header = x_model_msg->header;
+        error_info_msg.current_time = this->get_clock()->now();
+        error_info_msg.latency = x_mocap.latency;
+        error_info_msg.x_coord.data = x_mocap.x_coord.data;
+
+        publisher_info_->publish(error_info_msg);
+
     }
 
     int ErrorModel::error_calc(const double &tol, double &error, const std::array<double, 4> &x_mocap, const std::array<double, 4> &x_model)

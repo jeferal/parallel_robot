@@ -27,7 +27,8 @@ namespace pr_mocap
         private:
             rclcpp::Subscription<pr_msgs::msg::PRArrayH>::SharedPtr subscription_model_;
             rclcpp::Subscription<pr_msgs::msg::PRMocap>::SharedPtr subscription_mocap_;
-            rclcpp::Publisher<pr_msgs::msg::PRMocap>::SharedPtr publisher_;
+            rclcpp::Publisher<pr_msgs::msg::PRMocap>::SharedPtr publisher_info_;
+            rclcpp::Publisher<pr_msgs::msg::PRArrayH>::SharedPtr publisher_mocap_;
 
             double tol;
             pr_msgs::msg::PRMocap x_mocap;
