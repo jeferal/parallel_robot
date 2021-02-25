@@ -9,8 +9,6 @@
 #include "rclcpp/rclcpp.hpp"
 #include "rclcpp/qos.hpp"
 
-#include "pr_msgs/msg/pr_mat_h.hpp"
-
 #include "pr_lib/pr_utils.hpp"
 
 using std::placeholders::_1;
@@ -22,22 +20,20 @@ namespace pr_modelling
     : Node("ang_ots", options)
     {
         //Declare params
-        this->declare_parameter<std::vector<double>>(
-            "robot_config_params", 
-            {0.4, 0.4, 0.4, 0.15, 90*(M_PI/180), 45*(M_PI/180), 0.3, 0.3, 0.3, 50*(M_PI/180), 90*(M_PI/180)}
-        );
-        this->declare_parameter<int>("iter_max_ots", 30);
-        this->declare_parameter<int>("tol_ots", 30);
         
-        this->declare_parameter<std::vector<double>>(
-            "initial_ots",
-            initial_ots
-        );
+        this->declare_parameter<std::vector<double>>("robot_config_params", {0.4, 0.4, 0.4, 0.15, 90*(M_PI/180), 45*(M_PI/180), 0.3, 0.3, 0.3, 50*(M_PI/180), 90*(M_PI/180)});
+        this->declare_parameter<int>("iter_max_ots", 30);
+        this->declare_parameter<double>("tol_ots", 0.0000001);
+        this->declare_parameter<std::vector<double>>("initial_ots", {0.0, 0.0, 1.0, 0.0, 0.0, 1.0});
 
         this->get_parameter("robot_config_params", robot_params);
         this->get_parameter("initial_ots", initial_ots);
         this->get_parameter("iter_max_ots", iter_max_ots);
-        this->get_parameter("iter_max_ots", tol_ots);
+        this->get_parameter("tol_ots", tol_ots);
+
+        for(int i=0; i<OTS.cols(); i++)
+            for(int j=0; j<OTS.rows(); j++)
+                OTS(j,i) = initial_ots[i];
 
         publisher_ = this->create_publisher<pr_msgs::msg::PROTS>(
             "ang_ots", 
@@ -54,6 +50,9 @@ namespace pr_modelling
         //Calculate inverse kinematics
         PRModel::InverseKinematics(q_sol, x_msg->data, robot_params);
 
+        std::cout << q_sol << std::endl;
+
+        std::cout << OTS << std::endl;
         //Calculate ots angles
         sol_OTS = PRSingularity::CalculateAngOts(x_msg->data[2], x_msg->data[3],
                                                  q_sol, OTS,

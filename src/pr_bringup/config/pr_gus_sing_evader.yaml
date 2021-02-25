@@ -1,0 +1,25 @@
+ts: 0.01
+
+robot: 
+  robot_name: 'robot_3ups_rpu'
+  config: 1
+
+actuators:
+  v_sat: 9.5
+  vp_conversion: [1.0, 1.0, 1.0, 1.0]
+
+controller:
+  k1: 0.75
+  k2: 0.5
+
+dir_kin:
+  tol: 0.0000001
+  iter: 30
+
+ots:
+  tol: 0.0000001
+  iter: 30
+
+ref_path:
+  q: "/home/paralelo4dofnew/ros2_eloquent_ws/parallel_robot/references/refeprism_indep_TRR8.txt"
+  x: "/home/paralelo4dofnew/ros2_eloquent_ws/parallel_robot/references/refecart_TRR8_identificar.txt"

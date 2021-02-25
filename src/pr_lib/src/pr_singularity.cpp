@@ -1,4 +1,5 @@
 #include "pr_lib/pr_singularity.hpp"
+#include <iostream>
 
 
 Eigen::Matrix<double,6,1> PRSingularity::CalculateAngOts(
