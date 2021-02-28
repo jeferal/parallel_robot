@@ -198,6 +198,20 @@ def generate_launch_description():
                 ),
 
                 ComposableNode(
+                    package='pr_ref_gen',
+                    node_plugin='pr_ref_gen::SingEvader',
+                    node_name='sing_evader',
+                    remappings=[
+                        ("ref_pose", "ref_pose"),
+                        ("x_coord", "x_coord"),
+                        ("ang_ots", "ang_ots"),
+                        ("ref_mod", "ref_mod")
+                    ],
+                    parameters=[
+                    ]
+                ),
+
+                ComposableNode(
                     package='pr_mocap',
                     node_plugin='pr_mocap::ErrorModel',
                     node_name='model_error',

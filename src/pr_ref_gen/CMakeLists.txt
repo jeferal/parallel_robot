@@ -21,6 +21,7 @@ find_package(rclcpp REQUIRED)
 find_package(rclcpp_components REQUIRED)
 find_package(rcutils REQUIRED)
 find_package(std_msgs REQUIRED)
+find_package(message_filters REQUIRED)
 
 find_package(pr_msgs REQUIRED)
 find_package(pr_lib REQUIRED)
@@ -83,12 +84,34 @@ rclcpp_components_register_nodes(ref_server "pr_ref_gen::RefServer")
 set(node_plugins "${node_plugins}pr_ref_gen::RefServer;$<TARGET_FILE:ref_server>\n")
 
 
+### Sing Evader node ###
+
+add_library(sing_evader SHARED
+  src/sing_evader.cpp)
+
+target_compile_definitions(sing_evader
+  PRIVATE "COMPOSITION_BUILDING_DLL")
+
+ament_target_dependencies(sing_evader
+  "rclcpp"
+  "rclcpp_components"
+  "pr_msgs"
+  "std_msgs"
+  "pr_lib"
+  "Eigen3"
+  "message_filters")
+
+rclcpp_components_register_nodes(sing_evader "pr_ref_gen::SingEvader")
+set(node_plugins "${node_plugins}pr_ref_gen::SingEvader;$<TARGET_FILE:sing_evader>\n")
+
+
 
 ### Installation ###
 
 install(TARGETS
   ref_pose
   ref_server
+  sing_evader
   ARCHIVE DESTINATION lib
   LIBRARY DESTINATION lib
   RUNTIME DESTINATION bin)
