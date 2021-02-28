@@ -105,10 +105,10 @@ void PRSingularity::EqOTSJacobian(
         const double &Rm1, const double &Rm2, const double &Rm3, 
         const double &betaMD, const double &betaMI)
 {
-	double q11 = q(0), q12 = q(1), q13 = q(2);
-	double q21 = q(3), q22 = q(4), q23 = q(5);
-	double q31 = q(6), q32 = q(7), q33 = q(8);
-	double q41 = q(9), q42 = q(10);
+	double q11 = q(0,0), q12 = q(0,1), q13 = q(0,2);
+	double q21 = q(1,0), q22 = q(1,1), q23 = q(1,2);
+	double q31 = q(2,0), q32 = q(2,1), q33 = q(2,2);
+	double q41 = q(3,0), q42 = q(3,1);
 
 	switch (op){
 		case 1:
@@ -214,10 +214,11 @@ void PRSingularity::EqOTS(
 	
 	f(3) = wx - (sin(theta)/cos(theta))*wz;
 	f(4) = pow(wx,2) + pow(wy,2) + pow(wz,2) -1;
-	double q11 = q(0), q12 = q(1), q13 = q(2);
-	double q21 = q(3), q22 = q(4), q23 = q(5);
-	double q31 = q(6), q32 = q(7), q33 = q(8);
-	double q41 = q(9), q42 = q(10); 
+	
+	double q11 = q(0,0), q12 = q(0,1), q13 = q(0,2);
+	double q21 = q(1,0), q22 = q(1,1), q23 = q(1,2);
+	double q31 = q(2,0), q32 = q(2,1), q33 = q(2,2);
+	double q41 = q(3,0), q42 = q(3,1);
 
 	switch (op){
 	

@@ -23,7 +23,7 @@ namespace pr_modelling
         
         this->declare_parameter<std::vector<double>>("robot_config_params", {0.4, 0.4, 0.4, 0.15, 90*(M_PI/180), 45*(M_PI/180), 0.3, 0.3, 0.3, 50*(M_PI/180), 90*(M_PI/180)});
         this->declare_parameter<int>("iter_max_ots", 30);
-        this->declare_parameter<double>("tol_ots", 0.0000001);
+        this->declare_parameter<double>("tol_ots", 1e-7);
         this->declare_parameter<std::vector<double>>("initial_ots", {0.0, 0.0, 1.0, 0.0, 0.0, 1.0});
 
         this->get_parameter("robot_config_params", robot_params);
