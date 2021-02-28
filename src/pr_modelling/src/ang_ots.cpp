@@ -35,7 +35,6 @@ namespace pr_modelling
             for(int j=0; j<OTS.rows(); j++)
                 OTS(j,i) = initial_ots[j];
         }
-        std::cout << OTS << std::endl;
 
         publisher_ = this->create_publisher<pr_msgs::msg::PROTS>(
             "ang_ots", 
@@ -52,9 +51,6 @@ namespace pr_modelling
         //Calculate inverse kinematics
         PRModel::InverseKinematics(q_sol, x_msg->data, robot_params);
 
-        std::cout << q_sol << std::endl;
-
-        std::cout << OTS << std::endl;
         //Calculate ots angles
         sol_OTS = PRSingularity::CalculateAngOts(x_msg->data[2], x_msg->data[3],
                                                  q_sol, OTS,
