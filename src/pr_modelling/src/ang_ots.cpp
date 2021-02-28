@@ -31,9 +31,11 @@ namespace pr_modelling
         this->get_parameter("iter_max_ots", iter_max_ots);
         this->get_parameter("tol_ots", tol_ots);
 
-        for(int i=0; i<OTS.cols(); i++)
+        for(int i=0; i<OTS.cols(); i++) {
             for(int j=0; j<OTS.rows(); j++)
-                OTS(j,i) = initial_ots[i];
+                OTS(j,i) = initial_ots[j];
+        }
+        std::cout << OTS << std::endl;
 
         publisher_ = this->create_publisher<pr_msgs::msg::PROTS>(
             "ang_ots", 
