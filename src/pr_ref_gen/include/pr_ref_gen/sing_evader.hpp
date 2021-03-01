@@ -55,7 +55,7 @@ namespace pr_ref_gen
             Eigen::Vector4d q_ref = Eigen::Vector4d::Zero();
             
             std::vector<double> robot_params;
-            int iterations, iter_max=30, ncomb, iter_OTS;
+            int iterations=0, iter_max=30, ncomb, iter_OTS;
             double tol, tol_OTS, t_activation, ts, des_qind, lmin_Ang_OTS;
 
     };

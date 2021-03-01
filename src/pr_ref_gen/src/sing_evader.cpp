@@ -23,24 +23,24 @@ namespace pr_ref_gen
         this->declare_parameter<std::vector<double>>(
             "robot_config_params", 
             {0.4, 0.4, 0.4, 0.15, 90*(M_PI/180), 45*(M_PI/180), 0.3, 0.3, 0.3, 50*(M_PI/180), 90*(M_PI/180)});
-        this->declare_parameter<int>("iter_max",30);
-        this->declare_parameter<double>("tol",1e-7);
-        this->declare_parameter<double>("tol_OTS",1e-7);
+        this->declare_parameter<int>("iter_fk",30);
+        this->declare_parameter<double>("tol_fk",1e-7);
         this->declare_parameter<int>("iter_OTS",30);
+        this->declare_parameter<double>("tol_OTS",1e-7);
         this->declare_parameter<double>("t_activation",5);
         this->declare_parameter<int>("ncomb",4);
-        this->declare_parameter<double>("ts", 0.01);
         this->declare_parameter<double>("lmin_Ang_OTS",3.0);
+        this->declare_parameter<double>("ts", 0.01);
 
         this->get_parameter("robot_config_params", robot_params);
-        this->get_parameter("iter_max", iter_max);
-        this->get_parameter("tol", tol);
-        this->get_parameter("tol_OTS", tol_OTS);
+        this->get_parameter("iter_fk", iter_max);
+        this->get_parameter("tol_fk", tol);
         this->get_parameter("iter_OTS", iter_OTS);
+        this->get_parameter("tol_OTS", tol_OTS);
         this->get_parameter("t_activation", t_activation);
         this->get_parameter("ncomb",ncomb);
-        this->get_parameter("ts", ts);
         this->get_parameter("lmin_Ang_OTS",lmin_Ang_OTS);
+        this->get_parameter("ts", ts);
 
         minc_des << 1, -1, 1, -1,
 		            1, -1, -1, 1;
@@ -72,6 +72,8 @@ namespace pr_ref_gen
             x_coord(i) = x_msg->data[i];
             q_ref(i) = ref_msg->data[i];
         }
+        std::cout << "Q ref msg:" << std::endl;
+        std::cout << q_ref << std::endl;
 
         for(int i=0; i<ots_msg->ots.data.size(); i++) {
             int row = i/OTS.cols();
@@ -88,9 +90,6 @@ namespace pr_ref_gen
         if (t_activation/ts <= iterations)
             enable = true;
 
-        if (enable)
-            std::cout << q_ind_mod << std::endl;
-
         q_ind_mod = PRSingularity::CalculateQindMod(
             x_coord, q_ref, angOTS, OTS,
             minc_des, robot_params, vc_des,
@@ -101,6 +100,17 @@ namespace pr_ref_gen
         );
 
         iterations++;
+
+        auto q_ref_mod_msg = pr_msgs::msg::PRArrayH();
+
+        for(int i=0;i<4;i++)
+            q_ref_mod_msg.data[i] = q_ind_mod(i);
+
+        q_ref_mod_msg.header.frame_id = ref_msg->header.frame_id + ", " + x_msg->header.frame_id + ", " + ots_msg->header.frame_id;
+        q_ref_mod_msg.header.stamp = ref_msg->header.stamp;
+        q_ref_mod_msg.current_time = this->get_clock()->now();
+
+        publisher_->publish(q_ref_mod_msg);
 
     }
 

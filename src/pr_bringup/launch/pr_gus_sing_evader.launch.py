@@ -37,9 +37,7 @@ def generate_launch_description():
     pr_params = yaml.load(robot_yaml_file)    
 
     pr_config_params = pr_params[robot]['config'][robot_config]
-    
-    ref_file = controller_params['ref_path']
-    
+        
     ref_file_q = controller_params['ref_path']['q']
     ref_file_x = controller_params['ref_path']['x']
 
@@ -112,7 +110,7 @@ def generate_launch_description():
                     node_plugin='pr_controllers::GusController',
                     node_name='controller',
                     remappings=[
-                        ("ref_pose", "ref_pose"),
+                        ("ref_pose", "ref_pose_mod"),
                         ("joint_position", "joint_position"),
                         ("joint_velocity", "joint_velocity")
                     ],
@@ -147,7 +145,7 @@ def generate_launch_description():
                         ("joint_position", "joint_position")
                     ],
                     parameters=[
-                        {"ref_path": ref_file},
+                        {"ref_path": ref_file_q},
                         {"is_cart": False},
                         {"robot_config_params": pr_config_params}
                     ]
@@ -208,6 +206,15 @@ def generate_launch_description():
                         ("ref_mod", "ref_mod")
                     ],
                     parameters=[
+                        {"robot_config_params": pr_config_params},
+                        {"lmin_Ang_OTS": controller_params['sin_evader']['lmin_Ang_OTS']},
+                        {"ncomb": controller_params['sin_evader']['ncomb']},
+                        {"iter_fk": controller_params['sin_evader']['fk']['iter']},
+                        {"tol_fk": controller_params['sin_evader']['fk']['tol']},
+                        {"iter_OTS": controller_params['sin_evader']['ots']['iter']},
+                        {"tol_OTS": controller_params['sin_evader']['ots']['tol']},
+                        {"t_activation": controller_params['sin_evader']['t_activation']},
+                        {"ts": controller_params['ts']}
                     ]
                 ),
 

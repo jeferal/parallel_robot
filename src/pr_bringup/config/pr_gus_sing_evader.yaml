@@ -20,6 +20,17 @@ ots:
   tol: 0.0000001
   iter: 30
 
+sin_evader:
+  ncomb: 4
+  lmin_Ang_OTS: 3.0
+  fk:
+    tol: 0.0000001
+    iter: 30
+  ots:
+    tol: 0.0000001
+    iter: 30
+  t_activation: 10.0
+
 ref_path:
   q: "/home/paralelo4dofnew/ros2_eloquent_ws/parallel_robot/references/refeprism_indep_TRR8.txt"
   x: "/home/paralelo4dofnew/ros2_eloquent_ws/parallel_robot/references/refecart_TRR8_identificar.txt"

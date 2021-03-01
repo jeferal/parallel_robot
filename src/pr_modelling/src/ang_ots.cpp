@@ -62,7 +62,6 @@ namespace pr_modelling
         auto ots_msg = pr_msgs::msg::PROTS();
 
         ots_msg.header.stamp = x_msg->header.stamp;
-        ots_msg.current_time = this->get_clock()->now();
 
         for(int i=0; i<ots_msg.ots_ang.size(); i++)
             ots_msg.ots_ang[i] = sol_OTS(i);
@@ -74,6 +73,9 @@ namespace pr_modelling
         }
         ots_msg.ots.rows = OTS.rows();
         ots_msg.ots.cols = OTS.cols();
+
+        ots_msg.header.frame_id = x_msg->header.frame_id;
+        ots_msg.current_time = this->get_clock()->now();
 
         publisher_->publish(ots_msg);
     }
