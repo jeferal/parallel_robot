@@ -92,22 +92,12 @@ namespace pr_ref_gen
             std::cout << q_ind_mod << std::endl;
 
         q_ind_mod = PRSingularity::CalculateQindMod(
-            x_coord,
-            q_ref,
-            angOTS,
-            OTS,
-            minc_des,
-            robot_params,
-            vc_des,
-            mq_ind_mod,
-            des_qind,
-            lmin_Ang_OTS,
-            tol,
-            iter_max,
-            tol_OTS,
-            iter_OTS,
-            ncomb,
-            enable
+            x_coord, q_ref, angOTS, OTS,
+            minc_des, robot_params, vc_des,
+            mq_ind_mod, des_qind, lmin_Ang_OTS,
+            tol, iter_max,
+            tol_OTS, iter_OTS,
+            ncomb, enable
         );
 
         iterations++;
