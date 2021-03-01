@@ -260,22 +260,20 @@ Eigen::Vector4d PRSingularity::CalculateQindMod(
 		Eigen::Vector4d &vc_des,
 		Eigen::Matrix<double,4,-1> &mq_ind_mod,
 		double des_qind,
-		const int iteraciones,
 		const double lmin_Ang_OTS,
-		const double ts,
-		const double t_activation,
 		const double tol,
 		const int iter_max,
 		const double tol_OTS,
 		const double iter_OTS,
-		int ncomb
+		int ncomb,
+		bool enable
 )
 {
 	bool flag = false;
 	Eigen::Vector4d q_ind_mod = q_ref+des_qind*vc_des.cast<double>();
 	
 	// Activacio0n de las modificaciones de las referencias
-	if (t_activation/ts <= iteraciones){
+	if (enable){
 		std::cout << "calculating" << std::endl;
 
 		double minAng_OTS, error, error_OTS, maxAng_OTS_mod;

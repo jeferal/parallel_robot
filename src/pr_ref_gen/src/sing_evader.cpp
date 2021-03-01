@@ -81,12 +81,16 @@ namespace pr_ref_gen
 
         for(int i=0;i<6;i++)
             angOTS(i) = ots_msg->ots_ang[i];
-        
-        std::cout << OTS << std::endl;
-        std::cout << angOTS << std::endl;
-        std::cout << x_coord << std::endl;
-        std::cout << q_ref << std::endl;
-        
+
+        //Wait for beginning of experiment        
+        bool enable = false;
+
+        if (t_activation/ts <= iterations)
+            enable = true;
+
+        if (enable)
+            std::cout << q_ind_mod << std::endl;
+
         q_ind_mod = PRSingularity::CalculateQindMod(
             x_coord,
             q_ref,
@@ -97,21 +101,16 @@ namespace pr_ref_gen
             vc_des,
             mq_ind_mod,
             des_qind,
-            iterations,
             lmin_Ang_OTS,
-            ts,
-            t_activation,
             tol,
             iter_max,
             tol_OTS,
             iter_OTS,
-            ncomb
+            ncomb,
+            enable
         );
 
         iterations++;
-
-        std::cout << q_ind_mod << std::endl;
-        std::cout << vc_des << std::endl;
 
     }
 

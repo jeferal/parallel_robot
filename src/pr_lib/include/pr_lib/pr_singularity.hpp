@@ -57,15 +57,13 @@ namespace PRSingularity
 		Eigen::Vector4d &vc_des,
 		Eigen::Matrix<double,4,-1> &mq_ind_mod,
 		double des_qind,
-		const int iteraciones,
 		const double lmin_Ang_OTS,
-		const double ts,
-		const double t_activation,
 		const double tol,
 		const int iter_max,
 		const double tol_OTS,
 		const double iter_OTS,
-		int ncomb
+		int ncomb,
+        bool enable
     );
 
 }
