@@ -1,6 +1,9 @@
 #ifndef PR_REF_GEN__SING_EVADER_HPP_
 #define PR_REF_GEN__SING_EVADER_HPP_
 
+#include <vector>
+#include <cmath>
+
 #include "rclcpp/rclcpp.hpp"
 
 #include "message_filters/subscriber.h"
@@ -41,6 +44,19 @@ namespace pr_ref_gen
             std::shared_ptr<Synchronizer> sync_;
 
             rclcpp::Publisher<pr_msgs::msg::PRArrayH>::SharedPtr publisher_;
+
+            Eigen::Matrix<double,6,4> OTS = Eigen::Matrix<double,6,4>::Zero();
+            Eigen::Matrix<double,6,1> angOTS = Eigen::Matrix<double,6,1>::Zero();
+            Eigen::Matrix<double,2,4> minc_des;
+            Eigen::Vector4d vc_des = Eigen::Vector4d::Zero();
+            Eigen::Matrix<double,4,-1> mq_ind_mod;
+            Eigen::Vector4d q_ind_mod = Eigen::Vector4d::Zero();
+            Eigen::Vector4d x_coord = Eigen::Vector4d::Zero();
+            Eigen::Vector4d q_ref = Eigen::Vector4d::Zero();
+            
+            std::vector<double> robot_params;
+            int iterations, iter_max=30, ncomb, iter_OTS;
+            double tol, tol_OTS, t_activation, ts, des_qind, lmin_Ang_OTS;
 
     };
 }

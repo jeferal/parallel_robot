@@ -276,6 +276,7 @@ Eigen::Vector4d PRSingularity::CalculateQindMod(
 	
 	// Activacio0n de las modificaciones de las referencias
 	if (t_activation/ts <= iteraciones){
+		std::cout << "calculating" << std::endl;
 
 		double minAng_OTS, error, error_OTS, maxAng_OTS_mod;
 		double x_m, z_m, theta, psi;

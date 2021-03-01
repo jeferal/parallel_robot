@@ -4,7 +4,6 @@
 #include <memory>
 #include <utility>
 #include <array>
-#include <vector>
 #include <functional>
 
 #include "rclcpp/rclcpp.hpp"
@@ -21,6 +20,34 @@ namespace pr_ref_gen
     : Node("sin_evader", options)
     {
         //Parameter declaration
+        this->declare_parameter<std::vector<double>>(
+            "robot_config_params", 
+            {0.4, 0.4, 0.4, 0.15, 90*(M_PI/180), 45*(M_PI/180), 0.3, 0.3, 0.3, 50*(M_PI/180), 90*(M_PI/180)});
+        this->declare_parameter<int>("iter_max",30);
+        this->declare_parameter<double>("tol",1e-7);
+        this->declare_parameter<double>("tol_OTS",1e-7);
+        this->declare_parameter<int>("iter_OTS",30);
+        this->declare_parameter<double>("t_activation",5);
+        this->declare_parameter<int>("ncomb",4);
+        this->declare_parameter<double>("ts", 0.01);
+        this->declare_parameter<double>("lmin_Ang_OTS",3.0);
+
+        this->get_parameter("robot_config_params", robot_params);
+        this->get_parameter("iter_max", iter_max);
+        this->get_parameter("tol", tol);
+        this->get_parameter("tol_OTS", tol_OTS);
+        this->get_parameter("iter_OTS", iter_OTS);
+        this->get_parameter("t_activation", t_activation);
+        this->get_parameter("ncomb",ncomb);
+        this->get_parameter("ts", ts);
+        this->get_parameter("lmin_Ang_OTS",lmin_Ang_OTS);
+
+        minc_des << 1, -1, 1, -1,
+		            1, -1, -1, 1;
+        
+        des_qind = 0.01*ts;
+
+        mq_ind_mod = Eigen::Matrix<double,4,-1>::Zero(4,4);
 
         RCLCPP_INFO(this->get_logger(), "Creating communication");
 
@@ -40,7 +67,52 @@ namespace pr_ref_gen
                                     const pr_msgs::msg::PRArrayH::ConstPtr& x_msg,
                                     const pr_msgs::msg::PROTS::ConstPtr& ots_msg)
     {
-        RCLCPP_INFO(this->get_logger(), "Singularity evader callback");
+        //Convert to Eigen
+        for(int i=0;i<4;i++) {
+            x_coord(i) = x_msg->data[i];
+            q_ref(i) = ref_msg->data[i];
+        }
+
+        for(int i=0; i<ots_msg->ots.data.size(); i++) {
+            int row = i/OTS.cols();
+            int col = i%OTS.cols();
+            OTS.coeffRef(row,col) = ots_msg->ots.data[i];
+        }
+
+        for(int i=0;i<6;i++)
+            angOTS(i) = ots_msg->ots_ang[i];
+        
+        std::cout << OTS << std::endl;
+        std::cout << angOTS << std::endl;
+        std::cout << x_coord << std::endl;
+        std::cout << q_ref << std::endl;
+        
+        q_ind_mod = PRSingularity::CalculateQindMod(
+            x_coord,
+            q_ref,
+            angOTS,
+            OTS,
+            minc_des,
+            robot_params,
+            vc_des,
+            mq_ind_mod,
+            des_qind,
+            iterations,
+            lmin_Ang_OTS,
+            ts,
+            t_activation,
+            tol,
+            iter_max,
+            tol_OTS,
+            iter_OTS,
+            ncomb
+        );
+
+        iterations++;
+
+        std::cout << q_ind_mod << std::endl;
+        std::cout << vc_des << std::endl;
+
     }
 
 
