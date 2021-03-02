@@ -44,6 +44,7 @@ namespace pr_ref_gen
             std::shared_ptr<Synchronizer> sync_;
 
             rclcpp::Publisher<pr_msgs::msg::PRArrayH>::SharedPtr publisher_;
+            rclcpp::Publisher<pr_msgs::msg::PRArrayH>::SharedPtr publisher_vc_;
 
             Eigen::Matrix<double,6,4> OTS = Eigen::Matrix<double,6,4>::Zero();
             Eigen::Matrix<double,6,1> angOTS = Eigen::Matrix<double,6,1>::Zero();

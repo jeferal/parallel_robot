@@ -330,10 +330,11 @@ Eigen::Vector4d PRSingularity::CalculateQindMod(
 				qa = mq_ind_mod.col(c_comb);
 				
 				std::array<double,4> q_sol;
-				std::vector<double> x_pose;
-				for(int i=0; i<3; i++) {
+				
+				std::vector<double> x_pose = {X_cart(0),X_cart(1),X_cart(2),X_cart(3)};
+
+				for(int i=0; i<4; i++) {
 					q_sol[i] = qa(i);
-					x_pose[i] = X_cart(i);
 				}
 
 				// RESOLUCION DE LA CINEMATICA DIRECTA-POSICION
@@ -350,7 +351,7 @@ Eigen::Vector4d PRSingularity::CalculateQindMod(
 				// RESOLUCION DE LOS OTS INVOLUCRADOS EN LA SINGULARIDAD
 				// Matriz para los dos OTS buscados
 				Eigen::Matrix<double,6,2> solOTS_2 = Eigen::Matrix<double,6,2>::Zero();
-			
+				
 				// Lazo para resolver los dos OTS de la singularidad
 				for (int c_OTS=0; c_OTS<2; c_OTS++){
 					// Punto inicial para solucionar el sistema de ecuaciones para un OTS

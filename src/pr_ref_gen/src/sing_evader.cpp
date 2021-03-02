@@ -60,6 +60,8 @@ namespace pr_ref_gen
 
         publisher_ = this->create_publisher<pr_msgs::msg::PRArrayH>("ref_pose_mod", 1);
 
+        publisher_vc_ = this->create_publisher<pr_msgs::msg::PRArrayH>("vc_des", 1);
+
 
     }
 
@@ -72,8 +74,6 @@ namespace pr_ref_gen
             x_coord(i) = x_msg->data[i];
             q_ref(i) = ref_msg->data[i];
         }
-        std::cout << "Q ref msg:" << std::endl;
-        std::cout << q_ref << std::endl;
 
         for(int i=0; i<ots_msg->ots.data.size(); i++) {
             int row = i/OTS.cols();
@@ -86,6 +86,8 @@ namespace pr_ref_gen
 
         //Wait for beginning of experiment        
         bool enable = false;
+
+        std::cout << t_activation/ts << ", " << iterations << std::endl;
 
         if (t_activation/ts <= iterations)
             enable = true;
@@ -112,9 +114,18 @@ namespace pr_ref_gen
 
         publisher_->publish(q_ref_mod_msg);
 
+        //Publish also vc_des data
+        auto vc_des_msg = pr_msgs::msg::PRArrayH();
+
+        for(int i=0;i<4;i++)
+            vc_des_msg.data[i] = vc_des(i);
+
+        vc_des_msg.header.frame_id = ref_msg->header.frame_id + ", " + x_msg->header.frame_id + ", " + ots_msg->header.frame_id;
+        vc_des_msg.header.stamp = ref_msg->header.stamp;
+        vc_des_msg.current_time = this->get_clock()->now();
+
+        publisher_vc_->publish(vc_des_msg);
     }
-
-
 }
 
 #include "rclcpp_components/register_node_macro.hpp"

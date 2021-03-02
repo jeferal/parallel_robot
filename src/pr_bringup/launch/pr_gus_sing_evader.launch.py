@@ -168,7 +168,7 @@ def generate_launch_description():
                     node_plugin='pr_modelling::ForwardKinematics',
                     node_name='for_kin',
                     remappings=[
-                        ("joint_position", "joint_position"),
+                        ("joint_position", "ref_pose"),
                         ("x_coord", "x_coord"),
                     ],
                     parameters=[
