@@ -27,8 +27,17 @@ def generate_launch_description():
         'pr_gus_sing_evader.yaml'
     )
 
+    mocap_config = os.path.join(
+        get_package_share_directory('pr_bringup'),
+        'config',
+        'mocap_server.yaml'
+        )
+
     controller_yaml_file = open(controller_params_file)
     controller_params = yaml.load(controller_yaml_file)
+
+    mocap_yaml_file = open(mocap_config)
+    mocap_params = yaml.load(mocap_yaml_file)
 
     robot = controller_params['robot']['robot_name']
     robot_config = controller_params['robot']['config']
@@ -168,7 +177,7 @@ def generate_launch_description():
                     node_plugin='pr_modelling::ForwardKinematics',
                     node_name='for_kin',
                     remappings=[
-                        ("joint_position", "ref_pose"),
+                        ("joint_position", "joint_position"),
                         ("x_coord", "x_coord"),
                     ],
                     parameters=[
@@ -215,6 +224,22 @@ def generate_launch_description():
                         {"tol_OTS": controller_params['sin_evader']['ots']['tol']},
                         {"t_activation": controller_params['sin_evader']['t_activation']},
                         {"ts": controller_params['ts']}
+                    ]
+                ),
+
+                ComposableNode(
+                    package='pr_mocap',
+                    node_plugin='pr_mocap::PRXMocap',
+                    node_name='mocap',
+                    remappings=[
+                        ("x_coord_mocap", "x_coord_mocap")
+                    ],
+                    parameters=[
+                        {"server_address": mocap_params["server_address"]},
+                        {"server_command_port": mocap_params["server_command_port"]},
+                        {"server_data_port": mocap_params["server_data_port"]},
+                        {"marker_names":  mocap_params["marker_names"][robot]},
+                        {"robot_5p": robot=="robot_5p"},
                     ]
                 ),
 
