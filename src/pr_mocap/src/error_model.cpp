@@ -44,31 +44,34 @@ namespace pr_mocap
 
     void ErrorModel::mocap_callback(const pr_msgs::msg::PRMocap::SharedPtr x_mocap_msg)
     {
+        is_connected = true;
         x_mocap.x_coord.data = x_mocap_msg->x_coord.data;
         x_mocap.latency = x_mocap_msg->latency;
     }
 
     void ErrorModel::model_callback(const pr_msgs::msg::PRArrayH::SharedPtr x_model_msg)
     {
-        //Publish mocap coordinates syncronized with sample time
-        auto x_mocap_msg = pr_msgs::msg::PRArrayH();
+        if(is_connected) {
+            //Publish mocap coordinates syncronized with sample time
+            auto x_mocap_msg = pr_msgs::msg::PRArrayH();
 
-        x_mocap_msg.data = x_mocap.x_coord.data;
-        x_mocap_msg.header.stamp = x_model_msg->header.stamp;
-        x_mocap_msg.current_time = this->get_clock()->now();
+            x_mocap_msg.data = x_mocap.x_coord.data;
+            x_mocap_msg.header.stamp = x_model_msg->header.stamp;
+            x_mocap_msg.current_time = this->get_clock()->now();
 
-        publisher_mocap_->publish(x_mocap_msg);
+            publisher_mocap_->publish(x_mocap_msg);
 
-        auto error_info_msg = pr_msgs::msg::PRMocap();
+            auto error_info_msg = pr_msgs::msg::PRMocap();
 
-        error_calc(tol, error_info_msg.error, x_mocap.x_coord.data, x_model_msg->data);
+            error_calc(tol, error_info_msg.error, x_mocap.x_coord.data, x_model_msg->data);
 
-        error_info_msg.header = x_model_msg->header;
-        error_info_msg.current_time = this->get_clock()->now();
-        error_info_msg.latency = x_mocap.latency;
-        error_info_msg.x_coord.data = x_mocap.x_coord.data;
+            error_info_msg.header = x_model_msg->header;
+            error_info_msg.current_time = this->get_clock()->now();
+            error_info_msg.latency = x_mocap.latency;
+            error_info_msg.x_coord.data = x_mocap.x_coord.data;
 
-        publisher_info_->publish(error_info_msg);
+            publisher_info_->publish(error_info_msg);
+        }
 
     }
 

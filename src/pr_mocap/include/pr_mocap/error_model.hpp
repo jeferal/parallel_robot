@@ -31,6 +31,7 @@ namespace pr_mocap
             rclcpp::Publisher<pr_msgs::msg::PRArrayH>::SharedPtr publisher_mocap_;
 
             double tol;
+            bool is_connected;
             pr_msgs::msg::PRMocap x_mocap;
     };
 }
