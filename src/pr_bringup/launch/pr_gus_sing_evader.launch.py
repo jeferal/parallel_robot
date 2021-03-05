@@ -193,7 +193,7 @@ def generate_launch_description():
                     node_plugin='pr_modelling::AngOTS',
                     node_name='ang_ots',
                     remappings=[
-                        ("x_coord_cams", "x_coord"),
+                        ("x_coord_cams", "x_mocap_sync"),
                         ("ang_ots", "ang_ots"),
                     ],
                     parameters=[
@@ -210,7 +210,7 @@ def generate_launch_description():
                     node_name='sing_evader',
                     remappings=[
                         ("ref_pose", "ref_pose"),
-                        ("x_coord", "x_coord"),
+                        ("x_coord", "x_mocap_sync"),
                         ("ang_ots", "ang_ots"),
                         ("ref_mod", "ref_mod")
                     ],
@@ -248,7 +248,8 @@ def generate_launch_description():
                     node_plugin='pr_mocap::ErrorModel',
                     node_name='model_error',
                     remappings=[
-                        ("x_mocap_error", "x_mocap_error")
+                        ("x_mocap_error", "x_mocap_error"),
+                        ("x_mocap_sync", "x_mocap_sync")
                     ],
                     parameters=[
                         {"tol": 0.01}
