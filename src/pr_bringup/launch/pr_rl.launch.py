@@ -25,7 +25,7 @@ def generate_launch_description():
                     ],
                     parameters=[
                         {"initial_value": first_reference_q},
-                        {"ts": 0.005}
+                        {"ts": 0.01}
                     ]
                 ),
                 ComposableNode(
@@ -37,7 +37,7 @@ def generate_launch_description():
                         ("posicion_sim", "posicion_sim"),
                     ],
                     parameters=[
-                        {"ts_ms": 5.0},
+                        {"ts_ms": 10.0},
                         {"initial_position": first_reference_q},
                     ]
                 ),

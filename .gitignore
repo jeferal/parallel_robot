@@ -5,3 +5,5 @@ log
 natnet_sdk
 rl_env
 tmp
+test
+plots

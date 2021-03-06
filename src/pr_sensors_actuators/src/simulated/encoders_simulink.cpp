@@ -13,6 +13,8 @@
 
 using std::placeholders::_1;
 
+#define MAX_POS 2.0
+
 
 namespace pr_sensors_actuators
 {
@@ -75,13 +77,41 @@ namespace pr_sensors_actuators
           position_msg.data[2] = msg->z;
           position_msg.data[3] = msg->w;
           }*/
+        
+        //Pose saturation to avoid problems with RL algorithm
         auto pos_msg = pr_msgs::msg::PRArrayH();
+
+        if (msg->x > MAX_POS)
+            pos_msg.data[0] = MAX_POS;
+        else if (msg->x < -MAX_POS)
+            pos_msg.data[0] = -MAX_POS;
+        else
+            pos_msg.data[0] = msg->x;
+
+        if (msg->y > MAX_POS)
+            pos_msg.data[1] = MAX_POS;
+        else if (msg->y < -MAX_POS)
+            pos_msg.data[1] = -MAX_POS;
+        else
+            pos_msg.data[1] = msg->y;
+
+        if (msg->z > MAX_POS)
+            pos_msg.data[2] = MAX_POS;
+        else if (msg->z < -MAX_POS)
+            pos_msg.data[2] = -MAX_POS;
+        else
+            pos_msg.data[2] = msg->z;
+
+        if (msg->w > MAX_POS)
+            pos_msg.data[3] = MAX_POS;
+        else if (msg->w < -MAX_POS)
+            pos_msg.data[3] = -MAX_POS;
+        else
+            pos_msg.data[3] = msg->w;
+
         pos_msg.current_time = this->get_clock()->now();
 		pos_msg.header.stamp = this->get_clock()->now();
-        pos_msg.data[0] = msg->x;
-        pos_msg.data[1] = msg->y;
-        pos_msg.data[2] = msg->z;
-        pos_msg.data[3] = msg->w;
+
         publisher_->publish(pos_msg);
 
     }

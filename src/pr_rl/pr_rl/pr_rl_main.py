@@ -4,7 +4,7 @@ from time import sleep
 from pr_agents import DDPGAgent
 
 import numpy as np
-import matplotlib.pyplot as pyplot
+import matplotlib.pyplot as plt
 
 import tensorflow as tf
 
@@ -23,10 +23,10 @@ def main(args=None):
 
     agent = DDPGAgent(input_dims=env.observation_space.shape, env=env,
             n_actions=env.action_space.shape[0])
+    
+    n_games = 1000
 
-    n_games = 250
-
-    figure_file = 'plots/pendulum.png'
+    figure_file = 'plots/pr_avg_score.png'
 
     best_score = env.reward_range[0]
     score_history = []
@@ -40,7 +40,7 @@ def main(args=None):
             observation_, reward, done, info = env.step(action)
             agent.remember(observation, action, reward, observation_, done)
             n_steps += 1
-        agent.learn()
+        agent.learn()    
         agent.load_models()
         evaluate = True
     else:
@@ -76,7 +76,7 @@ def main(args=None):
             if not load_checkpoint:
                 agent.save_models()
 
-        print('episode ', i, 'score %.1f' % score, 'avg score %.1f' % avg_score)
+        print('episode ', i, 'of ', n_games, 'score %.1f' % score, 'avg score %.1f' % avg_score)
 
     if not load_checkpoint:
         x = [i+1 for i in range(n_games)]
