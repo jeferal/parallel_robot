@@ -22,9 +22,11 @@ def main(args=None):
     env = gym.make('gym_parallel_robot:ParallelRobot-v0')
 
     agent = DDPGAgent(input_dims=env.observation_space.shape, env=env,
-            n_actions=env.action_space.shape[0])
+            n_actions=env.action_space.shape[0], alpha=0.0001, beta=0.0002,
+            gamma=0.99, max_size=1000000, tau=0.0005, 
+            batch_size=64, noise=0.05, fc1=700, fc2=500)
     
-    n_games = 1000
+    n_games = 2048
 
     figure_file = 'plots/pr_avg_score.png'
 
