@@ -37,7 +37,7 @@ if(BUILD_TESTING)
 endif()
 
 
-### MODEL LIBRARY ###
+### LIBRARY ###
 
 add_library(pr_lib SHARED
   src/pr_model.cpp
