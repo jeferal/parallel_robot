@@ -23,7 +23,7 @@ def main(args=None):
 
     agent = DDPGAgent(input_dims=env.observation_space.shape, env=env,
             n_actions=env.action_space.shape[0], alpha=0.0001, beta=0.0002,
-            gamma=0.99, max_size=1000000, tau=0.0005, 
+            gamma=0.9, max_size=100000000, tau=0.005, 
             batch_size=64, noise=0.05, fc1=700, fc2=500)
     
     n_games = 2048
@@ -50,20 +50,13 @@ def main(args=None):
 
     for i in range(n_games):
         observation = env.reset()
-        print('returned observation: ')
-        print(observation)
         done = False
         score = 0
         while not done:
-            print(observation)
             action = agent.choose_action(observation, evaluate)
             action_m = tf.make_tensor_proto(action)
             control_action = tf.make_ndarray(action_m)
-            print('control action:')
-            print(control_action)
             observation_, reward, done, info = env.step(control_action)
-            print('reward: ')
-            print(reward)
             score += reward
             agent.remember(observation, action, reward, observation_, done)
             if not load_checkpoint:
