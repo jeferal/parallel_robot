@@ -1,6 +1,8 @@
 #ifndef PR_MODELLING__STATE_PUBLISHER_HPP_
 #define PR_MODELLING__STATE_PUBLISHER_HPP_
 
+#include <array>
+
 #include "rclcpp/rclcpp.hpp"
 
 #include "message_filters/subscriber.h"
@@ -24,6 +26,8 @@ namespace pr_modelling
             void topic_callback(const pr_msgs::msg::PRArrayH::ConstPtr& q_msg,
                                 const pr_msgs::msg::PRArrayH::ConstPtr& q_vel_msg);
 
+            void saturate(std::array<double,4> &var, const double v_min, const double v_max);
+
         private:
             message_filters::Subscriber<pr_msgs::msg::PRArrayH> sub_q;
             message_filters::Subscriber<pr_msgs::msg::PRArrayH> sub_q_vel;
@@ -39,6 +43,8 @@ namespace pr_modelling
             std::shared_ptr<Synchronizer> sync_;
 
             rclcpp::Publisher<pr_msgs::msg::PRState>::SharedPtr publisher_;
+
+            double pos_min, pos_max, vel_min, vel_max;
     };
 }
 

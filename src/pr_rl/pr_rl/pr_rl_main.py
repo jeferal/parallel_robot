@@ -22,8 +22,8 @@ def main(args=None):
     env = gym.make('gym_parallel_robot:ParallelRobot-v0')
 
     agent = DDPGAgent(input_dims=env.observation_space.shape, env=env,
-            n_actions=env.action_space.shape[0], alpha=0.0001, beta=0.0002,
-            gamma=0.9, max_size=100000000, tau=0.005, 
+            n_actions=env.action_space.shape[0], alpha=0.0000001, beta=0.0000002,
+            gamma=0.93, max_size=100000000, tau=0.0005, 
             batch_size=64, noise=0.05, fc1=700, fc2=500)
     
     n_games = 2048
@@ -56,7 +56,9 @@ def main(args=None):
             action = agent.choose_action(observation, evaluate)
             action_m = tf.make_tensor_proto(action)
             control_action = tf.make_ndarray(action_m)
+            print(control_action)
             observation_, reward, done, info = env.step(control_action)
+            print(reward)
             score += reward
             agent.remember(observation, action, reward, observation_, done)
             if not load_checkpoint:
@@ -71,7 +73,7 @@ def main(args=None):
             if not load_checkpoint:
                 agent.save_models()
 
-        print('episode ', i, 'of ', n_games, 'score %.1f' % score, 'avg score %.1f' % avg_score)
+        print('episode ', i, '/', n_games, 'score %.1f' % score, 'avg score %.1f' % avg_score)
 
     if not load_checkpoint:
         x = [i+1 for i in range(n_games)]

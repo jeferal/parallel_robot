@@ -63,6 +63,12 @@ def generate_launch_description():
                         ("joint_velocity", "joint_velocity"),
                         ("pr_state", "pr_state"),
                     ],
+                    parameters=[
+                        {"pos_max":  2.0},
+                        {"pos_min": -2.0},
+                        {"vel_max":  2.0},
+                        {"vel_min": -2.0},
+                    ]
                 ),
             ],
             output='screen',
