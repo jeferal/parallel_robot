@@ -195,7 +195,26 @@ ament_target_dependencies(ang_ots
   "pr_lib")
 
 rclcpp_components_register_nodes(ang_ots "pr_modelling::AngOTS")
-set(node_plugins "${node_plugins}pr_modelling::StatePublisher;$<TARGET_FILE:ang_ots>\n")
+set(node_plugins "${node_plugins}pr_modelling::AngOTS;$<TARGET_FILE:ang_ots>\n")
+
+
+### Forward Jacobian node ###
+
+add_library(for_jac SHARED
+  src/for_jac.cpp)
+
+target_compile_definitions(for_jac
+  PRIVATE "COMPOSITION_BUILDING_DLL")
+
+ament_target_dependencies(for_jac
+  "rclcpp"
+  "rclcpp_components"
+  "pr_msgs"
+  "pr_lib")
+
+rclcpp_components_register_nodes(for_jac "pr_modelling::ForwardJacobian")
+set(node_plugins "${node_plugins}pr_modelling::ForwardJacobian;$<TARGET_FILE:for_jac>\n")
+
 
 
 ### Installation ###
@@ -209,6 +228,7 @@ install(TARGETS
   q_grav
   state_publisher
   ang_ots
+  for_jac
   ARCHIVE DESTINATION lib
   LIBRARY DESTINATION lib
   RUNTIME DESTINATION bin)
