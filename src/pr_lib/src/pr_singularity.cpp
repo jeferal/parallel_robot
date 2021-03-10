@@ -259,11 +259,15 @@ Eigen::Vector4d PRSingularity::CalculateQindMod(
         const Eigen::Matrix<double,6,1> &angOTS, 
         const Eigen::Matrix<double,6,4> &solOTS,
 		const Eigen::Matrix<double,2,4> &minc_des,
+		const double &fj_det,
 		const std::vector<double> &RParam,
 		Eigen::Vector4d &vc_des,
 		Eigen::Matrix<double,4,-1> &mq_ind_mod,
+		const Eigen::Matrix<double,4,2> &Mlim_q_ind,
+		std::vector<double> &Vlim_angp,
 		double des_qind,
 		const double lmin_Ang_OTS,
+		const double lmin_FJac,
 		const double tol,
 		const int iter_max,
 		const double tol_OTS,
@@ -297,7 +301,7 @@ Eigen::Vector4d PRSingularity::CalculateQindMod(
 		Eigen::Vector2d i_qind = Eigen::Vector2d::Zero();
 
 		// Condicion para modificar la referencia
-		if (minAng_OTS<lmin_Ang_OTS){
+		if (minAng_OTS<lmin_Ang_OTS || abs(fj_det) < lmin_FJac){
 			// Identifico las patas que causan el minimo angulo de OTS
 			// OJO! Se les resta una unidad (un 0 es la pata 1 y un 3 es la pata 4)
 			if (minAng_OTS == angOTS(0)){ i_qind(0)=0; i_qind(1) = 1;}
@@ -309,7 +313,9 @@ Eigen::Vector4d PRSingularity::CalculateQindMod(
 		
 			// MODIFICACIONES POSIBLES SOBRE LA REFERENCIA
 			// Numero de posibles modificaciones
+
 			ncomb = minc_des.cols();
+
 			// Calculo las posibles referencias modificadas
 			mq_ind_mod = Eigen::MatrixX4d::Zero(4,ncomb);
 			for (int i=0; i<ncomb; i++){
@@ -354,51 +360,64 @@ Eigen::Vector4d PRSingularity::CalculateQindMod(
 				// RESOLUCION DE LOS OTS INVOLUCRADOS EN LA SINGULARIDAD
 				// Matriz para los dos OTS buscados
 				Eigen::Matrix<double,6,2> solOTS_2 = Eigen::Matrix<double,6,2>::Zero();
-				
-				// Lazo para resolver los dos OTS de la singularidad
-				for (int c_OTS=0; c_OTS<2; c_OTS++){
-					// Punto inicial para solucionar el sistema de ecuaciones para un OTS
-					X_OTS << solOTS(0,i_qind(c_OTS)), solOTS(1,i_qind(c_OTS)), solOTS(2,i_qind(c_OTS)), solOTS(3,i_qind(c_OTS)), solOTS(5,i_qind(c_OTS));
-					// Error inicial para la resolucion del sistema
-					EqOTS(f_OTS, X_OTS(0), X_OTS(1), X_OTS(2), X_OTS(3), X_OTS(4), theta, psi, q, i_qind(c_OTS)+1, RParam[6], RParam[7], RParam[8], RParam[9], RParam[10]);
-					error_OTS = f_OTS.norm();
-					// Iteracion inicial
-					int ci = 1;
-				
-					// Algoritmo de Newton Raphson
-					while (error_OTS>tol_OTS){
-						// Funcion con las ecuaciones que determinan los componentes de un OTS
-						EqOTS(f_OTS, X_OTS(0), X_OTS(1), X_OTS(2), X_OTS(3), X_OTS(4), theta, psi, q, i_qind(c_OTS)+1, RParam[6], RParam[7], RParam[8], RParam[9], RParam[10]);
-						// Error de la solucion actual
-						error_OTS = f_OTS.norm();
-						// Jacobiano del sistema de ecuaciones para un OTS
-						EqOTSJacobian(J_OTS, X_OTS(0), X_OTS(1), X_OTS(2), theta, psi, q, i_qind(c_OTS)+1, RParam[6], RParam[7], RParam[8], RParam[9], RParam[10]);
-						// Calculo de la nueva solucion
-						//Xn_OTS = X_OTS - linSolve(J_OTS, f_OTS);
-						Xn_OTS = X_OTS - J_OTS.partialPivLu().solve(f_OTS);
-						//Xn_OTS = X_OTS - J_OTS.inverse()*f_OTS;
-						// Actualizo la solucion de un OTS
-						X_OTS = Xn_OTS;
-						// Incremento el contador de iteraciones
-						ci++;
-						// Condicion para evitar bucles infinitos
-						if (ci>iter_OTS) break;
+				Eigen::Vector4d solAngP = Eigen::Vector4d::Zero();
 
+				solAngP(0) = acos(cos(q(0)) * sin(q(1)) * sin(theta) + sin(q(0)) * sin(q(1)) * cos(theta));
+				solAngP(1) = acos(cos(q(3)) * sin(q(4)) * sin(theta) + sin(q(3)) * sin(q(4)) * cos(theta));
+    			solAngP(2) = acos(cos(q(6)) * sin(q(7)) * sin(theta) + sin(q(6)) * sin(q(7)) * cos(theta));
+    			solAngP(3) = acos(-sin(q(9)) * sin(theta) + cos(q(9)) * cos(theta));
+				
+				if ((q(2)>Mlim_q_ind(0,0) && q(2)<Mlim_q_ind(0,1)) && (q(5)>Mlim_q_ind(1,0) && q(5)<Mlim_q_ind(1,1)) && (q(8)>Mlim_q_ind(2,0) && q(8)<Mlim_q_ind(2,1)) && (q(10)>Mlim_q_ind(3,0) && q(10)<Mlim_q_ind(3,1)) && solAngP(0)<Vlim_angp[0] && solAngP(1)<Vlim_angp[1] && solAngP(2)<Vlim_angp[2] && solAngP(3)<Vlim_angp[3]) {
+					// Lazo para resolver los dos OTS de la singularidad
+					for (int c_OTS=0; c_OTS<2; c_OTS++){
+						// Punto inicial para solucionar el sistema de ecuaciones para un OTS
+						X_OTS << solOTS(0,i_qind(c_OTS)), solOTS(1,i_qind(c_OTS)), solOTS(2,i_qind(c_OTS)), solOTS(3,i_qind(c_OTS)), solOTS(5,i_qind(c_OTS));
+						// Error inicial para la resolucion del sistema
+						EqOTS(f_OTS, X_OTS(0), X_OTS(1), X_OTS(2), X_OTS(3), X_OTS(4), theta, psi, q, i_qind(c_OTS)+1, RParam[6], RParam[7], RParam[8], RParam[9], RParam[10]);
+						error_OTS = f_OTS.norm();
+						// Iteracion inicial
+						int ci = 1;
+					
+						// Algoritmo de Newton Raphson
+						while (error_OTS>tol_OTS){
+							// Funcion con las ecuaciones que determinan los componentes de un OTS
+							EqOTS(f_OTS, X_OTS(0), X_OTS(1), X_OTS(2), X_OTS(3), X_OTS(4), theta, psi, q, i_qind(c_OTS)+1, RParam[6], RParam[7], RParam[8], RParam[9], RParam[10]);
+							// Error de la solucion actual
+							error_OTS = f_OTS.norm();
+							// Jacobiano del sistema de ecuaciones para un OTS
+							EqOTSJacobian(J_OTS, X_OTS(0), X_OTS(1), X_OTS(2), theta, psi, q, i_qind(c_OTS)+1, RParam[6], RParam[7], RParam[8], RParam[9], RParam[10]);
+							// Calculo de la nueva solucion
+							//Xn_OTS = X_OTS - linSolve(J_OTS, f_OTS);
+							Xn_OTS = X_OTS - J_OTS.partialPivLu().solve(f_OTS);
+							//Xn_OTS = X_OTS - J_OTS.inverse()*f_OTS;
+							// Actualizo la solucion de un OTS
+							X_OTS = Xn_OTS;
+							// Incremento el contador de iteraciones
+							ci++;
+							// Condicion para evitar bucles infinitos
+							if (ci>iter_OTS) break;
+
+						}
+
+						// Almaceno la solucion del OTS seleccionado por c_OTS
+						solOTS_2(0,c_OTS) = X_OTS(0);
+						solOTS_2(1,c_OTS) = X_OTS(1);
+						solOTS_2(2,c_OTS) = X_OTS(2);
+						solOTS_2(3,c_OTS) = X_OTS(3);
+						solOTS_2(4,c_OTS) = 0;
+						solOTS_2(5,c_OTS) = X_OTS(4);
 					}
 
-					// Almaceno la solucion del OTS seleccionado por c_OTS
-					solOTS_2(0,c_OTS) = X_OTS(0);
-					solOTS_2(1,c_OTS) = X_OTS(1);
-					solOTS_2(2,c_OTS) = X_OTS(2);
-					solOTS_2(3,c_OTS) = X_OTS(3);
-					solOTS_2(4,c_OTS) = 0;
-					solOTS_2(5,c_OTS) = X_OTS(4);
-				}
+					// Nuevo angulo OMEGA para la referencia modificada
+					ang_OTS_1 = (solOTS_2.col(0)).head(3);
+					ang_OTS_2 = (solOTS_2.col(1)).head(3);
+					solAngOTS_mod(c_comb) = acos(ang_OTS_1.dot(ang_OTS_2)/(ang_OTS_1.norm()*ang_OTS_2.norm()))*180/M_PI;
 
-				// Nuevo angulo OMEGA para la referencia modificada
-				ang_OTS_1 = (solOTS_2.col(0)).head(3);
-				ang_OTS_2 = (solOTS_2.col(1)).head(3);
-				solAngOTS_mod(c_comb) = acos(ang_OTS_1.dot(ang_OTS_2)/(ang_OTS_1.norm()*ang_OTS_2.norm()))*180/M_PI; 	
+					if (solAngOTS_mod(c_comb) > 90) solAngOTS_mod(c_comb) = 180 - solAngOTS_mod(c_comb);  	
+					
+				}
+				else solAngOTS_mod(c_comb)=0;
+			
 			}
 		
 			// REFERENCIA MODIFICADA QUE PRODUCIRA EL MAXIMO ANGULO OMEGA

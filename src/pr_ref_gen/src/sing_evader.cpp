@@ -54,9 +54,10 @@ namespace pr_ref_gen
         sub_ref.subscribe(this, "ref_pose");
         sub_x.subscribe(this, "x_coord");
         sub_ots.subscribe(this, "ang_ots");
+        sub_det.subscribe(this, "for_jac_det");
 
-        sync_.reset(new Synchronizer(SyncPolicy(1), sub_ref, sub_x, sub_ots));
-        sync_->registerCallback(std::bind(&SingEvader::topic_callback, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
+        sync_.reset(new Synchronizer(SyncPolicy(1), sub_ref, sub_x, sub_ots, sub_det));
+        sync_->registerCallback(std::bind(&SingEvader::topic_callback, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3, std::placeholders::_4));
 
         publisher_ = this->create_publisher<pr_msgs::msg::PRArrayH>("ref_pose_mod", 1);
 
@@ -67,7 +68,8 @@ namespace pr_ref_gen
 
     void SingEvader::topic_callback(const pr_msgs::msg::PRArrayH::ConstPtr& ref_msg,
                                     const pr_msgs::msg::PRArrayH::ConstPtr& x_msg,
-                                    const pr_msgs::msg::PROTS::ConstPtr& ots_msg)
+                                    const pr_msgs::msg::PROTS::ConstPtr& ots_msg,
+                                    const pr_msgs::msg::PRFloatH::ConstPtr& for_jac_det)
     {
         //Convert to Eigen
         for(int i=0;i<4;i++) {

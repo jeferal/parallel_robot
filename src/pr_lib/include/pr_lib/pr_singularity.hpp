@@ -53,17 +53,21 @@ namespace PRSingularity
         const Eigen::Matrix<double,6,1> &angOTS, 
         const Eigen::Matrix<double,6,4> &solOTS,
 		const Eigen::Matrix<double,2,4> &minc_des,
+		const double &fj_det,
 		const std::vector<double> &RParam,
 		Eigen::Vector4d &vc_des,
 		Eigen::Matrix<double,4,-1> &mq_ind_mod,
+		const Eigen::Matrix<double,4,2> &Mlim_q_ind,
+		std::vector<double> &Vlim_angp,
 		double des_qind,
 		const double lmin_Ang_OTS,
+		const double lmin_FJac,
 		const double tol,
 		const int iter_max,
 		const double tol_OTS,
 		const double iter_OTS,
 		int ncomb,
-        bool enable
+		bool enable
     );
 
 }

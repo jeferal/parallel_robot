@@ -13,6 +13,7 @@
 
 #include "pr_msgs/msg/pr_array_h.hpp"
 #include "pr_msgs/msg/prots.hpp"
+#include "pr_msgs/msg/pr_float_h.hpp"
 
 #include "pr_lib/pr_singularity.hpp"
 
@@ -29,16 +30,18 @@ namespace pr_ref_gen
 
             void topic_callback(const pr_msgs::msg::PRArrayH::ConstPtr& ref_msg,
                                      const pr_msgs::msg::PRArrayH::ConstPtr& x_msg,
-                                     const pr_msgs::msg::PROTS::ConstPtr& ots_msg);
+                                     const pr_msgs::msg::PROTS::ConstPtr& ots_msg,
+                                     const pr_msgs::msg::PRFloatH::ConstPtr& for_jac_det);
 
         private:
             message_filters::Subscriber<pr_msgs::msg::PRArrayH> sub_ref;
             message_filters::Subscriber<pr_msgs::msg::PRArrayH> sub_x;
             message_filters::Subscriber<pr_msgs::msg::PROTS> sub_ots;
+            message_filters::Subscriber<pr_msgs::msg::PRFloatH> sub_det;
 
             typedef message_filters::sync_policies::ExactTime
                     <pr_msgs::msg::PRArrayH, pr_msgs::msg::PRArrayH, 
-                     pr_msgs::msg::PROTS> SyncPolicy;
+                     pr_msgs::msg::PROTS, pr_msgs::msg::PRFloatH> SyncPolicy;
 
             typedef message_filters::Synchronizer<SyncPolicy> Synchronizer;
             std::shared_ptr<Synchronizer> sync_;

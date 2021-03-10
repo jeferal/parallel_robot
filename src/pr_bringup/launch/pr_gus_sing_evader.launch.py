@@ -190,6 +190,19 @@ def generate_launch_description():
 
                 ComposableNode(
                     package='pr_modelling',
+                    node_plugin='pr_modelling::ForwardJacobian',
+                    node_name='for_jac',
+                    remappings=[
+                        ("x_coord", "x_mocap_sync"),
+                        ("for_jac_det", "for_jac_det"),
+                    ],
+                    parameters=[
+                        {"robot_config_params": pr_config_params},
+                    ]
+                ),
+
+                ComposableNode(
+                    package='pr_modelling',
                     node_plugin='pr_modelling::AngOTS',
                     node_name='ang_ots',
                     remappings=[
