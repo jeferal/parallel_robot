@@ -7,7 +7,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 import tensorflow as tf
-
+#hola
 
 def plot_learning_curve(x, scores, figure_file):
     running_avg = np.zeros(len(scores))
