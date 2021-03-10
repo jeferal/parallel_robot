@@ -125,7 +125,7 @@ def generate_launch_description():
                     ],
                     parameters=[
                         {"k1": controller_params['controller']['k1']},
-                        {"k2": controller_params['controller']['k1']},
+                        {"k2": controller_params['controller']['k2']},
                         {"ts": controller_params['ts']},
                         {"initial_position": first_reference_q},
                         {"initial_reference": first_reference_q}

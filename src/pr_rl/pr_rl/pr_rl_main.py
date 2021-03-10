@@ -22,8 +22,8 @@ def main(args=None):
     env = gym.make('gym_parallel_robot:ParallelRobot-v0')
 
     agent = DDPGAgent(input_dims=env.observation_space.shape, env=env,
-            n_actions=env.action_space.shape[0], alpha=0.0000001, beta=0.0000002,
-            gamma=0.93, max_size=100000000, tau=0.0005, 
+            n_actions=env.action_space.shape[0], alpha=1e-5, beta=1e-5,
+            gamma=0.99, max_size=10000000, tau=0.005, 
             batch_size=64, noise=0.05, fc1=700, fc2=500)
     
     n_games = 2048
@@ -68,7 +68,7 @@ def main(args=None):
         score_history.append(score)
         avg_score = np.mean(score_history[-100:])
 
-        if avg_score > best_score:
+        if i%100 == 0:
             best_score = avg_score
             if not load_checkpoint:
                 agent.save_models()
