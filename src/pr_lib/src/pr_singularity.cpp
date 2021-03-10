@@ -87,6 +87,9 @@ Eigen::Matrix<double,6,1> PRSingularity::CalculateAngOts(
 			ang_OTS_i = (OTS_ant.col(i)).head(3);
 			ang_OTS_j = (OTS_ant.col(j)).head(3);
 			sol_AngOTS(k) = acos(ang_OTS_i.dot(ang_OTS_j)/(ang_OTS_i.norm()*ang_OTS_j.norm()))*180/M_PI;
+			
+			if (sol_AngOTS(k)>90) sol_AngOTS(k)=180-sol_AngOTS(k);
+
 			// Incremento el indice de almacenamiento del angulo entre dos OTS
 			k++;
 
