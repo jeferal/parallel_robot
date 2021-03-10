@@ -82,6 +82,13 @@ namespace PRModel
                                 const std::vector<double> &P42, 
                                 const std::vector<double> &Pm);
 
+    //*** Forward Jacobian ***//        
+    void ForwardJacobian(
+                            Eigen::Matrix<double,4,4> &ForJ, 
+                            const std::array<double,4> &X, 
+                            const std::vector<double> &Rparam);
+
+
     //*** Pose from optitrack markers ***//
     namespace OptiTrack
     {
