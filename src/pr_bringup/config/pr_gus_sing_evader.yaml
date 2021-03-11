@@ -21,7 +21,7 @@ ots:
   iter: 30
 
 sin_evader:
-  ncomb: 4
+  ncomb: 8
   lmin_Ang_OTS: 3.0
   fk:
     tol: 0.0000001

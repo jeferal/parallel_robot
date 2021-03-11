@@ -51,7 +51,7 @@ namespace pr_ref_gen
 
             Eigen::Matrix<double,6,4> OTS = Eigen::Matrix<double,6,4>::Zero();
             Eigen::Matrix<double,6,1> angOTS = Eigen::Matrix<double,6,1>::Zero();
-            Eigen::Matrix<double,2,4> minc_des;
+            Eigen::Matrix<double,2,8> minc_des;
             Eigen::Vector4d vc_des = Eigen::Vector4d::Zero();
             Eigen::Matrix<double,4,-1> mq_ind_mod;
             Eigen::Vector4d q_ind_mod = Eigen::Vector4d::Zero();

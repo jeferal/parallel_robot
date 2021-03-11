@@ -52,7 +52,7 @@ namespace PRSingularity
         const Eigen::Vector4d &q_ref, 
         const Eigen::Matrix<double,6,1> &angOTS, 
         const Eigen::Matrix<double,6,4> &solOTS,
-		const Eigen::Matrix<double,2,4> &minc_des,
+		const Eigen::Matrix<double,2,8> &minc_des,
 		const double &fj_det,
 		const std::vector<double> &RParam,
 		Eigen::Vector4d &vc_des,

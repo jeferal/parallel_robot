@@ -258,7 +258,7 @@ Eigen::Vector4d PRSingularity::CalculateQindMod(
         const Eigen::Vector4d &q_ref, 
         const Eigen::Matrix<double,6,1> &angOTS, 
         const Eigen::Matrix<double,6,4> &solOTS,
-		const Eigen::Matrix<double,2,4> &minc_des,
+		const Eigen::Matrix<double,2,8> &minc_des,
 		const double &fj_det,
 		const std::vector<double> &RParam,
 		Eigen::Vector4d &vc_des,
@@ -317,7 +317,8 @@ Eigen::Vector4d PRSingularity::CalculateQindMod(
 			ncomb = minc_des.cols();
 
 			// Calculo las posibles referencias modificadas
-			mq_ind_mod = Eigen::MatrixX4d::Zero(4,ncomb);
+			mq_ind_mod = Eigen::Matrix<double,4,-1>::Zero(4,ncomb);
+
 			for (int i=0; i<ncomb; i++){
 			
 				// Posicion de referencia inicial modificada
@@ -327,7 +328,6 @@ Eigen::Vector4d PRSingularity::CalculateQindMod(
 				mq_ind_mod(i_qind(1),i) += des_qind*static_cast<double>(minc_des(1,i));
 		
 			}
-
 
 			// ANGULO OMEGA PARA LOS OTS INVOLUCRADOS EN LA SINGULARIDAD PARA CADA POSIBLE NUEVA REFERENCIA MODIFICADA
 			// Inicializacion del vector para almacenar angulos OMEGA
@@ -345,6 +345,7 @@ Eigen::Vector4d PRSingularity::CalculateQindMod(
 				for(int i=0; i<4; i++) {
 					q_sol[i] = qa(i);
 				}
+
 
 				// RESOLUCION DE LA CINEMATICA DIRECTA-POSICION
 				// Vector de posicion y orientacion medida de la plataforma
@@ -367,6 +368,7 @@ Eigen::Vector4d PRSingularity::CalculateQindMod(
     			solAngP(2) = acos(cos(q(6)) * sin(q(7)) * sin(theta) + sin(q(6)) * sin(q(7)) * cos(theta));
     			solAngP(3) = acos(-sin(q(9)) * sin(theta) + cos(q(9)) * cos(theta));
 				
+
 				if ((q(2)>Mlim_q_ind(0,0) && q(2)<Mlim_q_ind(0,1)) && (q(5)>Mlim_q_ind(1,0) && q(5)<Mlim_q_ind(1,1)) && (q(8)>Mlim_q_ind(2,0) && q(8)<Mlim_q_ind(2,1)) && (q(10)>Mlim_q_ind(3,0) && q(10)<Mlim_q_ind(3,1)) && solAngP(0)<Vlim_angp[0] && solAngP(1)<Vlim_angp[1] && solAngP(2)<Vlim_angp[2] && solAngP(3)<Vlim_angp[3]) {
 					// Lazo para resolver los dos OTS de la singularidad
 					for (int c_OTS=0; c_OTS<2; c_OTS++){
@@ -407,7 +409,6 @@ Eigen::Vector4d PRSingularity::CalculateQindMod(
 						solOTS_2(4,c_OTS) = 0;
 						solOTS_2(5,c_OTS) = X_OTS(4);
 					}
-
 					// Nuevo angulo OMEGA para la referencia modificada
 					ang_OTS_1 = (solOTS_2.col(0)).head(3);
 					ang_OTS_2 = (solOTS_2.col(1)).head(3);
@@ -416,8 +417,7 @@ Eigen::Vector4d PRSingularity::CalculateQindMod(
 					if (solAngOTS_mod(c_comb) > 90) solAngOTS_mod(c_comb) = 180 - solAngOTS_mod(c_comb);  	
 					
 				}
-				else solAngOTS_mod(c_comb)=0;
-			
+				else solAngOTS_mod(c_comb)=0;			
 			}
 		
 			// REFERENCIA MODIFICADA QUE PRODUCIRA EL MAXIMO ANGULO OMEGA
