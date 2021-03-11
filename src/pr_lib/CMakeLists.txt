@@ -42,7 +42,8 @@ endif()
 add_library(pr_lib SHARED
   src/pr_model.cpp
   src/pr_utils.cpp
-  src/pr_singularity.cpp)
+  src/pr_singularity.cpp
+  src/pr_limits.cpp)
 
 ament_target_dependencies(pr_lib
   "Eigen3"

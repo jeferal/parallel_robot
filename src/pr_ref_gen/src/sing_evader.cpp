@@ -11,6 +11,7 @@
 
 #include "pr_msgs/msg/pr_array_h.hpp"
 #include "pr_lib/pr_utils.hpp"
+#include "pr_lib/pr_limits.hpp"
 
 
 namespace pr_ref_gen
@@ -28,7 +29,7 @@ namespace pr_ref_gen
         this->declare_parameter<int>("iter_OTS",30);
         this->declare_parameter<double>("tol_OTS",1e-7);
         this->declare_parameter<double>("t_activation",5);
-        this->declare_parameter<int>("ncomb",4);
+        this->declare_parameter<int>("ncomb",8);
         this->declare_parameter<double>("lmin_Ang_OTS",3.0);
         this->declare_parameter<double>("ts", 0.01);
 
@@ -45,9 +46,14 @@ namespace pr_ref_gen
         minc_des << 1, -1, 1, -1,
 		            1, -1, -1, 1;
         
+        lmin_FJac = 0.015;
+        
         des_qind = 0.01*ts;
 
         mq_ind_mod = Eigen::Matrix<double,4,-1>::Zero(4,4);
+
+        Mlim_q_ind = PRLimits::LimActuators();
+        Vlim_angp = PRLimits::LimAngles();
 
         RCLCPP_INFO(this->get_logger(), "Creating communication");
 
@@ -96,8 +102,9 @@ namespace pr_ref_gen
 
         q_ind_mod = PRSingularity::CalculateQindMod(
             x_coord, q_ref, angOTS, OTS,
-            minc_des, robot_params, vc_des,
-            mq_ind_mod, des_qind, lmin_Ang_OTS,
+            minc_des, for_jac_det->data, robot_params, vc_des,
+            mq_ind_mod, Mlim_q_ind, Vlim_angp, des_qind, lmin_Ang_OTS,
+            lmin_FJac,
             tol, iter_max,
             tol_OTS, iter_OTS,
             ncomb, enable

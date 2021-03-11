@@ -58,7 +58,7 @@ namespace PRSingularity
 		Eigen::Vector4d &vc_des,
 		Eigen::Matrix<double,4,-1> &mq_ind_mod,
 		const Eigen::Matrix<double,4,2> &Mlim_q_ind,
-		std::vector<double> &Vlim_angp,
+		const Eigen::Vector4d &Vlim_angp,
 		double des_qind,
 		const double lmin_Ang_OTS,
 		const double lmin_FJac,

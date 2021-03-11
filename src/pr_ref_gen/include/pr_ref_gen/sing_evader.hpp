@@ -57,10 +57,12 @@ namespace pr_ref_gen
             Eigen::Vector4d q_ind_mod = Eigen::Vector4d::Zero();
             Eigen::Vector4d x_coord = Eigen::Vector4d::Zero();
             Eigen::Vector4d q_ref = Eigen::Vector4d::Zero();
+            Eigen::Matrix<double,4,2> Mlim_q_ind = Eigen::Matrix<double,4,2>::Zero();
+            Eigen::Vector4d Vlim_angp = Eigen::Vector4d::Zero();
             
             std::vector<double> robot_params;
             int iterations=0, iter_max=30, ncomb, iter_OTS;
-            double tol, tol_OTS, t_activation, ts, des_qind, lmin_Ang_OTS;
+            double tol, tol_OTS, t_activation, ts, des_qind, lmin_Ang_OTS, lmin_FJac;
 
     };
 }
