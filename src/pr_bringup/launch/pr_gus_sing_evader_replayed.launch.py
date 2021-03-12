@@ -169,7 +169,7 @@ def generate_launch_description():
                     ],
                     parameters=[
                         {"ts_ms": controller_params['ts']*1000},
-                        {"data_path": ref_file_q}
+                        {"data_path": "/home/paralelo4dofnew/ros2_eloquent_ws/parallel_robot/replay/CF1_V1/med_qind_TR15_CF1_V1.txt"}
                     ]
                 ),
 

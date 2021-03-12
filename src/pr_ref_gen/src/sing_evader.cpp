@@ -78,18 +78,18 @@ namespace pr_ref_gen
                                     const pr_msgs::msg::PRFloatH::ConstPtr& for_jac_det)
     {
         //Convert to Eigen
-        for(int i=0;i<4;i++) {
+        for(int i=0;i<(int)x_msg->data.size();i++) {
             x_coord(i) = x_msg->data[i];
             q_ref(i) = ref_msg->data[i];
         }
 
-        for(int i=0; i<ots_msg->ots.data.size(); i++) {
+        for(int i=0; i<(int)ots_msg->ots.data.size(); i++) {
             int row = i/OTS.cols();
             int col = i%OTS.cols();
             OTS.coeffRef(row,col) = ots_msg->ots.data[i];
         }
 
-        for(int i=0;i<6;i++)
+        for(int i=0;i<(int)ots_msg->ots_ang.size();i++)
             angOTS(i) = ots_msg->ots_ang[i];
 
         //Wait for beginning of experiment        

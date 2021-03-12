@@ -317,7 +317,7 @@ Eigen::Vector4d PRSingularity::CalculateQindMod(
 			ncomb = minc_des.cols();
 
 			// Calculo las posibles referencias modificadas
-			mq_ind_mod = Eigen::Matrix<double,4,-1>::Zero(4,ncomb);
+			mq_ind_mod = Eigen::Matrix<double,4,8>::Zero();
 
 			for (int i=0; i<ncomb; i++){
 			
@@ -369,7 +369,7 @@ Eigen::Vector4d PRSingularity::CalculateQindMod(
     			solAngP(3) = acos(-sin(q(9)) * sin(theta) + cos(q(9)) * cos(theta));
 				
 
-				if ((q(2)>Mlim_q_ind(0,0) && q(2)<Mlim_q_ind(0,1)) && (q(5)>Mlim_q_ind(1,0) && q(5)<Mlim_q_ind(1,1)) && (q(8)>Mlim_q_ind(2,0) && q(8)<Mlim_q_ind(2,1)) && (q(10)>Mlim_q_ind(3,0) && q(10)<Mlim_q_ind(3,1)) && solAngP(0)<Vlim_angp[0] && solAngP(1)<Vlim_angp[1] && solAngP(2)<Vlim_angp[2] && solAngP(3)<Vlim_angp[3]) {
+				if ((q(0,2)>Mlim_q_ind(0,0) && q(0,2)<Mlim_q_ind(0,1)) && (q(1,2)>Mlim_q_ind(1,0) && q(1,2)<Mlim_q_ind(1,1)) && (q(2,2)>Mlim_q_ind(2,0) && q(2,2)<Mlim_q_ind(2,1)) && (q(3,1)>Mlim_q_ind(3,0) && q(3,1)<Mlim_q_ind(3,1)) && solAngP(0)<Vlim_angp(0) && solAngP(1)<Vlim_angp(1) && solAngP(2)<Vlim_angp(2) && solAngP(3)<Vlim_angp(3)) {
 					// Lazo para resolver los dos OTS de la singularidad
 					for (int c_OTS=0; c_OTS<2; c_OTS++){
 						// Punto inicial para solucionar el sistema de ecuaciones para un OTS
@@ -414,10 +414,9 @@ Eigen::Vector4d PRSingularity::CalculateQindMod(
 					ang_OTS_2 = (solOTS_2.col(1)).head(3);
 					solAngOTS_mod(c_comb) = acos(ang_OTS_1.dot(ang_OTS_2)/(ang_OTS_1.norm()*ang_OTS_2.norm()))*180/M_PI;
 
-					if (solAngOTS_mod(c_comb) > 90) solAngOTS_mod(c_comb) = 180 - solAngOTS_mod(c_comb);  	
-					
+					if (solAngOTS_mod(c_comb) > 90) solAngOTS_mod(c_comb) = 180 - solAngOTS_mod(c_comb);					
 				}
-				else solAngOTS_mod(c_comb)=0;			
+				else solAngOTS_mod(c_comb)=0;
 			}
 		
 			// REFERENCIA MODIFICADA QUE PRODUCIRA EL MAXIMO ANGULO OMEGA

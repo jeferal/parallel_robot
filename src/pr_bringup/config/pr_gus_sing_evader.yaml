@@ -32,5 +32,5 @@ sing_evader:
   t_activation: 41.7
 
 ref_path:
-  q: "/home/paralelo4dofnew/ros2_eloquent_ws/parallel_robot/references/ref_qinde_TR15_CF1_V1.txt"
-  x: "/home/paralelo4dofnew/ros2_eloquent_ws/parallel_robot/references/ref_cart_TR15_CF1_V1.txt"
+  q: "/home/paralelo4dofnew/ros2_eloquent_ws/parallel_robot/replay/CF1_V1/ref_qinde_TR15_CF1_V1.txt"
+  x: "/home/paralelo4dofnew/ros2_eloquent_ws/parallel_robot/replay/CF1_V1/ref_cart_TR15_CF1_V1.txt"
