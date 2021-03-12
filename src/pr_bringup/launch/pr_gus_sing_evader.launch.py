@@ -230,13 +230,13 @@ def generate_launch_description():
                     ],
                     parameters=[
                         {"robot_config_params": pr_config_params},
-                        {"lmin_Ang_OTS": controller_params['sin_evader']['lmin_Ang_OTS']},
-                        {"ncomb": controller_params['sin_evader']['ncomb']},
-                        {"iter_fk": controller_params['sin_evader']['fk']['iter']},
-                        {"tol_fk": controller_params['sin_evader']['fk']['tol']},
-                        {"iter_OTS": controller_params['sin_evader']['ots']['iter']},
-                        {"tol_OTS": controller_params['sin_evader']['ots']['tol']},
-                        {"t_activation": controller_params['sin_evader']['t_activation']},
+                        {"lmin_Ang_OTS": controller_params['sing_evader']['lmin_Ang_OTS']},
+                        {"ncomb": controller_params['sing_evader']['ncomb']},
+                        {"iter_fk": controller_params['sing_evader']['fk']['iter']},
+                        {"tol_fk": controller_params['sing_evader']['fk']['tol']},
+                        {"iter_OTS": controller_params['sing_evader']['ots']['iter']},
+                        {"tol_OTS": controller_params['sing_evader']['ots']['tol']},
+                        {"t_activation": controller_params['sing_evader']['t_activation']},
                         {"ts": controller_params['ts']}
                     ]
                 ),
