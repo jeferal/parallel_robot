@@ -32,6 +32,7 @@ namespace pr_ref_gen
         this->declare_parameter<int>("ncomb",8);
         this->declare_parameter<double>("lmin_Ang_OTS",2.0);
         this->declare_parameter<double>("ts", 0.01);
+        this->declare_parameter<double>("lmin_FJac", 0.015);
 
         this->get_parameter("robot_config_params", robot_params);
         this->get_parameter("iter_fk", iter_max);
@@ -42,12 +43,11 @@ namespace pr_ref_gen
         this->get_parameter("ncomb",ncomb);
         this->get_parameter("lmin_Ang_OTS",lmin_Ang_OTS);
         this->get_parameter("ts", ts);
+        this->get_parameter("lmin_FJac", lmin_FJac);
 
         minc_des << 1, -1, 1, -1, 1, -1, 0, 0,
 		            1, -1, -1, 1, 0,  0, 1, -1;
-        
-        lmin_FJac = 0.015;
-        
+                
         des_qind = 0.01*ts;
 
         mq_ind_mod = Eigen::Matrix<double,4,-1>::Zero(4,8);

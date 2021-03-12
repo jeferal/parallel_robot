@@ -231,6 +231,7 @@ def generate_launch_description():
                     parameters=[
                         {"robot_config_params": pr_config_params},
                         {"lmin_Ang_OTS": controller_params['sing_evader']['lmin_Ang_OTS']},
+                        {"lmin_FJac": controller_params['sing_evader']['lmin_FJac']},
                         {"ncomb": controller_params['sing_evader']['ncomb']},
                         {"iter_fk": controller_params['sing_evader']['fk']['iter']},
                         {"tol_fk": controller_params['sing_evader']['fk']['tol']},
