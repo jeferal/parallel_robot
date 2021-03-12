@@ -160,15 +160,16 @@ def generate_launch_description():
                     ]
                 ),
                 ComposableNode(
-                    package='pr_sensors_actuators',
-                    node_plugin='pr_sensors_actuators::Encoders',
-                    node_name='position_sensors',
+                    package='pr_aux',
+                    node_plugin='pr_aux::Replayer',
+                    node_name='position_sensors_replayed',
                     remappings=[
-                        ("joint_position", "joint_position")
+                        ("data", "joint_position"),
+                        ("end_flag", "end_flag")
                     ],
                     parameters=[
                         {"ts_ms": controller_params['ts']*1000},
-                        {"initial_position": first_reference_q}
+                        {"data_path": ref_file_q}
                     ]
                 ),
 
@@ -238,35 +239,6 @@ def generate_launch_description():
                         {"tol_OTS": controller_params['sin_evader']['ots']['tol']},
                         {"t_activation": controller_params['sin_evader']['t_activation']},
                         {"ts": controller_params['ts']}
-                    ]
-                ),
-
-                ComposableNode(
-                    package='pr_mocap',
-                    node_plugin='pr_mocap::PRXMocap',
-                    node_name='mocap',
-                    remappings=[
-                        ("x_coord_mocap", "x_coord_mocap")
-                    ],
-                    parameters=[
-                        {"server_address": mocap_params["server_address"]},
-                        {"server_command_port": mocap_params["server_command_port"]},
-                        {"server_data_port": mocap_params["server_data_port"]},
-                        {"marker_names":  mocap_params["marker_names"][robot]},
-                        {"robot_5p": robot=="robot_5p"},
-                    ]
-                ),
-
-                ComposableNode(
-                    package='pr_mocap',
-                    node_plugin='pr_mocap::ErrorModel',
-                    node_name='model_error',
-                    remappings=[
-                        ("x_mocap_error", "x_mocap_error"),
-                        ("x_mocap_sync", "x_mocap_sync")
-                    ],
-                    parameters=[
-                        {"tol": 0.01}
                     ]
                 ),
             ],

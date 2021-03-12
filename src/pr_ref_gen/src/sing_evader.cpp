@@ -48,7 +48,7 @@ namespace pr_ref_gen
         
         lmin_FJac = 0.015;
         
-        des_qind = 0.02*ts;
+        des_qind = 0.01*ts;
 
         mq_ind_mod = Eigen::Matrix<double,4,-1>::Zero(4,8);
 

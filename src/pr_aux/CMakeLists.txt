@@ -22,6 +22,7 @@ find_package(rclcpp_components REQUIRED)
 find_package(rcutils REQUIRED)
 
 find_package(pr_msgs REQUIRED)
+find_package(pr_lib REQUIRED)
 
 include_directories(include)
 
@@ -54,11 +55,29 @@ ament_target_dependencies(derivator
 rclcpp_components_register_nodes(derivator "pr_aux::Derivator")
 set(node_plugins "${node_plugins}pr_aux::Derivator;$<TARGET_FILE:derivator>\n")
 
+### Replayer node ###
+
+add_library(replayer SHARED
+  src/replayer.cpp)
+
+target_compile_definitions(replayer
+  PRIVATE "COMPOSITION_BUILDING_DLL")
+
+ament_target_dependencies(replayer
+  "rclcpp"
+  "rclcpp_components"
+  "pr_msgs"
+  "pr_lib")
+
+rclcpp_components_register_nodes(replayer "pr_aux::Replayer")
+set(node_plugins "${node_plugins}pr_aux::Replayer;$<TARGET_FILE:replayer>\n")
+
 
 ### Installation ###
 
 install(TARGETS
   derivator
+  replayer
   ARCHIVE DESTINATION lib
   LIBRARY DESTINATION lib
   RUNTIME DESTINATION bin)
