@@ -7,7 +7,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 import tensorflow as tf
-#hola
+
 
 def plot_learning_curve(x, scores, figure_file):
     running_avg = np.zeros(len(scores))
@@ -22,17 +22,18 @@ def main(args=None):
     env = gym.make('gym_parallel_robot:ParallelRobot-v0')
 
     agent = DDPGAgent(input_dims=env.observation_space.shape, env=env,
-            n_actions=env.action_space.shape[0], alpha=1e-5, beta=1e-5,
+            n_actions=env.action_space.shape[0], alpha=3e-7, beta=5e-7,
             gamma=0.99, max_size=10000000, tau=0.005, 
             batch_size=64, noise=0.05, fc1=700, fc2=500)
     
-    n_games = 2048
+    n_games = 5000
 
     figure_file = 'plots/pr_avg_score.png'
 
     best_score = env.reward_range[0]
     score_history = []
     load_checkpoint = False
+    evaluate = False
 
     if load_checkpoint:
         n_steps = 0
@@ -44,9 +45,6 @@ def main(args=None):
             n_steps += 1
         agent.learn()    
         agent.load_models()
-        evaluate = True
-    else:
-        evaluate = False
 
     for i in range(n_games):
         observation = env.reset()
@@ -70,14 +68,14 @@ def main(args=None):
 
         if i%100 == 0:
             best_score = avg_score
+            print('--- Saving weights ---')
             if not load_checkpoint:
                 agent.save_models()
 
         print('episode ', i, '/', n_games, 'score %.1f' % score, 'avg score %.1f' % avg_score)
 
-    if not load_checkpoint:
-        x = [i+1 for i in range(n_games)]
-        plot_learning_curve(x, score_history, figure_file)
+    x = [i+1 for i in range(n_games)]
+    plot_learning_curve(x, score_history, figure_file)
 
 
 if __name__ == '__main__':
